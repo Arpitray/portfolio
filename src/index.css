@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+/* Lenis recommends disabling native smooth scrolling to avoid conflicts */
+html { scroll-behavior: auto; }
+
+/* Tailwind utility for the subtle grid background */
+@layer utilities {
+	.bg-grid {
+		background-color: #f7f3ec;
+		background-image:
+			linear-gradient(rgba(0,0,0,0.3) 2px, transparent 1px),
+			linear-gradient(90deg, rgba(0,0,0,0.3) 2px, transparent 1px);
+		background-size: 60px 60px;
+		background-position: center;
+	}
+    .bg-grid2 {
+		background-color:#E1E1E1;
+		background-image:
+			linear-gradient(rgba(0,0,0,0.3) 2px, transparent 1px),
+			linear-gradient(90deg, rgba(0,0,0,0.3) 2px, transparent 1px);
+		background-size: 60px 60px;
+		background-position: center;
+	}
+}
+@font-face {
+    font-family: 'regular';
+    src: url('./assets/Regular.ttf');
+
+}
+@font-face {
+    font-family: 'pepper';
+    src: url('./assets/pepper.otf');
+}
+@font-face {
+    font-family: 'palo';
+    src: url('./assets/palo.otf');
+}
