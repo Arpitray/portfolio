@@ -18,7 +18,7 @@ html { scroll-behavior: auto; }
 		background-image:
 			linear-gradient(rgba(0,0,0,0.3) 2px, transparent 1px),
 			linear-gradient(90deg, rgba(0,0,0,0.3) 2px, transparent 1px);
-		background-size: 60px 60px;
+		background-size: 150px 150px;
 		background-position: center;
 	}
 }
@@ -32,6 +32,10 @@ html { scroll-behavior: auto; }
     src: url('./assets/pepper.otf');
 }
 @font-face {
-    font-family: 'palo';
-    src: url('./assets/palo.otf');
+    font-family: 'pp1';
+    src: url('./assets/pp1.otf');
+}
+@font-face {
+    font-family: 'brit';
+    src: url('./assets/britanica.ttf');
 }

@@ -51,7 +51,7 @@ function About() {
             <span className="about-item mr-2 will-change-transform">I am</span>
             <PillImage src={Image2} alt="Portrait" />
             <span className="about-item will-change-transform">Arpit,</span>
-            <span className="about-item ml-2 will-change-transform">Design-driven</span>
+            <span className="about-item ml-2 will-change-transform">Into Design-driven</span>
           </div>
           <div className="flex flex-wrap items-center justify-center mt-2">
             <span className="about-item will-change-transform">development</span>

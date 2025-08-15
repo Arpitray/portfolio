@@ -4,20 +4,24 @@ import React, { useEffect, useRef } from 'react'
  * SnowCanvas renders an animated particle (snow) field confined to its parent size.
  * It automatically resizes to match the parent (relative positioned) container.
  * Particles bounce on edges. On hover/mouse move, nearby particles are repelled.
+ * When mouse leaves, particles return to their initial positions.
  */
 // extraMargin: logical off-screen world extension on each side (not enlarging the canvas element itself)
 // Particles can start & move in this hidden margin and flow into the visible area.
-function SnowCanvas({ particleCount = 550, maxRadius = 2, extraMargin = 120 }) {
+function SnowCanvas({ particleCount = 1000, maxRadius = 3, extraMargin = 220 }) {
   const canvasRef = useRef(null)
   const parentRef = useRef(null)
   const mouse = useRef({ x: null, y: null, inside: false, lastX: null, prevX: null, prevY: null })
   const particlesRef = useRef([])
+  const initialPositionsRef = useRef([])
   const frameRef = useRef(0)
   const resizeObserverRef = useRef(null)
+  const isResettingRef = useRef(false)
 
   // Initialize particles for given width/height
   const initParticles = (worldW, worldH, visW, visH) => {
     const arr = []
+    const initialPositions = []
     for (let i = 0; i < particleCount; i++) {
       // Start anywhere in extended world (including hidden margins)
       const x = Math.random() * worldW - extraMargin
@@ -32,15 +36,78 @@ function SnowCanvas({ particleCount = 550, maxRadius = 2, extraMargin = 120 }) {
         if (edge === 2) sy = -extraMargin + Math.random() * extraMargin // top band
         if (edge === 3) sy = visH + Math.random() * extraMargin       // bottom band
       }
-      arr.push({
+      const particle = {
         x: sx,
         y: sy,
         vx: (Math.random() - 0.5) * 1,
         vy: (Math.random() - 0.5) * 1,
         r: Math.random() * (maxRadius - 1) + 1,
-      })
+      }
+      arr.push(particle)
+      // Store initial position
+      initialPositions.push({ x: sx, y: sy })
     }
     particlesRef.current = arr
+    initialPositionsRef.current = initialPositions
+  }
+
+  // Reset particles to initial positions
+  const resetParticles = () => {
+    if (isResettingRef.current) return
+    isResettingRef.current = true
+    
+    const particles = particlesRef.current
+    const initialPositions = initialPositionsRef.current
+    
+    if (particles.length !== initialPositions.length) return
+    
+    // Animate particles back to initial positions with smooth movement
+    const resetDuration = 2500 // 2.5 seconds for smoother movement
+    const startTime = Date.now()
+    
+    const animateReset = () => {
+      if (!isResettingRef.current) return // Stop if interrupted
+      
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / resetDuration, 1)
+      // Use smoother easing function for more natural movement
+      const easeProgress = 1 - Math.pow(1 - progress, 4) // Ease out quartic for smoother deceleration
+      
+      for (let i = 0; i < particles.length; i++) {
+        const particle = particles[i]
+        const initial = initialPositions[i]
+        
+        // Smooth interpolation with smaller steps
+        const dx = initial.x - particle.x
+        const dy = initial.y - particle.y
+        
+        particle.x += dx * 0.02 // Smaller step size for smoother movement
+        particle.y += dy * 0.02
+        
+        // Gradually reduce velocity more smoothly
+        particle.vx *= 0.98
+        particle.vy *= 0.98
+      }
+      
+      if (progress < 1 && isResettingRef.current) {
+        requestAnimationFrame(animateReset)
+      } else {
+        // Ensure exact final positions only if reset completed
+        if (isResettingRef.current) {
+          for (let i = 0; i < particles.length; i++) {
+            const particle = particles[i]
+            const initial = initialPositions[i]
+            particle.x = initial.x
+            particle.y = initial.y
+            particle.vx = 0
+            particle.vy = 0
+          }
+        }
+        isResettingRef.current = false
+      }
+    }
+    
+    animateReset()
   }
 
   useEffect(() => {
@@ -80,9 +147,14 @@ function SnowCanvas({ particleCount = 550, maxRadius = 2, extraMargin = 120 }) {
       mouse.current.x = relX
       mouse.current.y = relY
       mouse.current.inside = true
+      // Stop reset animation when mouse enters
+      if (isResettingRef.current) {
+        isResettingRef.current = false
+      }
     }
     const handleMouseLeave = () => {
       mouse.current.inside = false
+      resetParticles()
     }
 
     parent.addEventListener('mousemove', handleMouseMove)
@@ -106,7 +178,7 @@ function SnowCanvas({ particleCount = 550, maxRadius = 2, extraMargin = 120 }) {
       if (inside && prevX != null && mx != null) mouseDeltaX = mx - prevX
       if (inside && prevY != null && my != null) mouseDeltaY = my - prevY
       // Scale deltas into small forces (-base to +base)
-      const baseForce = 0.08 // adjust for stronger/weaker response
+      const baseForce = 0.6 // adjust for stronger/weaker response
       const cap = 40
       const cappedX = Math.max(-cap, Math.min(cap, mouseDeltaX))
       const cappedY = Math.max(-cap, Math.min(cap, mouseDeltaY))
@@ -116,7 +188,18 @@ function SnowCanvas({ particleCount = 550, maxRadius = 2, extraMargin = 120 }) {
       const mxWorld = mx != null ? mx : null
       const myWorld = my != null ? my : null
 
-      for (const p of particlesRef.current) {
+             for (const p of particlesRef.current) {
+         // If resetting, only draw particles without physics
+         if (isResettingRef.current) {
+           // Draw only if in visible viewport
+           if (p.x < 0 || p.x > visW || p.y < 0 || p.y > visH) continue
+           ctx.beginPath()
+           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
+           ctx.fillStyle = 'rgba(255,255,255,0.9)'
+           ctx.fill()
+           continue
+         }
+
         // Interaction
         if (inside && mxWorld != null) {
           const dx = p.x - mxWorld
