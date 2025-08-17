@@ -32,20 +32,25 @@ export default function Showcase() {
       const vh = window.innerHeight
       const imgHeight = vh * 1.6 // 160vh (images taller than viewport)
       const maxShift = imgHeight - vh
-      return { vh, imgHeight, maxShift }
+      // small responsive offset so the pin/scrub triggers start a bit earlier
+      const pinOffset = Math.max(0, Math.round(vh * 0.1)) // ~8% of viewport
+      return { vh, imgHeight, maxShift, pinOffset }
     }
+
+    // helper used by ScrollTrigger starts so pin/scrub happen a bit earlier
+    const pinStart = () => `top 50%-=${recalc().pinOffset}`
 
     let triggers = []
 
     const setup = () => {
       const { maxShift } = recalc()
       const outerRect = outer.getBoundingClientRect()
-      const totalScrollable = Math.max(1, outerRect.height - window.innerHeight)
+      const totalScrollable = Math.max(2, outerRect.height - window.innerHeight)
 
       // pin the sticky container using GSAP for consistent behavior
       const pinTrigger = ScrollTrigger.create({
         trigger: outer,
-        start: 'top top',
+        start: pinStart,
         end: () => `+=${totalScrollable}`,
         pin: sticky,
         pinSpacing: false
@@ -101,7 +106,7 @@ export default function Showcase() {
           ease: 'none',
           scrollTrigger: {
             trigger: outer,
-            start: 'top top',
+            start: pinStart,
             end: () => `+=${totalScrollable}`,
             scrub: true
           }
@@ -142,7 +147,6 @@ export default function Showcase() {
     position: 'relative',
     width: '100%',
   height: '300vh', // enough vertical space for the pin + long scroll
-  overflow: 'hidden',
   // lift the showcase up so it visually appears beneath the Projects section
   // the Projects component adds a 160px SVG mask; match that with negative margin
   marginTop: '-140px',
@@ -156,7 +160,6 @@ export default function Showcase() {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
     zIndex: 0
   }
 
@@ -170,7 +173,6 @@ export default function Showcase() {
   const colOuter = {
     flex: '1 1 25%',
     height: '100vh',
-    overflow: 'hidden',
     position: 'relative'
   }
 
@@ -197,12 +199,11 @@ export default function Showcase() {
     height: '100vh',
     paddingBottom: 12,
     borderBottom: '1px solid #000',
-    overflow: 'hidden',
     marginBottom: 18,
   }
 
   return (
-    <section className='px-6' ref={outerRef} style={outerStyle} aria-hidden={false}>
+    <section className='px-6 overflow-hidden' ref={outerRef} style={outerStyle} aria-hidden={false}>
       <div ref={stickyRef} style={stickyStyle}>
         <div style={colsWrap}>
           <div style={colOuter} ref={el => (wrapRefs.current[0] = el)}>
