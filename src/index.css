@@ -6,11 +6,8 @@ html { scroll-behavior: auto; }
 /* Tailwind utility for the subtle grid background */
 @layer utilities {
 	.bg-grid {
-		background-color: #f7f3ec;
-		background-image:
-			linear-gradient(rgba(0,0,0,0.3) 2px, transparent 1px),
-			linear-gradient(90deg, rgba(0,0,0,0.3) 2px, transparent 1px);
-		background-size: 60px 60px;
+		background-color: #E1E1E1;
+	
 		background-position: center;
 	}
     .bg-grid2 {
@@ -38,4 +35,43 @@ html { scroll-behavior: auto; }
 @font-face {
     font-family: 'brit';
     src: url('./assets/britanica.ttf');
+}
+@font-face {
+    font-family: 'trailor';
+    src: url('./assets/trailor.ttf');
+}
+@font-face {
+    font-family: 'belly';
+    src: url('./assets/belly.ttf');
+}
+@font-face {
+    font-family: 'trial';
+    src: url('./assets/trial.ttf');
+}
+@font-face {
+    font-family: 'demo';
+    src: url('./assets/demo.otf');
+}
+
+/* Hide native scrollbars visually but keep scroll functionality.
+     - Firefox: scrollbar-width: none
+     - IE/Edge: -ms-overflow-style: none
+     - WebKit: set scrollbar size to 0
+     Keep this global but consider scoping if you need scrollbars in specific UI areas. */
+html, body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+
+/* WebKit browsers */
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+/* Prevent white flash on first paint by matching the loader background */
+html, body {
+    background: #212427;
+    height: 100%;
+    margin: 0;
 }

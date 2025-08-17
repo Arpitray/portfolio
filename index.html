@@ -5,6 +5,12 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Arpit</title>
+    <style>
+      /* Critical styles to avoid initial white flash before CSS loads */
+      html,body{background:#212427;margin:0;height:100%}
+      .loader-img{background:#212427;display:block}
+      .loader-overlay{opacity:0}
+    </style>
   </head>
   <body>
     <div id="root"></div>

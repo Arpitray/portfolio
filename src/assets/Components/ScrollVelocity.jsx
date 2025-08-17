@@ -71,7 +71,7 @@ export const ScrollVelocity = ({
       >
         <div
           ref={scrollerRef}
-          className={`${scrollerClassName} flex items-center text-center font-sans text-4xl font-bold tracking-[-0.02em] drop-shadow md:text-[5rem] md:leading-[5rem] whitespace-nowrap`}
+          className={`${scrollerClassName} flex items-center text-center font-sans text-4xl font-bold tracking-[-0.02em] drop-shadow md:text-[5rem] md:leading-[10rem] whitespace-nowrap`}
           style={scrollerStyle}
         >
           {texts.map((text, index) => (

@@ -9,12 +9,23 @@ import back1 from './back1.png'
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
 
-function Projects() {
+function Projects({ isMask = false }) {
   const containerRef = useRef(null)
   const projectsRef = useRef([])
   const frameRefs = useRef([])
   const videoRefs = useRef([])
   const panelRefs = useRef([])
+
+  // Lightweight static mask when used as an overlay mask: avoid heavy DOM, videos, and GSAP
+  if (isMask) {
+    return (
+      <section style={{ position: 'relative', zIndex: 99999, backgroundColor: '#E1E1E1', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h2 style={{ fontFamily: 'demo', fontSize: '6rem', margin: 0, color: '#000' }}>SELECTED PROJECTS</h2>
+        </div>
+      </section>
+    )
+  }
 
   // Sample project data
   const projects = [
@@ -87,6 +98,7 @@ function Projects() {
   ]
 
   useEffect(() => {
+    if (isMask) return // mask mode: skip animations and scroll triggers
     const container = containerRef.current
     if (!container) return
 
@@ -100,7 +112,7 @@ function Projects() {
       // Set initial state
       gsap.set(projectElement, {
         y: 100,
-        opacity: 0,
+        opacity: 1,
         scale: 0.95,
         rotationX: isEven ? 15 : -15,
       })
@@ -125,7 +137,7 @@ function Projects() {
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill())
     }
-  }, [])
+  }, [isMask])
 
   // Animate frame when the video ends: scale down then scale back up, then replay
   const handleVideoEnd = (index) => {
@@ -161,14 +173,14 @@ function Projects() {
   }
 
   return (
-    <section ref={containerRef} className='bg-grid2 min-h-screen bg-[#E1E1E1] flex flex-col overflow-hidden'>
+    <section ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 min-h-screen flex flex-col overflow-hidden'>
       {/* ScrollVelocity Title Section */}
       <div className='w-full pt-8'>
         <ScrollVelocity
           texts={["SELECTED PROJECTS", "SELECTED PROJECTS", "SELECTED PROJECTS", "SELECTED PROJECTS", "SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS", "SELECTED PROJECTS", "SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS"]}
           velocity={80}
           numCopies={8}
-          className="uppercase px-6 md:px-10 text-[150px] font-medium tracking-[0.08em] font-['pp']"
+          className="uppercase px-6 md:px-10 text-[190px] font-medium tracking-[0.08em] font-['demo']"
           parallaxClassName="w-full"
           scrollerClassName="gap-8"
           velocityMapping={{ input: [-1000, 1000], output: [-1000, 1000] }}
@@ -176,7 +188,7 @@ function Projects() {
       </div>
 
       {/* Projects Container */}
-      <div className='flex-1 pt-20 pb-20 '>
+      <div className='flex-1 pb-20 '>
         {projects.map((project, index) => {
           const isEven = index % 2 === 0
           
@@ -184,19 +196,19 @@ function Projects() {
             <div
               key={project.id}
               ref={el => projectsRef.current[index] = el}
-              className={`mb-24 mt-24 last:mb-0 font-['brit'] tracking-widest ${
+              className={` last:mb-0 font-['belly'] tracking-widest ${
                 isEven ? 'md:flex-row' : 'md:flex-row-reverse'
-              } flex flex-col md:flex-row gap-8 md:gap-6 px-6 md:px-16 lg:px-24 items-center`}
+              } flex flex-col md:flex-row gap-8 md:gap-6 px-6 md:px-16 lg:px-4 items-center`}
             >
               {/* Project Description */}
-              <div className='text-start w-full md:w-1/2 px-4 md:px-8 py-4'>
-                <h2 className='text-2xl md:text-3xl lg:text-5xl xl:text-6xl font-extrabold text-black mb-3 md:mb-5 tracking-tight leading-tight text-start'>
+              <div className='text-start w-full md:w-1/2 px-4 md:px-8 font-["demo"]'>
+                <h2 className='text-2xl md:text-3xl lg:text-5xl xl:text-8xl font-extrabold text-black mb-3 md:mb-5 tracking-tight leading-tight text-start'>
                   {project.title}
                 </h2>
-                <p className='text-sm md:text-base lg:text-lg text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed max-w-prose text-start'>
+                <p className='text-sm md:text-base lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed max-w-prose text-start'>
                   {project.description}
                 </p>
-                <div className={`flex flex-wrap gap-3 font-semibold items-center ${isEven ? 'justify-start' : 'justify-start'}`}>
+                <div className={`flex flex-wrap font-['pp'] gap-3 font-semibold items-center ${isEven ? 'justify-start' : 'justify-start'}`}>
                   {project.tags.map((tag, tagIndex) => (
                     <span
                       key={tagIndex}
