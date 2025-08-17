@@ -9,23 +9,12 @@ import back1 from './back1.png'
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
 
-function Projects({ isMask = false }) {
+function Projects() {
   const containerRef = useRef(null)
   const projectsRef = useRef([])
   const frameRefs = useRef([])
   const videoRefs = useRef([])
   const panelRefs = useRef([])
-
-  // Lightweight static mask when used as an overlay mask: avoid heavy DOM, videos, and GSAP
-  if (isMask) {
-    return (
-      <section style={{ position: 'relative', zIndex: 99999, backgroundColor: '#E1E1E1', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <h2 style={{ fontFamily: 'demo', fontSize: '6rem', margin: 0, color: '#000' }}>SELECTED PROJECTS</h2>
-        </div>
-      </section>
-    )
-  }
 
   // Sample project data
   const projects = [
@@ -98,7 +87,6 @@ function Projects({ isMask = false }) {
   ]
 
   useEffect(() => {
-    if (isMask) return // mask mode: skip animations and scroll triggers
     const container = containerRef.current
     if (!container) return
 
@@ -137,7 +125,7 @@ function Projects({ isMask = false }) {
     return () => {
       ScrollTrigger.getAll().forEach(trigger => trigger.kill())
     }
-  }, [isMask])
+  }, [])
 
   // Animate frame when the video ends: scale down then scale back up, then replay
   const handleVideoEnd = (index) => {
@@ -173,7 +161,7 @@ function Projects({ isMask = false }) {
   }
 
   return (
-    <section ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 min-h-screen flex flex-col overflow-hidden'>
+    <section ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 min-h-screen flex flex-col overflow-visible'>
       {/* ScrollVelocity Title Section */}
       <div className='w-full pt-8'>
         <ScrollVelocity
@@ -303,6 +291,13 @@ function Projects({ isMask = false }) {
             </div>
           )
         })}
+      </div>
+      {/* Bottom mask divider to make the Showcase appear underneath Projects (modern overlapping reveal) */}
+      <div aria-hidden="true" className="projects-bottom-mask" style={{ position: 'absolute', left: 0, right: 0, bottom: -1, height: 160, pointerEvents: 'none', zIndex: 50, display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+        <svg viewBox="0 0 1440 160" preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
+          {/* Wave path filled with the same Projects background to visually mask the Showcase below */}
+          <path d="M0,32 C240,80 360,0 720,32 C1080,64 1200,32 1440,48 L1440,160 L0,160 Z" fill="#E1E1E1" />
+        </svg>
       </div>
     </section>
   )

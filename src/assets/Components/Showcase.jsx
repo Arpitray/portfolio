@@ -126,6 +126,8 @@ export default function Showcase() {
 
     window.addEventListener('resize', handleResize)
 
+  // no mask logic
+
     return () => {
       window.removeEventListener('resize', handleResize)
       triggers.forEach(t => t.kill && t.kill())
@@ -139,8 +141,12 @@ export default function Showcase() {
   const outerStyle = {
     position: 'relative',
     width: '100%',
-    height: '400vh', // enough vertical space for the pin + long scroll
-    overflow: 'hidden'
+  height: '300vh', // enough vertical space for the pin + long scroll
+  overflow: 'hidden',
+  // lift the showcase up so it visually appears beneath the Projects section
+  // the Projects component adds a 160px SVG mask; match that with negative margin
+  marginTop: '-140px',
+  zIndex: 0
   }
 
   const stickyStyle = {
@@ -185,61 +191,56 @@ export default function Showcase() {
     objectFit: 'cover'
   }
 
+  const imgWrapStyle = {
+    boxSizing: 'border-box',
+    width: '100%',
+    height: '100vh',
+    paddingBottom: 12,
+    borderBottom: '1px solid #000',
+    overflow: 'hidden',
+    marginBottom: 18,
+  }
+
   return (
-  <section ref={outerRef} style={outerStyle} aria-hidden={false}>
+    <section className='px-6' ref={outerRef} style={outerStyle} aria-hidden={false}>
       <div ref={stickyRef} style={stickyStyle}>
         <div style={colsWrap}>
           <div style={colOuter} ref={el => (wrapRefs.current[0] = el)}>
             <div ref={el => (colRefs.current[0] = el)} style={innerImgContainer}>
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
             </div>
           </div>
 
           <div style={colOuter} ref={el => (wrapRefs.current[1] = el)}>
             <div ref={el => (colRefs.current[1] = el)} style={innerImgContainer}>
-               <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
             </div>
           </div>
 
           <div style={colOuter} ref={el => (wrapRefs.current[2] = el)}>
             <div ref={el => (colRefs.current[2] = el)} style={innerImgContainer}>
-               <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              
-            </div>
-          </div>
-
-          <div style={colOuter} ref={el => (wrapRefs.current[3] = el)}>
-            <div ref={el => (colRefs.current[3] = el)} style={innerImgContainer}>
-             <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
-              <img src={ss1} alt='' style={imgStyle} />
-              <img src={ss2} alt='' style={imgStyle} />
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
             </div>
           </div>
         </div>

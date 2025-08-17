@@ -47,11 +47,11 @@ function App() {
     <>
       <CursorGlass />
       {/* render the app underneath the loader so loader can animate over it */}
-      <Landing />
-      <About />
-      <Projects />
+  <Landing />
+  <About />
+  <Projects />
   <Showcase />
-      {loading && <Loader onComplete={onLoaderComplete} />}
+  {loading && <Loader onComplete={onLoaderComplete} />}
     </>
   )
 }

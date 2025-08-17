@@ -191,7 +191,7 @@ function Landing() {
 
   return (
     <>
-    <section ref={sectionRef} className="relative h-screen w-full bg-grid">
+  <section ref={sectionRef} className="relative h-screen w-full bg-grid z-10">
       <nav className="fixed top-[3%] left-0 z-50 w-full">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mt-3 rounded-xl border border-white/10 bg-white/20 backdrop-blur-[4px] backdrop-saturate-150 ring-1 ring-black/5 py-4 shadow-md">

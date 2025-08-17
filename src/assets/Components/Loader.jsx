@@ -97,7 +97,7 @@ const Loader = ({ onComplete } = {}) => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  zIndex: 100001,
+  zIndex: 9999,
     overflow: 'hidden'
   }
 
