@@ -66,18 +66,29 @@ const Loader = ({ onComplete } = {}) => {
         ease: 'power4.inOut'
       }, 4)
 
-      // slide loader up off screen after surround completes
-      tl.to(containerRef.current, {
-        yPercent: -120,
-        duration: 0.9,
-        ease: 'power4.inOut',
-        onComplete: () => {
-          // once loader has slid up, start the landing so landing appears after the overlay has left
+      // hide loader immediately (no fade) so Landing can start without waiting
+      tl.set(containerRef.current, { autoAlpha: 0 }, 4.9)
+
+      // dispatch landing start right after we hide the loader. Also keep a
+      // fallback timeout in case the timeline call is missed (e.g. if the
+      // timeline is killed before it reaches the call). We log for debugging.
+      let dispatched = false
+      tl.call(() => {
+        dispatched = true
+        console.log('Loader: dispatching startLanding from timeline')
+        window.dispatchEvent(new Event('startLanding'))
+        if (typeof onComplete === 'function') onComplete()
+        else window.dispatchEvent(new Event('loaderComplete'))
+      }, null, 4.9)
+
+      const fallbackDispatch = setTimeout(() => {
+        if (!dispatched) {
+          console.warn('Loader: timeline dispatch missed — firing fallback startLanding')
           window.dispatchEvent(new Event('startLanding'))
           if (typeof onComplete === 'function') onComplete()
           else window.dispatchEvent(new Event('loaderComplete'))
         }
-      }, 5.06)
+      }, 5600)
     }
 
     // start the timeline on next animation frame so paint can settle first
@@ -85,7 +96,9 @@ const Loader = ({ onComplete } = {}) => {
 
     return () => {
       cancelAnimationFrame(starter)
-      if (tl) tl.kill()
+  if (tl) tl.kill()
+  // clear the fallback dispatcher if still pending
+  try { clearTimeout(fallbackDispatch) } catch (e) { /* noop */ }
       gsap.killTweensOf([containerRef.current, imgRefs.current, whiteRef.current])
     }
   }, [])

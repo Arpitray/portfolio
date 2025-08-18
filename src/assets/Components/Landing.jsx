@@ -102,14 +102,59 @@ function Landing() {
       const existing = Array.from(heading.querySelectorAll('span > span, span[data-letter]'))
       targets = existing
     }
+    // If there are still no targets, run a stronger fallback that will
+    // wrap any remaining text nodes (per-character) so the animation can run.
+    if (!targets || targets.length === 0) {
+      const ensureSplitFallback = (root) => {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null)
+        const textNodes = []
+        while (walker.nextNode()) {
+          const node = walker.currentNode
+          if (node && node.nodeValue && node.nodeValue.trim()) textNodes.push(node)
+        }
+
+        textNodes.forEach(textNode => {
+          const txt = textNode.nodeValue
+          const frag = document.createDocumentFragment()
+          for (let i = 0; i < txt.length; i++) {
+            const ch = txt[i]
+            if (ch.trim() === '') {
+              frag.appendChild(document.createTextNode(ch))
+              continue
+            }
+            const outer = document.createElement('span')
+            outer.style.display = 'inline-block'
+            outer.style.overflow = 'hidden'
+            const inner = document.createElement('span')
+            inner.setAttribute('data-letter', '')
+            inner.textContent = ch
+            inner.style.display = 'inline-block'
+            outer.appendChild(inner)
+            frag.appendChild(outer)
+          }
+          textNode.parentNode.replaceChild(frag, textNode)
+        })
+      }
+
+      try {
+        ensureSplitFallback(heading)
+        targets = Array.from(heading.querySelectorAll('span[data-letter], span > span'))
+      } catch (e) {
+        // noop - if this fails, we'll animate whatever targets exist (possibly none)
+        targets = Array.from(heading.querySelectorAll('span[data-letter], span > span'))
+      }
+    }
     const imageContainers = Array.from(heading.querySelectorAll('.image1'))
     const canvasEl = heroBlockRef.current?.querySelector('canvas') || null
 
-    const tl = gsap.timeline()
+  const tl = gsap.timeline()
+  // fallback timer in case the loader events are missed so the landing
+  // animation still plays. Defined here so the cleanup can safely clear it.
+  let fallbackTimer = null
 
   // navbar fade-in should match the hero text entrance
   const navEl = sectionRef.current ? sectionRef.current.querySelector('nav') : null
-  if (navEl) gsap.set(navEl, { autoAlpha: 0 })
+  if (navEl) gsap.set(navEl, { autoAlpha: 0, y: -8 })
 
     if (canvasEl) {
       // keep canvas hidden until after text animation to avoid heavy paint work
@@ -117,22 +162,32 @@ function Landing() {
       tl.to(canvasEl, { opacity: 1, duration: 0.8, ease: 'power1.out' }, 0)
     }
 
-    // fade in navbar alongside the hero text
+    // fade + slide in navbar alongside the hero text
     if (navEl) {
-      tl.to(navEl, { autoAlpha: 1, duration: 1, ease: 'expo.out' }, 0.05)
+      tl.fromTo(navEl, { y: -8, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, ease: 'expo.out' }, 0.05)
     }
 
     // hint GPU acceleration and avoid layout thrash
-    gsap.set(targets, { yPercent: 120, opacity: 0, force3D: true })
-    tl.to(targets, {
-      yPercent: 0,
-      opacity: 1,
-      duration: 1,
-      ease: 'expo.out',
-      stagger: 0.02,
-      delay: 0.15,
-      force3D: true,
-    }, 0.05)
+    console.log('Landing split targets count:', targets.length)
+    if (targets && targets.length > 0) {
+      gsap.set(targets, { yPercent: 120, opacity: 0, force3D: true })
+      tl.to(targets, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 1,
+        ease: 'expo.out',
+        stagger: 0.02,
+        delay: 0.15,
+        force3D: true,
+      }, 0.05)
+    } else {
+      // fallback: animate the hero block if split failed so user still sees entrance
+      const hero = heroBlockRef.current
+      if (hero) {
+        gsap.set(hero, { y: 20, opacity: 0 })
+        tl.to(hero, { y: 0, opacity: 1, duration: 0.9, ease: 'expo.out' }, 0.05)
+      }
+    }
 
     if (imageContainers.length) {
       gsap.set(imageContainers, { y: 40, opacity: 0, force3D: true })
@@ -146,20 +201,36 @@ function Landing() {
       }, '<0.1')
     }
 
-    // Pause timeline and wait for the loader to finish.
-    // The loader will dispatch a global 'startLanding' or 'loaderComplete' event when it's ready.
+    // Pause timeline and play it when the loader signals completion.
+    // Simpler and more robust: play immediately when the loader dispatches
+    // 'startLanding' or 'loaderComplete', with a small fallback in case the
+    // event was missed.
     tl.pause()
 
     const startHandler = () => {
-      try {
-        tl.play()
-      } catch (e) { /* noop */ }
+      // clear the fallback if it was scheduled
+      if (fallbackTimer) {
+        clearTimeout(fallbackTimer)
+        fallbackTimer = null
+      }
+      // small debug hint so we can tell if the event reached the handler
+      try { console.log('Landing startHandler fired — playing timeline'); tl.play() } catch (e) { console.warn('Failed to play landing timeline', e) }
       window.removeEventListener('startLanding', startHandler)
       window.removeEventListener('loaderComplete', startHandler)
     }
 
-  window.addEventListener('startLanding', startHandler)
-  window.addEventListener('loaderComplete', startHandler)
+    window.addEventListener('startLanding', startHandler)
+    window.addEventListener('loaderComplete', startHandler)
+
+    // If for some reason the loader event was missed (race or rapid navigation),
+    // auto-play the landing timeline after a short delay as a safe fallback.
+    // This ensures the hero animation shows even when events fail to deliver.
+    // Use a longer fallback to avoid auto-playing the landing animation
+    // while the loader is still visible. Loader timeline runs ~5s, so 6s
+    // gives a safe margin if the loader dispatch is missed.
+    fallbackTimer = setTimeout(() => {
+      try { startHandler() } catch (e) { /* noop */ }
+    }, 6000)
 
     // notify other components that the entrance animation finished
     tl.call(() => window.dispatchEvent(new Event('landingTextAnimated')))
@@ -181,9 +252,10 @@ function Landing() {
     })
 
     return () => {
-      window.removeEventListener('startLanding', startHandler)
-      window.removeEventListener('loaderComplete', startHandler)
-      tl.kill()
+  window.removeEventListener('startLanding', startHandler)
+  window.removeEventListener('loaderComplete', startHandler)
+  if (fallbackTimer) clearTimeout(fallbackTimer)
+  tl.kill()
       // only restore original HTML if we performed the split ourselves
       if (didSplit && heading && originalHeadingHtmlRef.current) heading.innerHTML = originalHeadingHtmlRef.current
     }
@@ -213,7 +285,7 @@ function Landing() {
         </div>
       </nav>
 
-      <div className="relative z-40 flex h-full items-center font-['belly']">
+      <div className="relative z-40 flex h-full items-center font-['demo']">
         <div className="mx-auto px-4 sm:px-6 lg:px-10 lg:py-12">
           <div ref={heroBlockRef} className="relative inline-block">
             {/* Snow effect canvas (covers only the text block) */}

@@ -7,6 +7,7 @@ import CursorGlass from './assets/Components/CursorGlass'
 import { motion } from "motion/react"
 import Loader from './assets/Components/Loader'
 import Showcase from "./assets/Components/Showcase"
+import Contact from './assets/Components/Contact'
 
 function App() {
   useEffect(() => {
@@ -51,6 +52,7 @@ function App() {
   <About />
   <Projects />
   <Showcase />
+  <Contact />
   {loading && <Loader onComplete={onLoaderComplete} />}
     </>
   )

@@ -7,6 +7,12 @@ import ss1 from './ss1.png'
 import ss2 from './ss2.png'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Brain from './brain.png'
+import Port from './port.png'
+import Award from './awwards.png'
+import Port2 from './Port2.png'
+import Comm from './comm.png'
+import Comm2 from './comm2.png'
 
 // Showcase: pinned area that lasts ~200vh with four vertical slips (columns).
 // Each slip contains two tall screenshots stacked vertically. As you scroll while
@@ -189,8 +195,8 @@ export default function Showcase() {
   const imgStyle = {
     display: 'block',
     width: '100%',
-    height: '100vh',
-    objectFit: 'cover'
+    height: '150vh',
+    objectFit: 'cover',
   }
 
   const imgWrapStyle = {
@@ -203,45 +209,35 @@ export default function Showcase() {
   }
 
   return (
-    <section className='px-6 overflow-hidden' ref={outerRef} style={outerStyle} aria-hidden={false}>
+    <section className='px-6 overflow-hidden showcase-outer' data-showcase ref={outerRef} style={outerStyle} aria-hidden={false}>
       <div ref={stickyRef} style={stickyStyle}>
         <div style={colsWrap}>
           <div style={colOuter} ref={el => (wrapRefs.current[0] = el)}>
             <div ref={el => (colRefs.current[0] = el)} style={innerImgContainer}>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={Port2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={Award} alt='' style={imgStyle} /></div>
+              
+             
+              
             </div>
           </div>
 
           <div style={colOuter} ref={el => (wrapRefs.current[1] = el)}>
             <div ref={el => (colRefs.current[1] = el)} style={innerImgContainer}>
               <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={Brain} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={Port2} alt='' style={imgStyle} /></div>
+              
             </div>
           </div>
-
-          <div style={colOuter} ref={el => (wrapRefs.current[2] = el)}>
+             <div style={colOuter} ref={el => (wrapRefs.current[2] = el)}>
             <div ref={el => (colRefs.current[2] = el)} style={innerImgContainer}>
+              <div style={imgWrapStyle}><img src={Comm2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={Port2} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+             
             </div>
           </div>
         </div>
