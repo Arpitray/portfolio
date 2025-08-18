@@ -67,17 +67,32 @@ const Loader = ({ onComplete } = {}) => {
       }, 4)
 
       // slide loader up off screen after surround completes
-      tl.to(containerRef.current, {
-        yPercent: -120,
-        duration: 0.9,
-        ease: 'power4.inOut',
-        onComplete: () => {
-          // once loader has slid up, start the landing so landing appears after the overlay has left
+      // BUT: when navigating into the Playground route we don't want the
+      // sliding animation to run (it causes a small slide-up of the whole
+      // app). Detect the current pathname and skip the slide tween only
+      // for /playground — still dispatch the same completion events.
+      const isPlayground = (typeof window !== 'undefined' && window.location && window.location.pathname === '/playground')
+
+      if (isPlayground) {
+        // Immediately dispatch completion at the same timeline position
+        tl.call(() => {
           window.dispatchEvent(new Event('startLanding'))
           if (typeof onComplete === 'function') onComplete()
           else window.dispatchEvent(new Event('loaderComplete'))
-        }
-      }, 5.06)
+        }, null, 5.06)
+      } else {
+        tl.to(containerRef.current, {
+          yPercent: -120,
+          duration: 0.9,
+          ease: 'power4.inOut',
+          onComplete: () => {
+            // once loader has slid up, start the landing so landing appears after the overlay has left
+            window.dispatchEvent(new Event('startLanding'))
+            if (typeof onComplete === 'function') onComplete()
+            else window.dispatchEvent(new Event('loaderComplete'))
+          }
+        }, 5.06)
+      }
     }
 
     // start the timeline on next animation frame so paint can settle first

@@ -161,7 +161,7 @@ function Projects() {
   }
 
   return (
-    <section ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 min-h-screen flex flex-col overflow-visible'>
+    <section id="work" ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 min-h-screen flex flex-col overflow-visible'>
       {/* ScrollVelocity Title Section */}
       <div className='w-full pt-8'>
         <ScrollVelocity
@@ -183,6 +183,7 @@ function Projects() {
           return (
             <div
               key={project.id}
+              id={`project-${project.id}`}
               ref={el => projectsRef.current[index] = el}
               className={` last:mb-0 font-['belly'] tracking-widest ${
                 isEven ? 'md:flex-row' : 'md:flex-row-reverse'

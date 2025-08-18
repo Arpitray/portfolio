@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Landing from "./assets/Components/Landing"
 import About from "./assets/Components/About"
 import Lenis from "lenis"
@@ -7,6 +8,8 @@ import CursorGlass from './assets/Components/CursorGlass'
 import { motion } from "motion/react"
 import Loader from './assets/Components/Loader'
 import Showcase from "./assets/Components/Showcase"
+import PlayGround from './assets/Components/PlayGround'
+import PlaygroundPreview from "./assets/Components/PlaygroundPreview"
 
 function App() {
   useEffect(() => {
@@ -40,19 +43,34 @@ function App() {
 
   const onLoaderComplete = () => {
     // allow a tiny overlap for a smooth crossfade
-    setTimeout(() => setLoading(false), 80)
+    setTimeout(() => {
+      setLoading(false)
+      // mark globally that loader finished so other components can check instantly
+      try { window.__loaderComplete = true } catch (e) { /* noop */ }
+      // also dispatch the global event so listeners relying on it run
+      try { window.dispatchEvent(new Event('loaderComplete')) } catch (e) { /* noop */ }
+    }, 80)
   }
 
   return (
-    <>
+    <BrowserRouter>
       <CursorGlass />
-      {/* render the app underneath the loader so loader can animate over it */}
-  <Landing />
-  <About />
-  <Projects />
-  <Showcase />
-  {loading && <Loader onComplete={onLoaderComplete} />}
-    </>
+      <Routes>
+        <Route path="/playground" element={<PlayGround />} />
+        <Route path="/" element={
+          <>
+            <Landing />
+            <About />
+            
+            <Projects />
+            
+            <Showcase />
+            <PlaygroundPreview />
+          </>
+        } />
+      </Routes>
+      {loading && <Loader onComplete={onLoaderComplete} />}
+    </BrowserRouter>
   )
 }
 

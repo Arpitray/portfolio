@@ -5,6 +5,8 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
   const posRef = useRef({ x: -9999, y: -9999 })
   const targetRef = useRef({ x: -9999, y: -9999 })
   const rafRef = useRef(null)
+  const hiddenRef = useRef(false)
+  const lastPointerRef = useRef({ x: -9999, y: -9999 })
 
   useEffect(() => {
     const el = elRef.current
@@ -13,10 +15,66 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
     // Hide native cursor
     document.documentElement.style.cursor = 'none'
 
-    // pointer tracking
+    // Handlers for external show/hide requests (e.g., hovering navbar)
+    const onHide = () => {
+      try {
+        hiddenRef.current = true
+        el.style.opacity = '0'
+        document.documentElement.style.cursor = ''
+      } catch (e) {}
+    }
+
+    const onShow = () => {
+      try {
+        hiddenRef.current = false
+        // Immediately snap the glass to the last known pointer position so it
+        // appears exactly under the cursor when it reappears.
+        const last = lastPointerRef.current || { x: -9999, y: -9999 }
+        // keep hidden until fade completes to avoid chasing
+        hiddenRef.current = true
+        // place slightly below the cursor so it visually rises into place
+        const startY = last.y + Math.max(8, Math.round(size * 0.12))
+        targetRef.current.x = last.x
+        targetRef.current.y = last.y
+        posRef.current.x = last.x
+        posRef.current.y = last.y
+        document.documentElement.style.cursor = 'none'
+        // start with opacity 0 and positioned below pointer
+        el.style.transition = 'opacity 160ms ease, transform 160ms ease'
+        // set posRef to the start position so RAF loop doesn't pull from the old position
+        posRef.current.x = last.x
+        posRef.current.y = startY
+        el.style.transform = `translate3d(${last.x - size/2}px, ${startY - size/2}px, 0) scale(1)`
+        el.style.opacity = '0'
+
+        // force a reflow so the transition will run
+        // eslint-disable-next-line no-unused-expressions
+        el.offsetHeight
+
+        // animate into centered position and fade in
+        requestAnimationFrame(() => {
+          // targetRef already set to last pointer; RAF loop will smoothly interpolate
+          el.style.transform = `translate3d(${last.x - size/2}px, ${last.y - size/2}px, 0) scale(1)`
+          el.style.opacity = '1'
+        })
+
+        // after transition ends, allow pointermove to control glass again
+        setTimeout(() => {
+          hiddenRef.current = false
+        }, 180)
+      } catch (e) {}
+    }
+
+    window.addEventListener('cursorGlass:hide', onHide)
+    window.addEventListener('cursorGlass:show', onShow)
     const onMove = (e) => {
       const x = e.clientX
       const y = e.clientY
+      // always record last pointer position even when hidden
+      lastPointerRef.current.x = x
+      lastPointerRef.current.y = y
+      // if an external hide is active, don't update the visible target
+      if (hiddenRef.current) return
       targetRef.current.x = x
       targetRef.current.y = y
       // make sure the glass is visible when pointer moves
@@ -32,8 +90,107 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
     window.addEventListener('pointermove', onMove)
     window.addEventListener('pointerleave', onLeave)
 
+    // Also listen for pointer events inside same-origin iframes (e.g. the Playground embed).
+    // For same-origin iframes we can access contentWindow and map client coords to parent viewport.
+    const iframeListeners = []
+    try {
+      const iframes = Array.from(document.querySelectorAll('iframe'))
+      iframes.forEach((iframe) => {
+        try {
+          const cw = iframe.contentWindow
+          if (!cw) return
+
+          const onIframeMove = (e) => {
+            // e.clientX/Y are relative to the iframe viewport; convert to parent viewport
+            const rect = iframe.getBoundingClientRect()
+            const x = rect.left + e.clientX
+            const y = rect.top + e.clientY
+            lastPointerRef.current.x = x
+            lastPointerRef.current.y = y
+            // if an external hide is active or we are intentionally hidden, don't update visible target
+            if (hiddenRef.current) return
+            targetRef.current.x = x
+            targetRef.current.y = y
+            el.style.opacity = '1'
+          }
+
+          const onIframeLeave = () => {
+            el.style.opacity = '0'
+            targetRef.current.x = -9999
+            targetRef.current.y = -9999
+          }
+
+          // helper to check if element or its ancestors are interactive/clickable
+          const isClickable = (node) => {
+            try {
+              let el = node
+              while (el && el !== iframe.contentDocument) {
+                if (!el || !el.tagName) return false
+                const tag = el.tagName.toLowerCase()
+                if (['a', 'button', 'input', 'textarea', 'select', 'label'].includes(tag)) return true
+                const role = el.getAttribute && el.getAttribute('role')
+                if (role === 'button') return true
+                if (el.getAttribute && el.getAttribute('onclick')) return true
+                if (el.tabIndex >= 0) return true
+                if (el.contentEditable === 'true') return true
+                el = el.parentElement
+              }
+            } catch (e) {}
+            return false
+          }
+
+          const onIframePointerOver = (e) => {
+            try {
+              const clickable = isClickable(e.target)
+              if (clickable) {
+                // show and snap to pointer
+                onShow()
+                // ensure position updates immediately
+                const rect = iframe.getBoundingClientRect()
+                const x = rect.left + (e.clientX || 0)
+                const y = rect.top + (e.clientY || 0)
+                lastPointerRef.current.x = x
+                lastPointerRef.current.y = y
+                targetRef.current.x = x
+                targetRef.current.y = y
+              } else {
+                // hide when not over interactive element
+                onHide()
+              }
+            } catch (e) {}
+          }
+
+          const onIframePointerOut = (e) => {
+            // when pointer leaves an element, check if now over something clickable via relatedTarget
+            try {
+              const related = e.relatedTarget
+              const nowClickable = related && isClickable(related)
+              if (!nowClickable) onHide()
+            } catch (e) {}
+          }
+
+          // add listeners on the iframe's window so internal pointer moves are caught
+          cw.addEventListener('pointermove', onIframeMove)
+          cw.addEventListener('pointerleave', onIframeLeave)
+          cw.addEventListener('pointerover', onIframePointerOver)
+          cw.addEventListener('pointerout', onIframePointerOut)
+          cw.addEventListener('pointerdown', (e) => {
+            // show on pointerdown if clicking an interactive element
+            try { if (isClickable(e.target)) onShow() } catch (e) {}
+          })
+
+          // also handle when pointer leaves the iframe element itself
+          iframe.addEventListener('pointerleave', onIframeLeave)
+
+          iframeListeners.push({ iframe, cw, onIframeMove, onIframeLeave, onIframePointerOver, onIframePointerOut })
+        } catch (e) {
+          // cross-origin iframes will throw; ignore them
+        }
+      })
+    } catch (e) {}
+
     // Follow loop with easing (higher = snappier)
-    const ease = 0.42
+    const ease = 0.7
     const loop = () => {
       const p = posRef.current
       const t = targetRef.current
@@ -48,7 +205,17 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
     return () => {
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerleave', onLeave)
+  window.removeEventListener('cursorGlass:hide', onHide)
+  window.removeEventListener('cursorGlass:show', onShow)
       cancelAnimationFrame(rafRef.current)
+      // cleanup iframe listeners
+      try {
+        iframeListeners.forEach(({ iframe, cw, onIframeMove, onIframeLeave }) => {
+          try { if (cw && cw.removeEventListener) cw.removeEventListener('pointermove', onIframeMove) } catch (e) {}
+          try { if (cw && cw.removeEventListener) cw.removeEventListener('pointerleave', onIframeLeave) } catch (e) {}
+          try { iframe.removeEventListener('pointerleave', onIframeLeave) } catch (e) {}
+        })
+      } catch (e) {}
       document.documentElement.style.cursor = ''
     }
   }, [size])

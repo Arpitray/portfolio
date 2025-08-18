@@ -6,7 +6,7 @@ import Arpit2 from './Arpit2.png'
 import Arpit4 from './Arpit4.png'
 function About() {
   return (
-    <section className="relative min-h-screen w-full bg-[#E1E1E1] flex font-['trial'] sm:px-8">
+    <section id="about" className="relative min-h-screen w-full bg-[#E1E1E1] flex font-['trial'] sm:px-8">
       <div className=" w-full flex justify-center mt-32">
         <div className="flex w-full justify-center lg:justify-center saturate-120">
           <DecayCard width={550} height={600} image={Arpit3}>

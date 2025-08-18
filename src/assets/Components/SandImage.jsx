@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 
-const SandImage = ({ src, width = 800, height = 750, activationRect = null }) => {
+const SandImage = ({ src, width = 800, height = 750, activationRect = null, cursorGlassSize = 80, cursorRingPadding = 12, uRadiusProp = null, showOverlay = true }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -10,6 +10,20 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null }) =>
 
     let renderer, scene, camera, material, mesh, texture;
     const clock = new THREE.Clock();
+
+    const computeNormalizedRadius = (w, h) => {
+      // if explicit normalized radius provided, use it (clamped)
+      if (uRadiusProp != null) return Math.max(0.02, Math.min(0.95, uRadiusProp));
+      // compute outer radius of the CursorGlass (px) so impact reaches its circumference
+      const outer = Math.max(3, (cursorGlassSize) / 2);
+      const minDim = Math.min(w || width, h || height);
+      // base normalized radius
+      const base = outer / Math.max(1, minDim);
+      // scale up a bit so impact slightly exceeds the exact circumference
+      const scaled = base * 1.3;
+      // clamp to sensible range
+      return Math.max(0.02, Math.min(0.95, scaled));
+    };
 
     const uniforms = {
       uTime: { value: 0 },
@@ -20,8 +34,8 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null }) =>
   uSpeed: { value: 0.5 },
   // localized pulse amplitude (only applied near pointer)
   uPulse: { value: 0 },
-  // increased radius so hover impact covers a larger area
-  uRadius: { value: 0.13 },
+  // radius (normalized) computed from CursorGlass size or explicit override
+  uRadius: { value: computeNormalizedRadius(width, height) },
       uTexture: { value: null },
       uPointer: { value: new THREE.Vector2(0.5, 0.5) },
       uResolution: { value: new THREE.Vector2(width, height) },
@@ -45,6 +59,7 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null }) =>
   renderer.domElement.style.height = '100%';
   renderer.domElement.style.display = 'block';
   renderer.domElement.style.imageRendering = 'pixelated';
+  // canvas left un-positioned so it contributes to document flow (prevents container collapse)
 
     scene = new THREE.Scene();
     camera = new THREE.OrthographicCamera(-width / 2, width / 2, height / 2, -height / 2, 0.1, 10);
@@ -91,15 +106,17 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null }) =>
   push = pow(push, 3.0);
 
   // no ambient motion by default; displacement only from pointer-driven pulse
-    float ptrVert = -pd.y * 0.45 * uPulse * push;
-    float ptrLat = -pd.x * 0.45 * uPulse * push;
+  // increased multipliers so the pointer causes a more visible displacement
+  float ptrVert = -pd.y * 0.95 * uPulse * push;
+  float ptrLat = -pd.x * 0.95 * uPulse * push;
 
       // combine (only pointer-driven)
       float vertical = ptrVert;
       float lateral = ptrLat;
 
   // micro jitter for granular look (only when pulsing)
-    float jitter = (hash(uv * res + t) - 0.5) * 0.012 * uPulse * push;
+  // stronger grain jitter during pulse to emphasize the sand effect
+  float jitter = (hash(uv * res + t) - 0.5) * 0.025 * uPulse * push;
 
       vec2 finalUV = uv + vec2(lateral, vertical + jitter);
       // when pulsing at this spot, snap samples to a grain-sized grid to avoid smooth/fuzzy sampling
@@ -125,7 +142,8 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null }) =>
     scene.add(mesh);
 
   // pointer handling: sustained localized pulse while pointer is over the element
-  const SUSTAIN_PULSE = 3.8; // tuned down to avoid broad displacement
+  // increased default pulse so distortion is visibly noticeable; tuned to be subtle but clear
+  const SUSTAIN_PULSE = 6;
     const isInsideActivation = (nx, ny) => {
       if (!activationRect) return true;
       const { x = 0, y = 0, w = 1, h = 1 } = activationRect;
@@ -194,6 +212,10 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null }) =>
       const h = rect.height || height;
       renderer.setSize(w, h);
       uniforms.uResolution.value.set(w, h);
+      // recompute normalized radius on resize so pixel radius matches CursorGlass
+      try {
+        uniforms.uRadius.value = computeNormalizedRadius(w, h);
+      } catch (e) {}
       camera.left = -w / 2; camera.right = w / 2; camera.top = h / 2; camera.bottom = -h / 2; camera.updateProjectionMatrix();
     };
     window.addEventListener('resize', handleResize);
@@ -220,7 +242,33 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null }) =>
     };
   }, [src, width, height]);
 
-  return <div ref={containerRef} style={{ width: '100%', height: '100%' }} />;
+  // Add a subtle blurred image overlay on top of the WebGL canvas.
+  // The overlay uses pointer-events:none so it doesn't block hover interactions
+  // (the canvas underneath still receives pointer events for the shader effect).
+  return (
+    <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {showOverlay && (
+        <img
+          src={src}
+          alt="preview"
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            filter: 'blur(4px)',
+            opacity: 0.16,
+            pointerEvents: 'none',
+            zIndex: 2,
+            transition: 'opacity 200ms ease, filter 200ms ease'
+          }}
+        />
+      )}
+    </div>
+  );
 };
 
 export default SandImage;
