@@ -10,6 +10,7 @@ import Loader from './assets/Components/Loader'
 import Showcase from "./assets/Components/Showcase"
 import PlayGround from './assets/Components/PlayGround'
 import PlaygroundPreview from "./assets/Components/PlaygroundPreview"
+import Contact from "./assets/Components/Contact"
 
 function App() {
   useEffect(() => {
@@ -63,9 +64,10 @@ function App() {
             <About />
             
             <Projects />
-            
-            <Showcase />
             <PlaygroundPreview />
+            <Showcase />
+            <Contact />
+            
           </>
         } />
       </Routes>

@@ -203,7 +203,7 @@ export default function Showcase() {
   }
 
   return (
-    <section className='px-6 overflow-hidden' ref={outerRef} style={outerStyle} aria-hidden={false}>
+    <section className='showcase-outer px-6 overflow-hidden' ref={outerRef} style={outerStyle} aria-hidden={false}>
       <div ref={stickyRef} style={stickyStyle}>
         <div style={colsWrap}>
           <div style={colOuter} ref={el => (wrapRefs.current[0] = el)}>
