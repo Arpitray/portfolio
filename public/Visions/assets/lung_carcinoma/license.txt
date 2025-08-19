@@ -1,0 +1,11 @@
+Model Information:
+* title:	Lung Carcinoma
+* source:	https://sketchfab.com/3d-models/lung-carcinoma-8812aa5f0fc545379148024c370e51e5
+* author:	Brandon Holt (https://sketchfab.com/BrandonHolt)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Lung Carcinoma" (https://sketchfab.com/3d-models/lung-carcinoma-8812aa5f0fc545379148024c370e51e5) by Brandon Holt (https://sketchfab.com/BrandonHolt) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

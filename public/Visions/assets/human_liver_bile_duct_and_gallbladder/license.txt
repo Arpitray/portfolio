@@ -1,0 +1,11 @@
+Model Information:
+* title:	Human Liver, Bile Duct And Gallbladder
+* source:	https://sketchfab.com/3d-models/human-liver-bile-duct-and-gallbladder-afc3093974804c8ea3cbb949e0b8ee77
+* author:	Naveera Zafar (https://sketchfab.com/naveera1zafar)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Human Liver, Bile Duct And Gallbladder" (https://sketchfab.com/3d-models/human-liver-bile-duct-and-gallbladder-afc3093974804c8ea3cbb949e0b8ee77) by Naveera Zafar (https://sketchfab.com/naveera1zafar) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

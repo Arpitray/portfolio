@@ -23,7 +23,7 @@ function Projects() {
       title: "LENSFLOW",
       description: "A modern React-based web experience featuring smooth scroll interactions and fluid camera animations. Built with GSAP for cinematic transitions, Lenis for buttery scrolling, Tailwind CSS for a clean responsive UI, and Vite for lightning-fast builds. Designed for immersive storytelling and interactive UI demos.",
       tags: ["#react #gsap #lenis #smooth-scrolling #camera-animations #motion-design #scroll-animation #ui-interactions #responsive-design"],
-      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755251604/camera_mu21or.mp4", // Replace with your actual video
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597901/camera_lmj7cm", // Replace with your actual video
       link: "#",
       githubLink: "https://github.com/Arpitray/camera",
       liveDemoLink: "https://camera-smoky.vercel.app/",
@@ -31,101 +31,110 @@ function Projects() {
     },
     {
       id: 2,
-      title: "ECO ARCHITECTURE",
-      description: "A sustainable architecture platform showcasing green building designs and eco-friendly construction methods. Features interactive 3D models and virtual tours of sustainable projects.",
-      tags: ["#3d modeling", "#sustainability", "#architecture", "#interactive design", "#web development"],
-      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1753776816/vid10_zpxivm.mp4",
+      title: "SUMMORE .",
+      description: "SUMMORE. is a commercial-grade e-commerce application built with React and Vite, designed to showcase my industrial development potential. It features smooth animations, responsive layouts, and an optimized shopping flow for browsing, cart management, and checkout. With Vite ensuring fast performance and React powering modular UI components, this project demonstrates my ability to build scalable, engaging, and production-ready web applications.",
+      tags: ["#CommerceApp", "#FrontendEngineering", "#UIUX", "#ModernWebApp", "#web development","#ResponsiveDesign"],
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597902/2_ouwpqf",
       link: "#",
-      githubLink: "https://github.com/example/eco-architecture",
-      liveDemoLink: "https://example.com/eco-architecture-demo",
+      githubLink: "https://github.com/Arpitray/commerce",
+      liveDemoLink: "https://commerce-tau-lac-54.vercel.app/",
       background: "bg-green-200"
     },
     {
       id: 3,
-      title: "URBAN PLANNING HUB",
-      description: "An interactive platform for urban planners and architects to collaborate on city development projects. Includes real-time collaboration tools and 3D city modeling.",
-      tags: ["#urban planning", "#collaboration", "#3d visualization", "#web app", "#real-time"],
-      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1753776820/vid11_m3t9ob.mp4",
+      title: "BREW HAVEN",
+      description: "Brew Haven Cafe is a modern web application built to deliver an immersive coffee shop experience. Developed with a contemporary JavaScript stack, it combines smooth interactive animations, responsive layouts, and a clean shopping flow for browsing menu items, adding to cart, and checkout. The polished design and engaging transitions showcase my ability to create experience-driven, production-ready applications that merge functionality with aesthetic appeal.",
+      tags: ["#CafeShop", "#Animations", "#UIUX", "#ModernFrontend", "#WebApp", "#CoffeeShop"],
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597904/3_vyax6d",
       link: "#",
-      githubLink: "https://github.com/example/urban-planning-hub",
-      liveDemoLink: "https://example.com/urban-planning-hub-demo",
+      githubLink: "https://github.com/Arpitray/coffee",
+      liveDemoLink: "https://coffee-lime-chi.vercel.app/",
       background: "bg-yellow-200"
     },
     {
       id: 4,
-      title: "DIGITAL MUSEUM",
-      description: "A virtual museum experience showcasing digital art and interactive installations. Features immersive VR experiences and AI-powered art recommendations.",
-      tags: ["#digital art", "#vr experience", "#ai integration", "#immersive design", "#museum"],
-      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1753776816/vid10_zpxivm.mp4",
+      title: "PORTFOLIO",
+      description: "This Portfolio is a sleek, minimalist web portfolio crafted with clean design principles and subtle yet engaging hover animations. It showcases a refined aesthetic—using elegant typography, and intuitive navigation to highlight your work without distraction. Built with modern frontend technologies, the refined interactivity on hover adds just the right touch of dynamism, reflecting your eye for detail and commitment to polished, professional design.",
+      description2:"This project was inspired by Whatyoriginal design that I referenced closely, focusing on recreating its modern layout and interactive elements to demonstrate my ability to deliver clean, aesthetic, and professional web experiences.",
+      tags: ["#PortfolioWebsite", "#MinimalDesign", "#UIUX", "#immersive design", "#museum"],
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755598448/4_kc08vz",
       link: "#",
-      githubLink: "https://github.com/example/digital-museum",
-      liveDemoLink: "https://example.com/digital-museum-demo",
+      githubLink: "https://github.com/Arpitray/nextGenPortfolio",
+      liveDemoLink: "https://next-gen-portfolio-six.vercel.app/",
       background: "bg-indigo-200"
     },
     {
       id: 5,
-      title: "PROJECT FIVE",
-      description: "Description for project five.",
-      tags: ["#tag1", "#tag2", "#tag3"],
-      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1753776816/vid10_zpxivm.mp4",
+      title: "Signi",
+      description: "Signi is a modern web presentation for a healthcare brand, built with immersive scroll-triggered animations that enhance storytelling. The design is clean and purposeful, with smooth content reveals and dynamic motion across sections. Each interaction responds to scrolling, creating a fluid experience that highlights my ability to craft interactive, production-ready animations using GSAP’s ScrollTrigger.",
+      description2:" This project was inspired by the original Significo website, where I focused on recreating its animations and interactions to demonstrate precision, attention to detail, and the ability to deliver polished, modern web experiences.",
+      tags: ["#GSAPAnimations", "#MotionDesign", "#InteractiveUI","#InspiredDesign"],
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755603134/1_bsm5vr",
       link: "#",
-      githubLink: "https://github.com/example/project-five",
-      liveDemoLink: "https://example.com/project-five-demo",
+      githubLink: "https://github.com/Arpitray/signi",
+      liveDemoLink: "https://signi-phi.vercel.app/",
       background: "bg-pink-200"
     },
     {
       id: 6,
-      title: "PROJECT SIX",
-      description: "Description for project six.",
-      tags: ["#tagA", "#tagB", "#tagC"],
-      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1753776820/vid11_m3t9ob.mp4",
+      title: "BUILDER",
+      description: "Professional Portfolio Builder is a web application aimed at helping users create polished portfolios by customizing pre-designed templates. Built with a modern frontend stack, it is designed to offer real-time previews, dynamic template selection, and smooth modification controls to adapt portfolios to individual needs.",
+      description2:"This project is currently in progress and under active development, inspired by leading portfolio builder platforms. The goal is to deliver a production-ready, user-centric tool that balances performance, flexibility, and creative freedom, while also demonstrating my ability to engineer scalable web solutions.",
+      tags: ["#PortfolioBuilder", "#WebApp", "#InProgress"," #ScalableWebSolutions"],
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597904/5_jr4bhy",
       link: "#",
-      githubLink: "https://github.com/example/project-six",
-      liveDemoLink: "https://example.com/project-six-demo",
+      githubLink: "https://github.com/Arpitray/builder",
+      liveDemoLink: "https://builder-pp9v.vercel.app/",
       background: "bg-purple-200"
     }
   ]
 
   useEffect(() => {
-    const container = containerRef.current
-    if (!container) return
+    const container = containerRef.current;
+    if (!container) return;
 
-    // Create elastic animations for each project
-    projects.forEach((project, index) => {
-      const projectElement = projectsRef.current[index]
-      if (!projectElement) return
-
-      const isEven = index % 2 === 0
-
-      // Set initial state
-      gsap.set(projectElement, {
-        y: 100,
-        opacity: 1,
-        scale: 0.95,
-        rotationX: isEven ? 15 : -15,
-      })
-
-      // Create elastic animation
-      gsap.to(projectElement, {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        rotationX: 0,
-        duration: 1.2,
-        ease: "elastic.out(1, 0.5)",
-        scrollTrigger: {
-          trigger: projectElement,
-          start: "top 80%",
-          end: "bottom 50%",
-          toggleActions: "play none none reverse"
-        }
-      })
-    })
+    // Optimize animations by batching them
+    gsap.to(projectsRef.current, {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      stagger: 0.2, // Stagger animations for better performance
+      duration: 0.8,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: container,
+        start: "top 80%",
+        end: "bottom 50%",
+        scrub: true, // Smooth scrolling
+      },
+    });
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
-    }
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   }, [])
+
+  // Lazy load videos
+  const handleVideoVisibility = (index) => {
+    const videoEl = videoRefs.current[index];
+    if (videoEl) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            videoEl.play();
+          } else {
+            videoEl.pause();
+          }
+        },
+        { threshold: 0.5 } // Play video when 50% visible
+      );
+      observer.observe(videoEl);
+    }
+  };
+
+  useEffect(() => {
+    videoRefs.current.forEach((_, index) => handleVideoVisibility(index));
+  }, []);
 
   // Animate frame when the video ends: scale down then scale back up, then replay
   const handleVideoEnd = (index) => {
@@ -165,7 +174,7 @@ function Projects() {
       {/* ScrollVelocity Title Section */}
       <div className='w-full pt-8'>
         <ScrollVelocity
-          texts={["SELECTED PROJECTS", "SELECTED PROJECTS", "SELECTED PROJECTS", "SELECTED PROJECTS", "SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS", "SELECTED PROJECTS", "SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS","SELECTED PROJECTS"]}
+          texts={["PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS"]}
           velocity={80}
           numCopies={8}
           className="uppercase px-6 md:px-10 text-[190px] font-medium tracking-[0.08em] font-['demo']"
@@ -196,6 +205,9 @@ function Projects() {
                 </h2>
                 <p className='text-sm md:text-base lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed max-w-prose text-start'>
                   {project.description}
+                </p>
+                <p className='text-sm md:text-base lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed max-w-prose text-start'>
+                  {project.description2}
                 </p>
                 <div className={`flex flex-wrap font-['pp'] gap-3 font-semibold items-center ${isEven ? 'justify-start' : 'justify-start'}`}>
                   {project.tags.map((tag, tagIndex) => (

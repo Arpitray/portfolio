@@ -1,0 +1,323 @@
+{
+  "accessors": [
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 42,
+      "max": [
+        58.25040054321289,
+        289.1260070800781,
+        206.3560028076172
+      ],
+      "min": [
+        -71.30010223388672,
+        143.44700622558594,
+        122.36199951171875
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 56,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 504,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        141.30299377441406,
+        339.25299072265625,
+        252.81199645996094
+      ],
+      "min": [
+        -127.04900360107422,
+        32.76620101928711,
+        51.72819900512695
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 786888,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        0.999993085861206,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -0.9999810457229614,
+        -0.9999926686286926,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 224,
+      "componentType": 5125,
+      "count": 331092,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 1573272,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        141.90699768066406,
+        336.13800048828125,
+        252.56500244140625
+      ],
+      "min": [
+        -127.23799896240234,
+        108.77400207519531,
+        52.36940002441406
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 2359656,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        0.9999862909317017,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -0.9999929070472717,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 1324592,
+      "componentType": 5125,
+      "count": 298203,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 3146040,
+      "componentType": 5126,
+      "count": 23611,
+      "max": [
+        141.66099548339844,
+        339.0570068359375,
+        252.85400390625
+      ],
+      "min": [
+        -126.84300231933594,
+        185.48500061035156,
+        51.90700149536133
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 3429372,
+      "componentType": 5126,
+      "count": 23611,
+      "max": [
+        0.9999772906303406,
+        1.0,
+        1.0
+      ],
+      "min": [
+        -0.9999810457229614,
+        -1.0,
+        -1.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 2517404,
+      "componentType": 5125,
+      "count": 72681,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Brandon Holt (https://sketchfab.com/BrandonHolt)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/lung-carcinoma-8812aa5f0fc545379148024c370e51e5",
+      "title": "Lung Carcinoma"
+    },
+    "generator": "Sketchfab-12.67.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 2808128,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 3712704,
+      "byteOffset": 2808128,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 6520832,
+      "uri": "scene.bin"
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_clearcoat"
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_clearcoat": {
+          "clearcoatFactor": 0.15979455094881104,
+          "clearcoatRoughnessFactor": 0.0
+        }
+      },
+      "name": "mtl1",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.828292110066717,
+          0.3874079363416393,
+          0.3874079363416393,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.4328338471079656
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Object_0",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0
+          },
+          "indices": 1,
+          "material": 0,
+          "mode": 1
+        }
+      ]
+    },
+    {
+      "name": "Object_1",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 3,
+            "POSITION": 2
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Object_2",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 6,
+            "POSITION": 5
+          },
+          "indices": 7,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Object_3",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 9,
+            "POSITION": 8
+          },
+          "indices": 10,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        1.6009839880969478e-16,
+        -1.6152297587807845e-16,
+        0.0,
+        1.6081226229577292e-16,
+        -0.9999901652336121,
+        0.004429339896887319,
+        0.0,
+        -1.6081226229577292e-16,
+        -0.004429339896887319,
+        -0.9999901652336121,
+        0.0,
+        -5.3290705182007514e-15,
+        338.9734191894531,
+        -34.54388809204094,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "name": "Model_3.obj.cleaner.materialmerger.gles"
+    },
+    {
+      "mesh": 0,
+      "name": "Object_2"
+    },
+    {
+      "mesh": 1,
+      "name": "Object_3"
+    },
+    {
+      "mesh": 2,
+      "name": "Object_4"
+    },
+    {
+      "mesh": 3,
+      "name": "Object_5"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

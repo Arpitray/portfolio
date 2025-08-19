@@ -294,7 +294,7 @@ function Landing() {
     {/* Navbar rendered into a portal to guarantee it sits above other stacking contexts */}
   {navVisible && typeof document !== 'undefined' && createPortal(
         <nav id="portal-nav"
-      className="fixed top-[3%] left-0 w-full"
+      className="fixed top-[3%] left-0 w-full "
   style={{ position: 'fixed', top: '3%', left: 0, opacity: 0, willChange: 'opacity, transform', zIndex: 2147483647 }}
           onPointerEnter={() => window.dispatchEvent(new Event('cursorGlass:hide'))}
           onPointerLeave={() => window.dispatchEvent(new Event('cursorGlass:show'))}
@@ -307,7 +307,8 @@ function Landing() {
                   onClick={(e) => {
                     try {
                       if (location && (location.pathname === '/' || location.pathname === '')) {
-                        window.location.reload()
+                        // Hard refresh to restart the entire site experience
+                        window.location.href = window.location.href
                         return
                       }
                     } catch (err) {}
@@ -347,31 +348,8 @@ function Landing() {
                       )
                     }
 
-                    // HOME behavior (existing)
-                    if (label === 'HOME') {
-                      return (
-                        <a
-                          key={label}
-                          href={href}
-                          onClick={(e) => {
-                            e.preventDefault()
-                            try {
-                              if (location && (location.pathname === '/' || location.pathname === '')) {
-                                window.location.reload()
-                                return
-                              }
-                            } catch (e) {}
-                            navigate('/')
-                          }}
-                          className="hover:opacity-70 transition-opacity"
-                        >
-                          {label}
-                        </a>
-                      )
-                    }
-
-                    // ABOUT and WORK: smooth scroll when on landing, otherwise navigate to anchor
-                    if (label === 'ABOUT' || label === 'WORK') {
+                    // HOME, ABOUT, WORK, and CONTACT: smooth scroll when on landing, otherwise navigate to anchor
+                    if (label === 'HOME' || label === 'ABOUT' || label === 'WORK' || label === 'CONTACT') {
                       return (
                         <a
                           key={label}
@@ -380,9 +358,17 @@ function Landing() {
                             if (location && (location.pathname === '/' || location.pathname === '')) {
                               e.preventDefault()
                               try {
-                                const el = document.getElementById(href.replace('#', ''))
-                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                                else window.location.hash = href
+                                if (label === 'CONTACT') {
+                                  // Contact has fixed positioning, so scroll to bottom of page
+                                  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                                } else {
+                                  const el = document.getElementById(href.replace('#', ''))
+                                  if (el) {
+                                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                  } else {
+                                    window.location.hash = href;
+                                  }
+                                }
                               } catch (err) {
                                 window.location.hash = href
                               }
@@ -391,7 +377,7 @@ function Landing() {
                               navigate('/' + href)
                             }
                           }}
-                          className="hover:opacity-70 transition-opacity"
+                          className="hover:opacity-70 transition-opacity "
                         >
                           {label}
                         </a>
@@ -409,7 +395,7 @@ function Landing() {
         document.body
       )}
 
-  <section ref={sectionRef} className="relative h-screen w-full bg-grid z-10">
+  <section id="home" ref={sectionRef} className="relative h-screen w-full bg-grid z-10">
   <div className="relative z-40 flex h-full items-center font-['belly']">
         <div className="mx-auto px-4 sm:px-6 lg:px-10 lg:py-12">
           <div ref={heroBlockRef} className="relative inline-block">

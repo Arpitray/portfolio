@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visceral Visions
+    </title>
+    <link rel="stylesheet" href="style.css">
+<!-- Latest Model Viewer as of 2025-06 -->
+<script type="module" src="https://unpkg.com/@google/model-viewer@3/dist/model-viewer.min.js"></script>
+</script>
+
+</head>
+<body> 
+    <div class="footer-follower" id="footerFollower"></div>
+  <canvas id="sandCanvas"></canvas> 
+  <div class="syn_wrapper">
+  <div class="syn_left">
+    <header>Visceral visions</header>
+    <h1 class="hover-bounce"><span class="head2">V</span><span class="head2">I</span><span class="head2">S</span><span class="head2">C</span><span class="head2">E</span><span class="head2">R</span><span class="head2">A</span><span class="head2">L</span>     <span style="margin-left:15px;" class="head2">  V</span><span class="head2">I</span><span class="head2">S</span><span class="head2">I</span><span class="head2">O</span><span class="head2">N</span><span class="head2">S</span></h1>
+    <p style="color: #181f1c;">Take a closer look inside the human body — an interactive 3D experience featuring highly detailed models of the brain, heart, lungs, and more. Explore, learn, and understand anatomy like never before!</p>
+  </div>
+    <div class="syn_right">
+     <!-- <h3>Visit the Anatomies</h3> -->
+    <div class="syn_card syn_card1">
+      <div class="image">
+        <img src="assets/brain.png" alt="">
+      </div>
+      <p><b style="color: #d29c59;">Brain:</b> The body's command center, controlling thoughts, emotions, and movement, made up of billions of interconnected neurons.</p>
+      <div class="card-Btn">
+         <button id="goToBrain">Explore!</button>
+      </div>
+    </div>
+    <div class="syn_card syn_card2  syn_hoverOnly">
+      <div class="image">
+        <img src="assets/HeartImage.png" alt="">
+      </div>
+      <p><b style="color: #3F94B3;">Heart:</b> A powerful muscular organ that pumps blood throughout the body, delivering oxygen and nutrients to every cell .</p>
+      <div class="card-Btn">
+         <button id="goToHeart">Explore!</button>
+      </div>
+    </div>
+    <div class="syn_card syn_card3  syn_hoverOnly">
+  <div class="image">
+        <img src="assets/lung.png" alt="">
+      </div>
+      <p><b class="l">Lungs :</b> vital organs that enable breathing, allowing oxygen to enter the bloodstream and removing carbon dioxide from the body, thereby supporting every cell and keeping us alive.</p>
+      <div class="card-Btn">
+         <button id="goToLungs">Explore!</button>
+      </div>
+    </div>
+    <div class="syn_card syn_card4  syn_hoverOnly">
+      <div class="image">
+        <img src="assets/kidney.png" alt="">
+      </div>
+      <p><b style="color: #AF4D2A;">Kidneys :</b> are two bean-shaped organs that filter blood, remove waste and extra water as urine, and help regulate blood pressure and body balance.</p>
+      <div class="card-Btn">
+         <button id="goToKidney">Explore!</button>
+      </div>
+    </div>
+     <div class="syn_card syn_card5  syn_hoverOnly">
+      <div class="image">
+        <img src="assets/liver.png" alt="">
+      </div>
+      <p><b style="color: #DA6B5A;">Liver :</b> The liver is a vital organ responsible for detoxifying the blood, producing bile for digestion, storing energy, and regulating various metabolic functions in the body.</p>
+      <div class="card-Btn">
+         <button id="goToLiver">Explore!</button>
+      </div>
+    </div>
+         <div class="syn_card syn_card6  syn_hoverOnly">
+      <div class="image">
+        <img src="assets/pet.png" alt="">
+      </div>
+      <p><b style="color: #EE450E;">Stomach :</b> The stomach is a muscular, hollow organ located in the upper abdomen. It stores food temporarily and breaks it down both mechanically through muscular contractions and chemically using acids and enzymes.</p>
+      <div class="card-Btn">
+         <button id="goTostomach">Explore!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Templates for images (hidden) -->
+  <div id="brainSection" class="nav">
+    <span class="head">
+      Brain section
+    </span>
+  </div>
+<div class="layout">
+  <div class="box-contain">
+     <div  class="box ">
+    <div class ="text" >
+      <h2 style="color: #8d0801;">Brain</h2>
+      <div class="innerText">
+        The brain is the control center of the human body, located within the skull. It is a soft, complex organ made up of billions of nerve cells (neurons) and supporting tissue. The brain controls vital functions like breathing, heartbeat, and blood pressure, as well as higher functions such as thinking, learning, emotions, memory, and movement.
+      </div>
+    </div>
+  </div>
+    <div class="liner1">
+    <button class="lobe-button" data-lobe="frontal">Frontal Lobe</button>
+  <button class="lobe-button" data-lobe="parietal">Parietal Lobe</button>
+  <button class="lobe-button" data-lobe="temporal">Temporal Lobe</button>
+  </div>
+  <div class="liner2">
+    <button class="lobe-button" data-lobe="occipital">Occipital Lobe</button>
+  <button class="lobe-button" data-lobe=cerebellum>Cerebellum</button>
+  <button class="lobe-button" data-lobe="stem">Brain stem</button>
+  </div>
+  <div class="resetButton liner3">
+    <button id="resetCameraBtn" class="last">Reset Camera</button>
+  </div>
+  
+  </div>
+  
+<model-viewer
+  id="brainModel"
+  src="assets/brain_project/new brain.glb"
+  camera-controls
+  disable-zoom
+  disable-pan
+>
+  <!-- Hotspots for each part -->
+  <button class="hotspot" slot="hotspot-frontal"
+          data-position='-0.2 0.8 0.7 ' data-normal="0 0 0 "
+          onclick="highlightPart(this, 'frontal')">
+    <div class="label">Frontal Lobe</div>
+  </button>
+
+  <button class="hotspot" slot="hotspot-parietal"
+          data-position="-0.4 0.95 -0.1" data-normal="0 0 0"
+          onclick="highlightPart(this, 'parietal')">
+    <div class="label">Parietal Lobe</div>
+  </button>
+
+  <button class="hotspot" slot="hotspot-temporal"
+          data-position="-0.5 0.5 -0.07" data-normal="0 0 0"
+          onclick="highlightPart(this, 'temporal')">
+    <div class="label">Temporal Lobe</div>
+  </button>
+
+  <button class="hotspot" slot="hotspot-occipital"
+          data-position="-0.1 0.7 -0.4 " data-normal="0 0 0"
+          onclick="highlightPart(this, 'occipital')">
+    <div class="label">Occipital Lobe</div>
+  </button>
+
+  <button class="hotspot" slot="hotspot-cerebellum"
+          data-position="0.1 0.37 -0.4" data-normal="0 0 0"
+          onclick="highlightPart(this, 'cerebellum')">
+    <div class="label">Cerebellum</div>
+  </button>
+    <button class="hotspot" slot="hotspot-stem"
+          data-position=" -0.0.5 0.1 3" data-normal="0 0 0"
+          onclick="highlightPart(this, 'stem')">
+    <div class="label">Brain stem</div>
+    
+  </button>
+  
+</model-viewer>
+  </div>
+<div class="heading">
+  <h1>Other importants parts</h1>
+</div>
+<div class="card-grid">
+  <div class="card">
+    <img src="assets/thalamus-damage.avif" alt="">
+    <div><b>Thalamus</b> is a relay station for sensory and motor signals to the cerebrum.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/hypothalamus-damage-1.avif" alt="">
+    <div><b>Hypothalamus</b> Regulates body temperature, thirst, hunger, and hormonal activity.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/amygdala.jpg" alt="">
+    <div><b>Amygdala</b> is Involved in emotion processing, especially fear and anger.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/hippocampus.jpg" alt="" >
+    <div><b>Hippocampus</b> is Critical for memory formation and learning.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/basal-ganglia.webp" alt="" style ="height:250">
+    <div><b>Basal Ganglia</b> is a group of deep brain structures that help control movement, posture, and habits.
+</div>
+  </div>
+   <div class="card big">
+    <img src="assets/cerebrum.webp" alt="" style ="height:250">
+    <div><b>Cerebrum</b> is Divided into lobes (frontal, parietal, temporal, occipital).
+      Responsible for thinking, learning, memory, emotions, and voluntary movements.
+</div>
+  </div>
+</div>
+<div id="heartSection" class="nav">
+    <span class="head">
+      Heart section
+    </span>
+  </div>
+<div class="layout">
+<model-viewer  id="heart-model"
+  src="assets/heart-_whole/untitled.glb"
+  camera-controls
+  disable-zoom
+  disable-pan
+>
+<!-- Main Chambers -->
+<button class="heart-hotspot" slot="hotspot-right-atrium" data-part="right-atrium"
+        data-position="-3 0.4 -0.4 " data-normal="0 1 0" onClick="highlightHeartPart(this, 'right-atrium')">
+    <div class="label">Right Atrium</div>
+</button>
+<button class="heart-hotspot" slot="hotspot-left-atrium" data-part="left-atrium"
+        data-position="-0.5 0.8 -1" data-normal="0 1 0" onClick="highlightHeartPart(this, 'left-atrium')">
+    <div class="label">Left Atrium</div>
+</button>
+<button class="heart-hotspot" slot="hotspot-right-ventricle" data-part="right-ventricle"
+        data-position="-1.3 -0.8 -0.7" data-normal="0 0 1" onClick="highlightHeartPart(this, 'right-ventricle')">
+    <div class="label">Right Ventricle</div>
+</button>
+<button class="heart-hotspot" slot="hotspot-left-ventricle" data-part="left-ventricle"
+        data-position="0.5 -1.1 -0.2" data-normal="0 0 1" onClick="highlightHeartPart(this, 'left-ventricle')">
+    <div class="label">Left Ventricle</div>
+</button>
+
+<!-- Valves -->
+<button class="heart-hotspot" slot="hotspot-Left anterior descending coronary artery" data-part="Left anterior descending coronary artery"
+        data-position="0.2 -1 -0.27" data-normal="0 0 1" onClick="highlightHeartPart(this, 'tricuspid-valve')">
+    <div class="label">Left anterior descending coronary artery</div>
+</button>
+<button class="heart-hotspot" slot="hotspot-pulmonary-trunk" data-part="pulmonary-trunk"
+        data-position="-0.4 1.0 -0.25" data-normal="0 0 1" onClick="highlightHeartPart(this, 'pulmonary-valve')">
+    <div class="label">Pulmonary trunk</div>
+</button>
+
+<!-- Major Vessels -->
+<button class="heart-hotspot" slot="hotspot-aorta" data-part="aorta"
+        data-position="-1.2 2.3 -0.1" data-normal="0 0 1" onClick="highlightHeartPart(this, 'aorta')">
+    <div class="label">Aorta</div>
+</button>
+<button class="heart-hotspot" slot="hotspot-pulmonary-artery" data-part="pulmonary-artery"
+        data-position="-1.5 1.3 -1.2" data-normal="0 0 0" onClick="highlightHeartPart(this, 'pulmonary-artery')">
+    <div class="label"> Right Pulmonary Artery</div>
+</button>
+<button class="heart-hotspot" slot="hotspot-Inferior Vena Cava" data-part="Inferior Vena Cava"
+        data-position="-2 -1.4 -1.4" data-normal="0 0 0" onClick="highlightHeartPart(this, 'Inferior Vena Cava')">
+    <div class="label"> Inferior Vena Cava</div>
+</button>
+<button class="heart-hotspot" slot="hotspot-superior Vena Cava" data-part="superior Vena Cava"
+        data-position="-2 1.9 -0.6" data-normal="0 0 0" onClick="highlightHeartPart(this, 'superior Vena Cava')">
+    <div class="label"> Superior Vena Cava</div>
+</button>
+
+</model-viewer>
+  <div class="box-contain">
+      <div class="box ">
+    <div class ="text" >
+      <h2 style="color: #d8572a;">Heart</h2>
+      <div class="innerText2">
+       The heart is a muscular, cone‑shaped organ located slightly to the left of the chest. It acts as the pump for the circulatory system, continuously circulating blood throughout the body to supply oxygen and nutrients to organs and remove waste.
+      </div>
+    </div>
+  </div>
+    <div id="heart-buttons">
+        <div class="liner1">
+      <button data-part="right-atrium">Right Atrium</button>
+  <button data-part="left-atrium">Left Atrium</button>
+  <button data-part="right-ventricle">Right Ventricle</button>
+    </div>
+    <div class="liner2">
+  <button data-part="Left anterior descending coronary artery">Left anterior descending coronary artery</button>
+  <button data-part="pulmonary-trunk">Pulmonary trunk</button>
+</div>
+<div class="liner3">
+  <button data-part="left-ventricle">Left Ventricle</button>
+  <button data-part="aorta">Aorta</button>
+  <button data-part="pulmonary-artery">Right Pulmonary Artery</button>
+</div>
+<div class="liner4">
+  <button data-part="Inferior Vena Cava">Inferior Vena Cava</button>
+  <button data-part="superior Vena Cava">Superior Vena Cava</button>
+    <button id="reset-camera">Reset Camera</button>
+</div>
+  </div>
+  </div>
+  </div>
+
+<div class="heading">
+  <h1>Other importants parts</h1>
+</div>
+<div class="card-grid">
+  <div class="card">
+    <img src="assets/RIGHT CORONARY.jpg" alt="">
+    <div><b>Right Coronary Artery</b> Supplies blood to the right side of the heart, including the right atrium and right ventricle.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/DeWatermark.ai_1750694669919.jpg" alt="">
+    <div><b>Left Main Coronary Artery</b> is the source of the LAD and Circumflex, supplies blood to much of the left side of the heart.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/letf circumflex artery.webp" alt="">
+    <div><b>Amygdala</b> is Involved in emotion processing, especially fear and anger.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/apex2.jpg" alt="" >
+    <div><b>Apex</b> is The tip of the heart, important as a landmark for clinical examination and heartbeat palpation.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/ligamentum.avif" alt="" style ="height:250">
+    <div><b>Ligamentum Arteriosum</b> is a Small ligament between the aorta and pulmonary artery, a remnant of the fetal ductus arteriosus.
+</div>
+  </div>
+   <div class="card big">
+    <img src="assets/left auricle.avif" alt="" style ="height:250">
+    <div><b>Left Auricle</b> is a Small, ear-like projections of the atria that help expand their volume.
+</div>
+  </div>
+</div>
+  <div id="lungsSection" class="nav">
+    <span class="head">
+      Lungs section
+    </span>
+  </div>
+<div class="layout">
+  <div class="box-contain">
+      <div  class="box ">
+    <div class ="text" >
+      <h2 style="color: #e5383b;">Lungs</h2>
+      <div class="innerText3">
+       The lungs are a pair of spongy, cone-shaped organs located in the chest, protected by the rib cage. They are the primary organs of the respiratory system, allowing the body to breathe by exchanging gases — bringing in oxygen and expelling carbon dioxide.
+      </div>
+    </div>
+  </div>
+  <div id="lung-buttons">
+  <div class="liner1 lungs-Btn">
+      <button class="lungType" data-part="trachea">Trachea</button>
+      <button  class="lungType"  data-part="bronchi">Bronchi</button>
+      <button class="lungType"  data-part="right-lung">Right Lung</button>
+  </div>
+  <div class="liner2 lungs-Btn">
+      <button class="lungType"  data-part="left-lung">Left Lung</button>
+      <button class="lungType"  data-part="apex">Apex</button>
+      <button class="lungType"  data-part="base">Base</button>
+  </div>
+  <div class="liner3 lungs-Btn">
+        <button class="lungType"  data-part="superior-lobe">Superior Lobe</button>
+        <button class="lungType"  data-part="middle-lobe">Middle Lobe</button>
+        <button class="lungType" data-part="inferior-lobe">Inferior-Lobe</button>
+  </div>
+  <div class="liner4 lungs-Btn">
+      <button class="lungType"  data-part="notch">Cardiac Notch</button>
+      <button id="reset-lung-camera">Reset Camera</button>
+  </div>
+</div>
+  </div>
+
+<model-viewer
+  id="lungsModel"
+  src="assets/lungs/lund.glb"
+  camera-controls
+  disable-zoom
+  disable-pan
+>
+<!-- Trachea -->
+<!-- Trachea -->
+<button slot="hotspot-trachea" class="lungs-hotspot"
+        data-position="-0.01 0.1 -0.01" data-normal="0 0 0"
+        data-part="trachea"
+        onClick="highlightLungPart(this, 'trachea')">
+  <div class="lungs-label">Trachea</div>
+</button>
+
+<!-- Bronchi -->
+<button slot="hotspot-bronchi" class="lungs-hotspot"
+        data-position="-0.01 -0.046 -0.01" data-normal="0 1 0"
+        data-part="bronchi"
+        onClick="highlightLungPart(this, 'bronchi')">
+  <div class="lungs-label">  Bronchi  </div>
+</button>
+
+<!-- Right-Lung -->
+<button slot="hotspot-right-lung" class="lungs-hotspot"
+        data-position="-0.2 -0.046 0.08" data-normal="0 1 0"
+        data-part="right-lung"
+        onClick="highlightLungPart(this, 'right-lung')">
+  <div class="lungs-label">Right Lung</div>
+</button>
+
+<!-- left-lung -->
+<button slot="hotspot-left-lung" class="lungs-hotspot"
+        data-position="0.2 -0.046 0.08" data-normal="0 1 0"
+        data-part="left-lung"
+        onClick="highlightLungPart(this, 'left-lung')">
+  <div class="lungs-label">Left-Lung</div>
+</button>
+
+<!-- Apex -->
+<button slot="hotspot-apex" class="lungs-hotspot"
+        data-position="-0.06 0.1 -0.04" data-normal="0 1 0"
+        data-part="apex"
+        onClick="highlightLungPart(this, 'apex')">
+  <div class="lungs-label">Apex</div>
+</button>
+
+<!-- Base -->
+<button slot="hotspot-base" class="lungs-hotspot"
+        data-position="-0.13 -0.2 0.1" data-normal="0 1 0"
+        data-part="base"
+        onClick="highlightLungPart(this, 'base')">
+  <div class="lungs-label">Base</div>
+</button>
+
+<!-- Superior Lobe-->
+<button slot="hotspot-superior-lobe" class="lungs-hotspot"
+        data-position="-0.18 0.06 -0.04" data-normal="0 1 0"
+        data-part="superior-lobe"
+        onClick="highlightLungPart(this, 'superior-lobe')">
+  <div class="lungs-label">Superior Lobe</div>
+</button>
+
+<!-- middle -lobe -->
+<button slot="hotspot-middle-lobe" class="lungs-hotspot"
+        data-position="-0.18 -0.1 -0.04" data-normal="0 1 0"
+        data-part="middle-lobe"
+        onClick="highlightLungPart(this, 'middle-lobe')">
+  <div class="lungs-label">Middle Lobe</div>
+</button>
+
+<!-- inferior-lobe-->
+<button slot="hotspot-inferior-lobe" class="lungs-hotspot"
+        data-position="-0.18 -0.2 -0.01" data-normal="0 1 0"
+        data-part="inferior-lobe"
+        onClick="highlightLungPart(this, 'inferior-lobe')">
+  <div class="lungs-label">Inferior-Lobe</div>
+</button>
+
+<!-- Cardiac Notch -->
+<button slot="hotspot-notch" class="lungs-hotspot"
+        data-position="0.13 -0.1 0.02" data-normal="0 1 0"
+        data-part="notch"
+        onClick="highlightLungPart(this, 'notch')">
+  <div class="lungs-label">Cardiac Notch</div>
+</button>
+</model-viewer>
+  </div>
+  <div class="heading">
+  <h1>Other importants parts</h1>
+</div>
+  <div class="card-grid">
+  <div class="card">
+    <img src="assets/hilum.png" alt="">
+    <div><b>Hilum : </b>  The area on the lung's surface where bronchi, blood vessels, lymphatics, and nerves enter and leave the lung.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/bronchioles.png" alt="">
+    <div><b>Bronchioles : </b> The smaller airways that branch from the bronchi and lead to the alveoli.
+ Why it’s important: They carry air deep into the lungs.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/pleura.jpg" alt="">
+    <div><b>Pleura : </b> The thin membranes that cover the lung (visceral) and line the chest cavity (parietal). Enables smooth lung movement during breathing.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/alveoli.avif" alt="" >
+    <div><b>Alveoli : </b> Tiny air sacs where gas exchange occurs. This is where oxygen enters the blood and CO₂ is removed.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/pulmunary anv.jpg" alt="" style ="height:250">
+    <div><b>Pulmonary Arteries and Veins : </b> The blood vessels that carry deoxygenated blood to the lungs and oxygenated blood back to the heart. Central to gas exchange.
+</div>
+  </div>
+   <div class="card big">
+    <img src="assets/fissure.jpg" alt="" style ="height:250">
+    <div><b>Fissures : </b> The grooves that separate the lobes of the lungs. Defines lung structure and allows for expansion.
+</div>
+  </div>
+</div>
+<!-- Kidney -->
+<div id="kidneySection" class="nav">
+    <span class="head">
+      Kidney section
+    </span>
+  </div>
+<div class="layout">
+<model-viewer  id="kidney-model"
+  src="assets/kidney_cross-section/scene.gltf"
+  camera-controls
+  disable-zoom
+  disable-pan
+>
+<!-- Main Chambers -->
+  <!-- Hotspots -->
+  <button slot="hotspot-cortex" class="kidney-hotspot"
+           data-position="-0.2 0.2 -0.8" data-normal="0 0 0"
+           data-part="cortex" onClick="kidneyHighlightPart(this, 'cortex')">
+    <div class="label">Cortex</div>
+  </button>
+
+  <button slot="hotspot-medulla" class="kidney-hotspot"
+           data-position="0 0.4 -0.8" data-normal="0 1 0"
+           data-part="medulla" onClick="kidneyHighlightPart(this, 'medulla')">
+    <div class="label">Medulla</div>
+  </button>
+
+  <button slot="hotspot-renalpelvis" class="kidney-hotspot"
+           data-position="0.7 0 -0.2" data-normal="0 0 0"
+           data-part="pelvis" onClick="kidneyHighlightPart(this, 'pelvis')">
+    <div class="label">Renal Pelvis</div>
+  </button>
+
+  <button slot="hotspot-renalartery" class="kidney-hotspot"
+           data-position="0.9 0.28 -0.2" data-normal="0 0 0"
+           data-part="artery" onClick="kidneyHighlightPart(this, 'artery')">
+    <div class="label">Renal Artery</div>
+  </button>
+
+  <button slot="hotspot-renalvein" class="kidney-hotspot"
+           data-position="0.9 0.1 -0.2" data-normal="0 0 0"
+           data-part="vein" onClick="kidneyHighlightPart(this, 'vein')">
+    <div class="label">Renal Vein</div>
+  </button>
+
+  <button slot="hotspot-ureter" class="kidney-hotspot"
+           data-position="0.9 -0.7 -0.2" data-normal="0 1 0"
+           data-part="ureter" onClick="kidneyHighlightPart(this, 'ureter')">
+    <div class="label">Ureter</div>
+  </button>
+
+</model-viewer>
+  <div class="box-contain">
+      <div class="box ">
+    <div class ="text" >
+      <h2 style="color: #d8572a;">Kidney</h2>
+      <div class="innerText4">
+       The kidneys are two bean-shaped organs located on either side of the spine. They filter waste products and excess fluids from the blood to form urine, help regulate blood pressure, maintain electrolyte balance, and support red blood cell production. They play a vital role in maintaining the body’s overall fluid and chemical stability.
+      </div>
+    </div>
+  </div>
+<div class="kidney-buttons">
+  <div class="liner1">
+      <button data-part="cortex">Cortex</button>
+  <button data-part="medulla">Medulla</button>
+  <button data-part="pelvis">Renal Pelvis</button>
+  </div>
+  <div class="liner2">
+      <button data-part="artery">Renal Artery</button>
+  <button data-part="vein">Renal Vein</button>
+  <button data-part="ureter">Ureter</button>
+  </div>
+  <div class="liner3">
+    <button id="reset-kidney-camera">Reset Camera</button>
+  </div>
+  
+</div>
+</div>
+  </div>
+    <div class="heading">
+  <h1>Other importants parts</h1>
+</div>
+  <div class="card-grid">
+  <div class="card">
+    <img src="assets/renal capsule.jpg" alt="">
+    <div><b>Renal Capsule : </b>  Tough outer membrane that protects the kidney from trauma and infection.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/renal pyramid.png" alt="">
+    <div><b> Renal Pyramids : </b>Cone-shaped structures in the medulla.
+Contain nephron loops and collecting ducts.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/renal papilla.png" alt="">
+    <div><b>Renal Papilla: </b> Tip of each pyramid where urine is released into the minor calyces.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/renal columns.png" alt="" >
+    <div><b>Renal Columns : </b> Extensions of cortex tissue between the pyramids.
+Contain blood vessels and support structure.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/minor calyx.jpg" alt="" style ="height:250">
+    <div><b>Minor Calyces : </b> Small cavities that collect urine from each papilla.
+</div>
+  </div>
+   <div class="card big">
+    <img src="assets/major calyx.jpg" alt="" style ="height:250">
+    <div><b> Major Calyces : </b>Formed by merging minor calyces; drain into renal pelvis.
+</div>
+  </div>
+     <div class="card big">
+    <img src="assets/Renal-Hilum-outside-view-1024x597.webp" alt="" style ="height:250">
+    <div><b> Hilum (Renal Hilus) : </b>Indented area where the renal artery, vein, and ureter enter/exit the kidney.
+</div>
+  </div>
+     <div class="card big">
+    <img src="assets/nephron.jpg" alt="" style ="height:250">
+    <div><b> Nephrons : </b>Microscopic functional units (about 1 million per kidney) that perform filtration.
+Includes glomerulus, Bowman's capsule, tubules, and loop of Henle.
+</div>
+  </div>
+     <div class="card big">
+    <img src="assets/glomerular.png" alt="" style ="height:250">
+    <div><b> Glomerulus : </b>A tiny capillary network inside each nephron.
+Where blood filtration begins.
+</div>
+  </div>
+</div>
+
+<!-- //Liver_Section// -->
+<div id="liverSection" class="nav">
+    <span class="head">
+      Liver section
+    </span>
+  </div>
+<div class="layout">
+  <div class="box-contain">
+      <div  class="box ">
+    <div class ="text" >
+      <h2 style="color: #cf7577;">Liver</h2>
+      <div class="innerText5">
+       The liver is a large, reddish-brown organ located in the upper right side of the abdomen. It performs vital functions like filtering blood, producing bile for digestion, storing nutrients, and breaking down toxins and medications.
+      </div>
+    </div>
+  </div>
+  <div id="liver-buttons">
+  <div class="liner1 ">
+      <button class="liverType" data-part="right-lobe">Right Lobe</button>
+      <button  class="liverType"  data-part="left-lobe">Left Lobe</button>
+      <button class="liverType"  data-part="falciform-ligament">Falciform Ligament</button>
+  </div>
+  <div class="liner2 ">
+      <button class="liverType"  data-part="gall-bladder">Gall Bladder</button>
+      <button class="liverType"  data-part="hepatic-arteries">Hepatic Arteries</button>
+      <button class="liverType"  data-part="inferior-vena-cava">Inferior Vena Cava</button>
+  </div>
+  <div class="liner3 ">
+      <button id="reset-liver-camera">Reset Camera</button>
+  </div>
+</div>
+  </div>
+
+<model-viewer
+  id="liverModel"
+  src="assets/human_liver_and_gallbladder/new liver2.glb"
+  camera-controls
+  disable-zoom
+  disable-pan
+>
+<!-- //right-lobe// -->
+<button slot="hotspot-right-lobe" class="liver-hotspot"
+        data-position="0.06 0.03 0.03" data-normal="0 0 0"
+        data-part="right-lobe"
+        onClick="highlightLiverPart(this, 'right-lobe')">
+  <div class="liver-label">Right Lobe</div>
+</button>
+
+<!-- left-lobe -->
+<button slot="hotspot-left-lobe" class="liver-hotspot"
+        data-position="0.03 0.05 -0.1" data-normal="0 0 0"
+        data-part="left-lobe"
+        onClick="highlightLiverPart(this, 'left-lobe')">
+  <div class="liver-label">left Lobe</div>
+</button>
+
+<!-- Falciform Ligament-->
+<button slot="hotspot-falciform-ligament" class="liver-hotspot"
+        data-position="0.06 0.03 -0.04" data-normal="0 0 0"
+        data-part="falciform-ligament"
+        onClick="highlightLiverPart(this, 'falciform-ligament')">
+  <div class="liver-label">Falciform Ligament</div>
+</button>
+
+<!-- gall-bladder -->
+<button slot="hotspot-gall-bladder" class="liver-hotspot"
+        data-position="-0.01 -0.04 0.03" data-normal="0 0 0"
+        data-part="gall-bladder"
+        onClick="highlightLiverPart(this, 'gall-bladder')">
+  <div class="liver-label">Gall bladder</div>
+</button>
+<!-- Hepatic Arteries -->
+<button slot="hotspot-hepatic-arteries" class="liver-hotspot"
+        data-position="-0.01 -0.01 -0.02" data-normal="0 0 0"
+        data-part="hepatic-arteries"
+        onClick="highlightLiverPart(this, 'hepatic-arteries')">
+  <div class="liver-label">Hepatic-Ateries</div>
+</button>
+
+<!-- Inferior Vena Cava -->
+<button slot="hotspot-inferior-vena-cava" class="liver-hotspot"
+        data-position="-0.04 0.12 -0.03" data-normal="0 1 0"
+        data-part="inferior-vena-cava"
+        onClick="highlightLiverPart(this, 'inferior-vena-cava')">
+  <div class="liver-label">Inferior Vena Cava</div>
+</button>
+</model-viewer>
+  </div>
+  <div class="heading">
+  <h1>Other importants parts</h1>
+</div>
+    <div class="card-grid">
+  <div class="card">
+    <img src="assets/caudate lobe.png" alt="">
+    <div><b>Caudate Lobe : </b> A small lobe on the posterior side, near the inferior vena cava.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/quadate lobe.avif" alt="">
+    <div><b>  Quadrate Lobe : </b>Found near the gallbladder; important for surface anatomy.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/porta hepatis.jpg" alt="">
+    <div><b> Porta Hepatis: </b> The “hilum” of the liver — entry/exit point for the hepatic artery, portal vein, and bile duct.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/heatic veins.png" alt="" >
+    <div><b> Hepatic Portal Vein
+</b>Brings nutrient-rich blood from the intestines into the liver for filtering.
+
+
+
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/bile duct.jpg" alt="" style ="height:250">
+    <div><b> Bile Ducts : </b>Carry bile out of the liver toward the gallbladder and intestine.
+</div>
+  </div>
+   <div class="card big">
+    <img src="assets/ligamentum teres.jpg" alt="" style ="height:250">
+    <div><b>Ligamentum Teres : </b>Remnant of the fetal umbilical vein; found in the lower edge of the falciform ligament.
+</div>
+  </div>
+     <div class="card big">
+    <img src="assets/triangular ligaments.png" alt="" style ="height:250">
+    <div><b>Triangular Ligaments : </b>A peritoneal fold that attaches the liver to the diaphragm, helping stabilize its position within the abdominal cavity.
+</div>
+  </div>
+      <div class="card big">
+    <img src="assets/coronary ligament.jpg" alt="" style ="height:250">
+    <div><b>Coronary Ligaments : </b>A peritoneal fold that connects the liver to the diaphragm, forming the boundary of the liver's bare area and helping anchor it in place.
+</div>
+  </div>
+     <div class="card big">
+    <img src="assets/base area.jpg" alt="" style ="height:250">
+    <div><b>  Base Area : </b>A region on the posterior superior surface not covered by peritoneum — in direct contact with the diaphragm.
+</div>
+  </div>
+</div>
+<div id="stomachSection" class="nav">
+    <span class="head">
+      Stomach section
+    </span>
+  </div>
+<div class="layout">
+<model-viewer  id="stomach-model"
+  src="assets/stomach/scene.gltf"
+  camera-controls
+  disable-zoom
+  disable-pan
+>
+<!-- Main Chambers -->
+  <!-- Hotspots -->
+  <button slot="hotspot-esophagus" class="stomach-hotspot"
+           data-position="0 0.09 0.02" data-normal="0 0 0"
+           data-part="esophagus" onClick="stomachHighlightPart(this, 'esophagus')">
+    <div class="label">Esophagus</div>
+  </button>
+
+  <button slot="hotspot-outer-muscle-layer" class="stomach-hotspot"
+           data-position="0.012 0.049 -0.02" data-normal="0 0 0"
+           data-part="outer-muscle-layer" onClick="stomachHighlightPart(this, 'outer-muscle-layer')">
+    <div class="label">Outer Muscle Layer</div>
+  </button>
+  <button slot="hotspot-middle-muscle-layer" class="stomach-hotspot"
+           data-position="0.012 0.041 -0.02" data-normal="0 0 0"
+           data-part="middle-muscle-layer" onClick="stomachHighlightPart(this, 'middle-muscle-layer')">
+    <div class="label">Middle Muscle Layer</div>
+  </button>
+
+  <button slot="hotspot-inner-muscle-layer" class="stomach-hotspot"
+           data-position="0.01 0.034 -0.02" data-normal="0 0 0"
+           data-part="inner-muscle-layer" onClick="stomachHighlightPart(this, 'inner-muscle-layer')">
+    <div class="label">Inner Muscle Layer</div>
+  </button>
+
+  <button slot="hotspot-mucosa" class="stomach-hotspot"
+           data-position="-0.01 0.03 -0.01" data-normal="0 0 0"
+           data-part="mucosa" onClick="stomachHighlightPart(this, 'mucosa')">
+    <div class="label">Mucosa</div>
+  </button>
+
+  <button slot="hotspot-duodenum" class="stomach-hotspot"
+           data-position="0 0.032 0.02" data-normal="0 0 0"
+           data-part="duodenum" onClick="stomachHighlightPart(this, 'duodenum')">
+    <div class="label">Duodenum</div>
+  </button>
+
+</model-viewer>
+  <div class="box-contain">
+      <div class="box ">
+    <div class ="text" >
+      <h2 style="color: #d8572a;">Stomach</h2>
+      <div class="innerText6">
+The stomach is a muscular, J-shaped organ that breaks down food using acids and enzymes. It churns food into a semi-liquid form called chyme before passing it to the small intestine for further digestion.
+      </div>
+    </div>
+  </div>
+<div class="stomach-buttons">
+  <div class="liner1">
+      <button data-part="esophagus">Esophagus</button>
+  <button data-part="outer-muscle-layer">Outer Muscle Layer</button>
+  <button data-part="middle-muscle-layer">middle Muscle Layer</button>
+  </div>
+  <div class="liner2">
+      <button data-part="inner-muscle-layer">Inner Muscle Layer</button>
+  <button data-part="mucosa">Mucosa</button>
+  <button data-part="duodenum">Duodenum</button>
+  </div>
+  <div class="liner3">
+    <button id="reset-stomach-camera">Reset Camera</button>
+  </div>
+  
+</div>
+</div>
+  </div>
+    <div class="heading">
+  <h1>Other importants parts</h1>
+</div>
+  <div class="card-grid">
+  <div class="card">
+    <img src="assets/cardia_real.jpg" alt="">
+    <div><b>Cardia : </b>Where the esophagus connects to the stomach; controls food entry via the lower esophageal sphincter.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/fundus.jpg" alt="">
+    <div><b> Fundus : </b>The upper curved portion of the stomach that stores undigested food and gases.
+</div>
+  </div>
+  <div class="card">
+    <img src="assets/body.jpg" alt="">
+    <div><b>Body: </b> The central and largest region of the stomach, where most mixing and digestion occur.
+</div>
+  </div>
+  <div class="card big">
+    <img src="assets/pylorus.jpg" alt="" >
+    <div><b> Pylorus : </b> The lower section that connects to the duodenum; regulates the passage of digested food into the small intestine.
+  </div>
+  </div>
+  <div class="card big">
+    <img src="assets/rugue.jpg" alt="" style ="height:250">
+    <div><b>Rugae : </b> Folds in the stomach lining that allow expansion as the stomach fills with food.
+</div>
+  </div>
+   <div class="card big">
+    <img src="assets/gastric glands.avif" alt="" style ="height:250">
+    <div><b> Gastric Glands : </b>Microscopic glands in the mucosa that secrete digestive enzymes, acid, and mucus.
+</div>
+  </div>
+</div>
+
+
+  <footer id="footer-area">
+    <section class="origami-contact">
+  <div class="form-container">
+    <div class="floating-poly"></div>
+<div class="floating-poly triangle2">
+
+</div>
+<div class="floating-poly triangle3"></div>
+    <h1 style="font-size: 2.3em; color:#2b2d42;">Found bug or any Suggestions?</h1>
+    <h2><span>H</span><span>i</span><span>t</span> <span>M</span><span>e</span>  <span>U</span><span>p</span><span>!</span></h2>
+   <form id="myForm" action="https://formsubmit.co/rayarpit72@gmail.com" method="POST">
+  <input class="item" type="text" name="name" placeholder="Your Name" required>
+  <input class="item" type="email" name="email" placeholder="Your Email" required>
+  <textarea style="height: 6vh;" class="item" name="message" placeholder="Your Message" required></textarea>
+  
+  <!-- Optional: disable captcha and redirect to same page -->
+   <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_next" value="https://arpitray.github.io/visions/">
+  <button class="item send" type="submit">Submit!</button> 
+</form>
+<div id="toast">Thanks for the message
+  </div>
+</section>
+      <div class="social">
+      <div style="font-size: 1.8em;" class="gmail">rayarpit72@gmail.com</div>
+      <div class="icons">
+      <div class="github"><a href="https://github.com/Arpitray"><img style="height:40px" src="assets/icons8-github-64.png" alt=""></a></div>
+      <div class="linkdin"><a href="https://www.linkedin.com/in/arpit-arjun-ray-2ba326335/"><img style="height:40px" src="assets/icons8-linkedin-48.png" alt=""></a></div>
+      </div>
+        <div id="goToTop">
+    <img src="assets/icons8-up-squared-50.png" alt="">
+  </div>
+      </div>
+ <div class="sitemap">
+  <h2>Site Map</h2>
+<div class="footSite">
+    <div class="footerSite1">
+        <div id="goBrain" class="sitemap-icon">
+      <img src="assets/footerbrain.png" alt="brain" />
+      <span class="sitemap-label">Brain</span>
+    </div>
+    <div id="goHeart" class="sitemap-icon">
+      <img src="assets/footerHeart.png" alt="heart" />
+      <span class="sitemap-label">Heart</span>
+    </div>
+  </div>
+  <div class="footerSite2">
+        <div id="goLungs" class="sitemap-icon">
+      <img src="assets/icons8-lungs-60.png" alt="lungs" />
+      <span class="sitemap-label">Lungs</span>
+    </div>
+    <div id="gokidney" class="sitemap-icon">
+      <img src="assets/icons8-kidney-64.png" alt="kidney" />
+      <span class="sitemap-label">Kidney</span>
+    </div>
+  </div>
+  <div class="footerSite3">
+        <div id="goLiver" class="sitemap-icon">
+      <img src="assets/icons8-liver-64.png" alt="liver" />
+      <span class="sitemap-label">Liver</span>
+    </div>
+       <div id="goStomach" class="sitemap-icon">
+      <img src="assets/icons8-stomach-64.png" alt="stomach" />
+      <span class="sitemap-label">Stomach</span>
+      
+    </div>
+  </div>
+</div>
+
+  </div>
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@beta/bundled/locomotive-scroll.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

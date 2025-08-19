@@ -11,7 +11,12 @@ import Showcase from "./assets/Components/Showcase"
 import PlayGround from './assets/Components/PlayGround'
 import PlaygroundPreview from "./assets/Components/PlaygroundPreview"
 import Visions from "./assets/Components/Visions"
+import VisionsFrame from "./assets/Components/VisionsFrame"
 import Contact from "./assets/Components/Contact"
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   useEffect(() => {
@@ -22,6 +27,43 @@ function App() {
       smoothTouch: false,
       touchMultiplier: 1.5,
     })
+
+    // integrate Lenis with GSAP ScrollTrigger so ScrollTrigger responds to the smooth scroller
+    try {
+      // expose for debugging
+      if (typeof window !== 'undefined') window.lenis = lenis
+
+      // try to detect the element Lenis uses as the smooth scroller
+      const scrollerEl = document.querySelector('.lenis') || document.querySelector('[data-lenis]') || document.documentElement
+
+      ScrollTrigger.scrollerProxy(scrollerEl, {
+        scrollTop(value) {
+          if (arguments.length) {
+            // jump to value immediately using Lenis
+            try {
+              lenis.scrollTo(value, { immediate: true, duration: 0 })
+            } catch (e) {}
+          }
+          // return the current scrollTop for the scroller element
+          return scrollerEl.scrollTop || document.documentElement.scrollTop
+        },
+        getBoundingClientRect() {
+          return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }
+        },
+        pinType: scrollerEl.style.transform ? 'transform' : 'fixed',
+      })
+
+      // make ScrollTrigger use detected scroller by default
+      ScrollTrigger.defaults({ scroller: scrollerEl })
+
+      // update ScrollTrigger on Lenis scroll
+      lenis.on && lenis.on('scroll', ScrollTrigger.update)
+
+      // ensure ScrollTrigger recalculates after setup
+      ScrollTrigger.refresh()
+    } catch (e) {
+      // non-fatal if scroller proxy setup fails
+    }
 
     function raf(time) {
       lenis.raf(time)
@@ -59,6 +101,7 @@ function App() {
       <CursorGlass />
       <Routes>
         <Route path="/playground" element={<PlayGround />} />
+        <Route path="/visions" element={<VisionsFrame />} />
         <Route path="/" element={
           <>
             <Landing />

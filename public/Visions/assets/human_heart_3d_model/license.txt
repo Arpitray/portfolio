@@ -1,0 +1,11 @@
+Model Information:
+* title:	Human Heart 3D model
+* source:	https://sketchfab.com/3d-models/human-heart-3d-model-d04d3dc85f584876ac753b68342124d1
+* author:	Animation_loop (https://sketchfab.com/SahuAvdhesh)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Human Heart 3D model" (https://sketchfab.com/3d-models/human-heart-3d-model-d04d3dc85f584876ac753b68342124d1) by Animation_loop (https://sketchfab.com/SahuAvdhesh) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

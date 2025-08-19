@@ -7,11 +7,13 @@ import LL3 from './ll3.png'
 import SpinGif from './spin.gif'
 import SandImage from './SandImage'
 import DecayCard from './DecayCard'
+import PG2 from './pg1.png'
 
 export default function Visions({
   image = '/PlayGround/virtual project/index.html',
   title = 'Visions',
-  description = 'This is a placeholder for the Visions section. Replace this text with your own description and content.'
+  description = 'Visceral Visions is an interactive web project that lets users explore detailed 3D models of the human brain, heart, lungs, kidneys, liver, and stomach. Built with WebGL (via Three.js) and JavaScript, it delivers smooth real-time rendering and intuitive camera controls for rotation, zoom, and reset.',
+  description2="Each organ is paired with clear educational text, making it both visually engaging and informative. Hosted on GitHub Pages, this project reflects my dedication to creating useful, immersive, and accessible learning experiences as my second major build.",
 }) {
   const nav = useNavigate()
   const sectionRef = useRef(null)
@@ -57,13 +59,14 @@ export default function Visions({
 
         <div className="space-y-6 w-full items-start px-6 lg:px-12" style={{ maxWidth: 900 }}>
           <h3 className="text-black font-[100] tracking-tight text-start text-[34px] sm:text-[40px] md:text-[88px] lg:text-[84px]">{title}</h3>
-          <p className="text-[25px] text-black/90 leading-10 tracking-wide font-semibold  font-['pepper']">{description}</p>
+          <p className="text-[30px] text-black/90 leading-10 tracking-wide font-semibold  font-['pepper']">{description}</p>
+          <p className="text-[30px] text-black/90 leading-8 tracking-wide font-semibold  font-['pepper']">{description2}</p>
           <div className="mt-6">
             <button onClick={() => nav('/visions')} className="inline-flex items-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-bold">Visit</button>
           </div>
         </div>
         <div className="flex w-full justify-center lg:justify-center saturate-120">
-          <DecayCard width={1050} height={780} image={SpinGif} bare={true}>
+          <DecayCard width={1000} height={680} image={PG2} bare={true}>
             {/* optional caption could go here */}
           </DecayCard>
         </div>

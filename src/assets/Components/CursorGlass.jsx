@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,0.12)' }) {
   const elRef = useRef(null)
@@ -7,6 +8,31 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
   const rafRef = useRef(null)
   const hiddenRef = useRef(false)
   const lastPointerRef = useRef({ x: -9999, y: -9999 })
+  const [customText, setCustomText] = useState(null)
+  const location = useLocation()
+
+  // Hide the glass cursor completely on certain full-page embeds/routes
+  useEffect(() => {
+    const el = elRef.current
+    if (!el) return
+    try {
+      const shouldHide = location && (location.pathname && (location.pathname.startsWith('/playground') || location.pathname.startsWith('/visions')))
+      if (shouldHide) {
+        // Hide glass and restore native cursor
+        el.style.opacity = '0'
+        el.style.transition = 'opacity 0ms'
+        document.documentElement.style.cursor = ''
+        hiddenRef.current = true
+      } else {
+        // Allow the glass to show again; restore hidden state to false so main effect can manage visibility
+        hiddenRef.current = false
+        // re-enable hiding transition for normal behavior
+        el.style.transition = 'opacity 120ms ease, transform 80ms linear'
+        // hide native cursor again so glass can manage appearance
+        try { document.documentElement.style.cursor = 'none' } catch (e) {}
+      }
+    } catch (e) {}
+  }, [location && location.pathname])
 
   useEffect(() => {
     const el = elRef.current
@@ -65,14 +91,34 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
       } catch (e) {}
     }
 
+    // Handler for custom text updates
+    const onCustomText = (event) => {
+      setCustomText(event.detail)
+    }
+
     window.addEventListener('cursorGlass:hide', onHide)
     window.addEventListener('cursorGlass:show', onShow)
+    window.addEventListener('cursorGlass:customText', onCustomText)
     const onMove = (e) => {
       const x = e.clientX
       const y = e.clientY
       // always record last pointer position even when hidden
       lastPointerRef.current.x = x
       lastPointerRef.current.y = y
+      
+      // Check if hovering over contact image
+      const elementUnderCursor = document.elementFromPoint(x, y)
+      const isOverContactImage = elementUnderCursor && (
+        elementUnderCursor.classList.contains('contact-image') ||
+        elementUnderCursor.closest('.polaroid-container')
+      )
+      
+      if (isOverContactImage && customText !== 'DRAG') {
+        setCustomText('DRAG')
+      } else if (!isOverContactImage && customText === 'DRAG') {
+        setCustomText(null)
+      }
+      
       // if an external hide is active, don't update the visible target
       if (hiddenRef.current) return
       targetRef.current.x = x
@@ -205,8 +251,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
     return () => {
       window.removeEventListener('pointermove', onMove)
       window.removeEventListener('pointerleave', onLeave)
-  window.removeEventListener('cursorGlass:hide', onHide)
-  window.removeEventListener('cursorGlass:show', onShow)
+      window.removeEventListener('cursorGlass:hide', onHide)
+      window.removeEventListener('cursorGlass:show', onShow)
+      window.removeEventListener('cursorGlass:customText', onCustomText)
       cancelAnimationFrame(rafRef.current)
       // cleanup iframe listeners
       try {
@@ -280,7 +327,7 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
             fontFamily="demo, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial"
           >
             <textPath href={`#${pathId}`} startOffset="0%">
-              {Array(6).fill(' Scroll down • ').join(' ')}
+              {customText ? Array(8).fill(` ${customText} • `).join(' ') : Array(6).fill(' Scroll down • ').join(' ')}
             </textPath>
           </text>
         </g>

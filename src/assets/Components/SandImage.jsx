@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 
-const SandImage = ({ src, width = 800, height = 750, activationRect = null, cursorGlassSize = 80, cursorRingPadding = 12, uRadiusProp = null, showOverlay = true }) => {
+const SandImage = ({ src, width = 800, height = 750, activationRect = null, cursorGlassSize = 90, cursorRingPadding = 12, uRadiusProp = null, showOverlay = true }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null, curs
   // radius (normalized) computed from CursorGlass size or explicit override
   uRadius: { value: computeNormalizedRadius(width, height) },
       uTexture: { value: null },
-      uPointer: { value: new THREE.Vector2(0.5, 0.5) },
+      uPointer: { value: new THREE.Vector2(0.8, 0.8) },
       uResolution: { value: new THREE.Vector2(width, height) },
     };
 

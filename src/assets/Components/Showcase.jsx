@@ -7,6 +7,10 @@ import ss1 from './ss1.png'
 import ss2 from './ss2.png'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import SC1 from './sc1.png'
+import SC2 from './sc2.png'
+import SC3 from './sc3.png'
+import SC4 from './sc4.png'
 
 // Showcase: pinned area that lasts ~200vh with four vertical slips (columns).
 // Each slip contains two tall screenshots stacked vertically. As you scroll while
@@ -189,14 +193,14 @@ export default function Showcase() {
   const imgStyle = {
     display: 'block',
     width: '100%',
-    height: '100vh',
+    height: '100%',
     objectFit: 'cover'
   }
 
   const imgWrapStyle = {
     boxSizing: 'border-box',
     width: '100%',
-    height: '100vh',
+    height: '150vh',
     paddingBottom: 12,
     borderBottom: '1px solid #000',
     marginBottom: 18,
@@ -208,40 +212,40 @@ export default function Showcase() {
         <div style={colsWrap}>
           <div style={colOuter} ref={el => (wrapRefs.current[0] = el)}>
             <div ref={el => (colRefs.current[0] = el)} style={innerImgContainer}>
+              <div style={imgWrapStyle}><img src={SC1} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC1} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC1} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC1} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
             </div>
           </div>
 
           <div style={colOuter} ref={el => (wrapRefs.current[1] = el)}>
             <div ref={el => (colRefs.current[1] = el)} style={innerImgContainer}>
+              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
             </div>
           </div>
 
           <div style={colOuter} ref={el => (wrapRefs.current[2] = el)}>
             <div ref={el => (colRefs.current[2] = el)} style={innerImgContainer}>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC3} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC4} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC3} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC4} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC3} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC4} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC3} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src={SC4} alt='' style={imgStyle} /></div>
             </div>
           </div>
         </div>

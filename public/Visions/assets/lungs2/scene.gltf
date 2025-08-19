@@ -1,0 +1,1415 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 671,
+      "max": [
+        -90.1974105834961,
+        152.23757934570313,
+        6.7928619384765625
+      ],
+      "min": [
+        -104.45784759521484,
+        127.99263000488281,
+        -10.811639785766602
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 8052,
+      "componentType": 5126,
+      "count": 671,
+      "max": [
+        0.9980338215827942,
+        0.9988861083984375,
+        0.9977124929428101
+      ],
+      "min": [
+        -0.9978412389755249,
+        -0.9879828691482544,
+        -0.9989446401596069
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 671,
+      "max": [
+        0.671964168548584,
+        0.4845595955848694
+      ],
+      "min": [
+        0.03557988256216049,
+        0.02451881393790245
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 5368,
+      "componentType": 5126,
+      "count": 671,
+      "max": [
+        0.671964168548584,
+        0.4845595955848694
+      ],
+      "min": [
+        0.03557988256216049,
+        0.02451881393790245
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 3726,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 16104,
+      "componentType": 5126,
+      "count": 618,
+      "max": [
+        -75.54711151123047,
+        152.23757934570313,
+        6.509280681610107
+      ],
+      "min": [
+        -89.13653564453125,
+        127.99263000488281,
+        -10.871270179748535
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 23520,
+      "componentType": 5126,
+      "count": 618,
+      "max": [
+        0.9980628490447998,
+        0.9663402438163757,
+        0.9985191822052002
+      ],
+      "min": [
+        -0.9997292160987854,
+        -0.9941220879554749,
+        -0.9925093054771423
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 10736,
+      "componentType": 5126,
+      "count": 618,
+      "max": [
+        0.9913467168807983,
+        0.9739969372749329
+      ],
+      "min": [
+        0.27352192997932434,
+        0.30712655186653137
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 15680,
+      "componentType": 5126,
+      "count": 618,
+      "max": [
+        0.9913467168807983,
+        0.9739969372749329
+      ],
+      "min": [
+        0.27352192997932434,
+        0.30712655186653137
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 14904,
+      "componentType": 5125,
+      "count": 3396,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 30936,
+      "componentType": 5126,
+      "count": 6326,
+      "max": [
+        -92.99432373046875,
+        151.35769653320313,
+        5.930157661437988
+      ],
+      "min": [
+        -103.88314056396484,
+        129.8704376220703,
+        -10.160256385803223
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 106848,
+      "componentType": 5126,
+      "count": 6326,
+      "max": [
+        0.9998983144760132,
+        0.9998924732208252,
+        0.9999760389328003
+      ],
+      "min": [
+        -0.999906063079834,
+        -0.9989610910415649,
+        -0.9997074007987976
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 20624,
+      "componentType": 5126,
+      "count": 6326,
+      "max": [
+        0.9594619870185852,
+        0.3420611619949341
+      ],
+      "min": [
+        0.03613736480474472,
+        0.03312666341662407
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 71232,
+      "componentType": 5126,
+      "count": 6326,
+      "max": [
+        0.9594619870185852,
+        0.3420611619949341
+      ],
+      "min": [
+        0.03613736480474472,
+        0.03312666341662407
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 28488,
+      "componentType": 5125,
+      "count": 28746,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 182760,
+      "componentType": 5126,
+      "count": 6322,
+      "max": [
+        -77.18124389648438,
+        148.31797790527344,
+        5.269193172454834
+      ],
+      "min": [
+        -88.59896850585938,
+        130.00119018554688,
+        -10.166130065917969
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 258624,
+      "componentType": 5126,
+      "count": 6322,
+      "max": [
+        0.999603807926178,
+        0.999541699886322,
+        0.999199390411377
+      ],
+      "min": [
+        -0.9999207258224487,
+        -0.9992541670799255,
+        -0.9998425245285034
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 121840,
+      "componentType": 5126,
+      "count": 6322,
+      "max": [
+        0.3837263882160187,
+        0.9662651419639587
+      ],
+      "min": [
+        0.01107711624354124,
+        0.3262847661972046
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 172416,
+      "componentType": 5126,
+      "count": 6322,
+      "max": [
+        0.3837263882160187,
+        0.9662651419639587
+      ],
+      "min": [
+        0.01107711624354124,
+        0.3262847661972046
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 143472,
+      "componentType": 5125,
+      "count": 28824,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 334488,
+      "componentType": 5126,
+      "count": 6401,
+      "max": [
+        -77.69126892089844,
+        156.28082275390625,
+        4.515507221221924
+      ],
+      "min": [
+        -98.39772033691406,
+        129.47262573242188,
+        -9.354787826538086
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 411300,
+      "componentType": 5126,
+      "count": 6401,
+      "max": [
+        0.9997914433479309,
+        0.9996835589408875,
+        0.9997701048851013
+      ],
+      "min": [
+        -0.999640166759491,
+        -0.9997816681861877,
+        -0.9996980428695679
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 222992,
+      "componentType": 5126,
+      "count": 6401,
+      "max": [
+        0.9631790518760681,
+        0.971623957157135
+      ],
+      "min": [
+        0.299206018447876,
+        0.46661004424095154
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 274200,
+      "componentType": 5126,
+      "count": 6401,
+      "max": [
+        0.9631790518760681,
+        0.971623957157135
+      ],
+      "min": [
+        0.299206018447876,
+        0.46661004424095154
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 258768,
+      "componentType": 5125,
+      "count": 33744,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 488112,
+      "componentType": 5126,
+      "count": 65,
+      "max": [
+        -88.76258850097656,
+        156.32379150390625,
+        2.925797462463379
+      ],
+      "min": [
+        -91.27615356445313,
+        154.84561157226563,
+        1.8683265447616577
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 488892,
+      "componentType": 5126,
+      "count": 65,
+      "max": [
+        0.9363383054733276,
+        0.9765488505363464,
+        0.9343301653862
+      ],
+      "min": [
+        -0.9091412425041199,
+        -0.9788463711738586,
+        -0.9877340197563171
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 325408,
+      "componentType": 5126,
+      "count": 65,
+      "max": [
+        0.6510009169578552,
+        0.9767125248908997
+      ],
+      "min": [
+        0.5280102491378784,
+        0.8783232569694519
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 325928,
+      "componentType": 5126,
+      "count": 65,
+      "max": [
+        0.6510009169578552,
+        0.9767125248908997
+      ],
+      "min": [
+        0.5280102491378784,
+        0.8783232569694519
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 393744,
+      "componentType": 5125,
+      "count": 312,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 489672,
+      "componentType": 5126,
+      "count": 338,
+      "max": [
+        -88.12914276123047,
+        161.24331665039063,
+        5.588932991027832
+      ],
+      "min": [
+        -91.75730895996094,
+        154.95387268066406,
+        0.21634288132190704
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 493728,
+      "componentType": 5126,
+      "count": 338,
+      "max": [
+        0.9994882345199585,
+        0.9976148009300232,
+        0.9992085099220276
+      ],
+      "min": [
+        -0.9994153380393982,
+        -0.8811073303222656,
+        -0.9998459815979004
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 326448,
+      "componentType": 5126,
+      "count": 338,
+      "max": [
+        0.9773886799812317,
+        0.9580144882202148
+      ],
+      "min": [
+        0.49865537881851196,
+        0.4948497414588928
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 329152,
+      "componentType": 5126,
+      "count": 338,
+      "max": [
+        0.9773886799812317,
+        0.9580144882202148
+      ],
+      "min": [
+        0.49865537881851196,
+        0.4948497414588928
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 394992,
+      "componentType": 5125,
+      "count": 1806,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 497784,
+      "componentType": 5126,
+      "count": 184,
+      "max": [
+        -87.9350357055664,
+        160.8646697998047,
+        5.548259258270264
+      ],
+      "min": [
+        -92.06497192382813,
+        156.33868408203125,
+        1.8047019243240356
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 499992,
+      "componentType": 5126,
+      "count": 184,
+      "max": [
+        0.994789183139801,
+        0.8056303262710571,
+        0.9996538758277893
+      ],
+      "min": [
+        -0.9973686933517456,
+        -0.8247354030609131,
+        -0.9802682399749756
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 331856,
+      "componentType": 5126,
+      "count": 184,
+      "max": [
+        0.8324651122093201,
+        0.5225338339805603
+      ],
+      "min": [
+        0.45598074793815613,
+        0.24124296009540558
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 333328,
+      "componentType": 5126,
+      "count": 184,
+      "max": [
+        0.8324651122093201,
+        0.5225338339805603
+      ],
+      "min": [
+        0.45598074793815613,
+        0.24124296009540558
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 402216,
+      "componentType": 5125,
+      "count": 804,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 502200,
+      "componentType": 5126,
+      "count": 808,
+      "max": [
+        -89.34613037109375,
+        159.97967529296875,
+        4.797767639160156
+      ],
+      "min": [
+        -90.64099884033203,
+        157.18777465820313,
+        3.851325511932373
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 511896,
+      "componentType": 5126,
+      "count": 808,
+      "max": [
+        0.9964168667793274,
+        0.9950028657913208,
+        0.999902069568634
+      ],
+      "min": [
+        -0.9998341798782349,
+        -0.9967355728149414,
+        -0.9996717572212219
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 334800,
+      "componentType": 5126,
+      "count": 808,
+      "max": [
+        0.6399142742156982,
+        0.18874332308769226
+      ],
+      "min": [
+        0.019942887127399445,
+        0.009412740357220173
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 341264,
+      "componentType": 5126,
+      "count": 808,
+      "max": [
+        0.6399142742156982,
+        0.18874332308769226
+      ],
+      "min": [
+        0.019942887127399445,
+        0.009412740357220173
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 405432,
+      "componentType": 5125,
+      "count": 4536,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 521592,
+      "componentType": 5126,
+      "count": 622,
+      "max": [
+        -87.7052001953125,
+        161.0591583251953,
+        5.89128303527832
+      ],
+      "min": [
+        -92.28162384033203,
+        154.5623321533203,
+        -0.041437964886426926
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 529056,
+      "componentType": 5126,
+      "count": 622,
+      "max": [
+        0.9995558857917786,
+        0.9980225563049316,
+        0.9922972321510315
+      ],
+      "min": [
+        -0.9999538064002991,
+        -0.9863303899765015,
+        -0.9999264478683472
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 347728,
+      "componentType": 5126,
+      "count": 622,
+      "max": [
+        0.5033918023109436,
+        0.9717410802841187
+      ],
+      "min": [
+        0.014122881926596165,
+        0.2096404731273651
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 352704,
+      "componentType": 5126,
+      "count": 622,
+      "max": [
+        0.964259147644043,
+        1.0
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 357680,
+      "componentType": 5126,
+      "count": 622,
+      "max": [
+        0.5033918023109436,
+        0.9717410802841187
+      ],
+      "min": [
+        0.014122881926596165,
+        0.2096404731273651
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 423576,
+      "componentType": 5125,
+      "count": 3072,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 536520,
+      "componentType": 5126,
+      "count": 295,
+      "max": [
+        -88.80760192871094,
+        157.8592071533203,
+        3.2259488105773926
+      ],
+      "min": [
+        -90.01364135742188,
+        155.65257263183594,
+        0.6071144342422485
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 540060,
+      "componentType": 5126,
+      "count": 295,
+      "max": [
+        0.9707116484642029,
+        0.9926583170890808,
+        0.9936728477478027
+      ],
+      "min": [
+        -0.9985082149505615,
+        -0.9930265545845032,
+        -0.9663168787956238
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 362656,
+      "componentType": 5126,
+      "count": 295,
+      "max": [
+        0.9650449156761169,
+        0.9576089382171631
+      ],
+      "min": [
+        0.3663071393966675,
+        0.15692783892154694
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 365016,
+      "componentType": 5126,
+      "count": 295,
+      "max": [
+        0.9650449156761169,
+        0.9576089382171631
+      ],
+      "min": [
+        0.3663071393966675,
+        0.15692783892154694
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 435864,
+      "componentType": 5125,
+      "count": 1440,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 543600,
+      "componentType": 5126,
+      "count": 295,
+      "max": [
+        -89.98016357421875,
+        157.8592071533203,
+        3.226609468460083
+      ],
+      "min": [
+        -91.18512725830078,
+        155.65257263183594,
+        0.6112468242645264
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 547140,
+      "componentType": 5126,
+      "count": 295,
+      "max": [
+        0.9983539581298828,
+        0.9915280938148499,
+        0.9941636323928833
+      ],
+      "min": [
+        -0.9700714945793152,
+        -0.9945207834243774,
+        -0.9675625562667847
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 367376,
+      "componentType": 5126,
+      "count": 295,
+      "max": [
+        0.9803614616394043,
+        0.1645355224609375
+      ],
+      "min": [
+        0.5824387073516846,
+        0.013796516694128513
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 369736,
+      "componentType": 5126,
+      "count": 295,
+      "max": [
+        0.9803614616394043,
+        0.1645355224609375
+      ],
+      "min": [
+        0.5824387073516846,
+        0.013796516694128513
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 441624,
+      "componentType": 5125,
+      "count": 1440,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "prasanth.k (https://sketchfab.com/prasanth.k)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/lungs-2706caba9679481bb809f141f87d7c14",
+      "title": "Lungs"
+    },
+    "generator": "Sketchfab-12.67.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 447384,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 372096,
+      "byteOffset": 447384,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 550680,
+      "byteOffset": 819480,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 1370160,
+      "uri": "scene.bin"
+    }
+  ],
+  "extensionsRequired": [
+    "KHR_materials_pbrSpecularGlossiness"
+  ],
+  "extensionsUsed": [
+    "KHR_materials_pbrSpecularGlossiness"
+  ],
+  "images": [
+    {
+      "uri": "textures/Male_Anatomy_Pack_Complete_V05Male_Respiratory_System_V05Respiratoy_Lung_mat_diffuse.jpeg"
+    },
+    {
+      "uri": "textures/Male_Anatomy_Pack_Complete_V05Male_Respiratory_System_V05Respiratoy_Bronchi_mat_diffuse.jpeg"
+    },
+    {
+      "uri": "textures/Male_Anatomy_Pack_Complete_V05Male_Respiratory_System_V05Respiratory_Cricothyroid_Ligament_mat_diffuse.jpeg"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_pbrSpecularGlossiness": {
+          "diffuseFactor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "diffuseTexture": {
+            "index": 0
+          },
+          "glossinessFactor": 0.7186019857845551,
+          "specularFactor": [
+            0.15979455094881104,
+            0.15979455094881104,
+            0.15979455094881104
+          ]
+        }
+      },
+      "name": "Male_Anatomy_Pack_Complete_V05Male_Respiratory_System_V05Respiratoy_Lung_mat"
+    },
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_pbrSpecularGlossiness": {
+          "diffuseFactor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "diffuseTexture": {
+            "index": 1
+          },
+          "glossinessFactor": 0.2648091312625001,
+          "specularFactor": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "name": "Male_Anatomy_Pack_Complete_V05Male_Respiratory_System_V05Respiratoy_Bronchi_mat"
+    },
+    {
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_pbrSpecularGlossiness": {
+          "diffuseFactor": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "diffuseTexture": {
+            "index": 2
+          },
+          "glossinessFactor": 0.31622776601683794,
+          "specularFactor": [
+            0.22059628258212793,
+            0.22059628258212793,
+            0.22059628258212793
+          ]
+        }
+      },
+      "name": "Male_Anatomy_Pack_Complete_V05Male_Respiratory_System_V05Respiratory_Cricothyroid_Ligament_mat"
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Respiratoy_Lung_Geo_Right_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Lung_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2,
+            "TEXCOORD_1": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_Lung_Geo_Left_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Lung_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 6,
+            "POSITION": 5,
+            "TEXCOORD_0": 7,
+            "TEXCOORD_1": 8
+          },
+          "indices": 9,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_Bronchi_Geo_Right_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Bronchi_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 11,
+            "POSITION": 10,
+            "TEXCOORD_0": 12,
+            "TEXCOORD_1": 13
+          },
+          "indices": 14,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_Bronchi_Geo_Left_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Bronchi_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 16,
+            "POSITION": 15,
+            "TEXCOORD_0": 17,
+            "TEXCOORD_1": 18
+          },
+          "indices": 19,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_Trachea_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Bronchi_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 21,
+            "POSITION": 20,
+            "TEXCOORD_0": 22,
+            "TEXCOORD_1": 23
+          },
+          "indices": 24,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratory_Cricothyroid_Ligament_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 26,
+            "POSITION": 25,
+            "TEXCOORD_0": 27,
+            "TEXCOORD_1": 28
+          },
+          "indices": 29,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_Epiglotis_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 31,
+            "POSITION": 30,
+            "TEXCOORD_0": 32,
+            "TEXCOORD_1": 33
+          },
+          "indices": 34,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_Thyroid_Membrane_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 36,
+            "POSITION": 35,
+            "TEXCOORD_0": 37,
+            "TEXCOORD_1": 38
+          },
+          "indices": 39,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_Epiglotis_Inner_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 41,
+            "POSITION": 40,
+            "TEXCOORD_0": 42,
+            "TEXCOORD_1": 43
+          },
+          "indices": 44,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_Thyroid_Cartliage_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 46,
+            "POSITION": 45,
+            "TEXCOORD_0": 47,
+            "TEXCOORD_1": 48,
+            "TEXCOORD_2": 49
+          },
+          "indices": 50,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_True_Vocal_Fold_Geo_Left_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 52,
+            "POSITION": 51,
+            "TEXCOORD_0": 53,
+            "TEXCOORD_1": 54
+          },
+          "indices": 55,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Respiratoy_True_Vocal_Fold_Geo_Right_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 57,
+            "POSITION": 56,
+            "TEXCOORD_0": 58,
+            "TEXCOORD_1": 59
+          },
+          "indices": 60,
+          "material": 2,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.009999999776482582,
+        0.0,
+        0.0,
+        -0.009999999776482582,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "7631a5dbd93c4391b3ee6522db4f917f.fbx"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26
+      ],
+      "name": "group1"
+    },
+    {
+      "children": [
+        5
+      ],
+      "name": "Respiratoy_Lung_Geo_Right"
+    },
+    {
+      "mesh": 0,
+      "name": "Respiratoy_Lung_Geo_Right_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Lung_mat_0"
+    },
+    {
+      "children": [
+        7
+      ],
+      "name": "Respiratoy_Lung_Geo_Left"
+    },
+    {
+      "mesh": 1,
+      "name": "Respiratoy_Lung_Geo_Left_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Lung_mat_0"
+    },
+    {
+      "children": [
+        9
+      ],
+      "name": "Respiratoy_Bronchi_Geo_Right"
+    },
+    {
+      "mesh": 2,
+      "name": "Respiratoy_Bronchi_Geo_Right_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Bronchi_mat_0"
+    },
+    {
+      "children": [
+        11
+      ],
+      "name": "Respiratoy_Bronchi_Geo_Left"
+    },
+    {
+      "mesh": 3,
+      "name": "Respiratoy_Bronchi_Geo_Left_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Bronchi_mat_0"
+    },
+    {
+      "children": [
+        13
+      ],
+      "name": "Respiratoy_Trachea_Geo"
+    },
+    {
+      "mesh": 4,
+      "name": "Respiratoy_Trachea_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratoy_Bronchi_mat_0"
+    },
+    {
+      "children": [
+        15
+      ],
+      "name": "Respiratory_Cricothyroid_Ligament_Geo"
+    },
+    {
+      "mesh": 5,
+      "name": "Respiratory_Cricothyroid_Ligament_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0"
+    },
+    {
+      "children": [
+        17
+      ],
+      "name": "Respiratoy_Epiglotis_Geo"
+    },
+    {
+      "mesh": 6,
+      "name": "Respiratoy_Epiglotis_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0"
+    },
+    {
+      "children": [
+        19
+      ],
+      "name": "Respiratoy_Thyroid_Membrane_Geo"
+    },
+    {
+      "mesh": 7,
+      "name": "Respiratoy_Thyroid_Membrane_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0"
+    },
+    {
+      "children": [
+        21
+      ],
+      "name": "Respiratoy_Epiglotis_Inner_Geo"
+    },
+    {
+      "mesh": 8,
+      "name": "Respiratoy_Epiglotis_Inner_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0"
+    },
+    {
+      "children": [
+        23
+      ],
+      "name": "Respiratoy_Thyroid_Cartliage_Geo"
+    },
+    {
+      "mesh": 9,
+      "name": "Respiratoy_Thyroid_Cartliage_Geo_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0"
+    },
+    {
+      "children": [
+        25
+      ],
+      "name": "Respiratoy_True_Vocal_Fold_Geo_Left"
+    },
+    {
+      "mesh": 10,
+      "name": "Respiratoy_True_Vocal_Fold_Geo_Left_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0"
+    },
+    {
+      "children": [
+        27
+      ],
+      "name": "Respiratoy_True_Vocal_Fold_Geo_Right"
+    },
+    {
+      "mesh": 11,
+      "name": "Respiratoy_True_Vocal_Fold_Geo_Right_Male_Anatomy_Pack_Complete_V05:Male_Respiratory_System_V05:Respiratory_Cricothyroid_Ligament_mat_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ]
+}

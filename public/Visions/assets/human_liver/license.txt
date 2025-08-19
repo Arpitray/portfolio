@@ -1,0 +1,11 @@
+Model Information:
+* title:	Human Liver
+* source:	https://sketchfab.com/3d-models/human-liver-ffa6a425ecb04b229542a66d8df21e90
+* author:	Muhammad.Airil (https://sketchfab.com/Muhammad.Airil)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Human Liver" (https://sketchfab.com/3d-models/human-liver-ffa6a425ecb04b229542a66d8df21e90) by Muhammad.Airil (https://sketchfab.com/Muhammad.Airil) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
