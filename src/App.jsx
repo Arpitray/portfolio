@@ -10,6 +10,7 @@ import Loader from './assets/Components/Loader'
 import Showcase from "./assets/Components/Showcase"
 import PlayGround from './assets/Components/PlayGround'
 import PlaygroundPreview from "./assets/Components/PlaygroundPreview"
+import Visions from "./assets/Components/Visions"
 import Contact from "./assets/Components/Contact"
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
             <About />
             
             <Projects />
+            <Visions />
             <PlaygroundPreview />
             <Showcase />
             <Contact />
