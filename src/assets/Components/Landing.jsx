@@ -300,7 +300,7 @@ function Landing() {
           onPointerLeave={() => window.dispatchEvent(new Event('cursorGlass:show'))}
         >
           <div className="mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/20 backdrop-blur-[4px] backdrop-saturate-150 ring-1 ring-black/5 py-4 shadow-md">
+            <div className="mt-3 rounded-xl border border-white/10 bg-white/40 backdrop-blur-[4px] backdrop-saturate-150 ring-1 ring-black/5 py-4 shadow-md">
               <div className="h-12 px-4 flex items-center justify-between">
                 <button
                   type="button"
