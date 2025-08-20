@@ -9,7 +9,7 @@ import SandImage from './SandImage'
 import DecayCard from './DecayCard'
 
 export default function PlaygroundPreview({
-  image = '/PlayGround/virtual%20project/index.html',
+  image = '/PlayGround/virtual-project/index.html',
   title = 'DreadCell',
   description = 'This is my very first personal experimental project—built entirely from scratch using only HTML, CSS, and JavaScript, with no external libraries involved. Aiming to blend eerie, spooky vibes with a playful, interactive touch, the site invites visitors to explore a mysterious interface filled with cryptic prompts like “Move Left,” “Move Right,” “Zoom In,” “Tip,” “joke,” “⚗️fact,”—lighthearted elements woven into an unsettling digital landscape. With just a simple toggle to “Stop Sound,” Dreadcell teases your senses, offering a uniquely spooky yet fun user experience.'
 }) {
