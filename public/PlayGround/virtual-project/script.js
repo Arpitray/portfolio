@@ -297,10 +297,10 @@
   document.addEventListener("DOMContentLoaded", init);
 })();
   const soundMap = {
-    'cube-1': 'Assets/audio/sound.1.mp3',
-    'cube-3': 'Assets/audio/sound.3.mp3',
-    'cube-4': 'Assets/audio/sound.4.mp3',
-    'cube-5': 'Assets/audio/sound.2.mp3',
+    'cube-1': '../virtual project/Assets/audio/sound.1.mp3',
+    'cube-3': '../virtual project/Assets/audio/sound.3.mp3',
+    'cube-4': '../virtual project/Assets/audio/sound.4.mp3',
+    'cube-5': '../virtual project/Assets/audio/sound.2.mp3',
   };
 
   document.querySelectorAll('.cube').forEach(cube => {
@@ -315,7 +315,7 @@
     });
   });
  const soundDiv = document.querySelector(".flat.switch.hover.day");
-    const audio = document.getElementById("loop-sound");
+   const audio = document.getElementById("loop-sound");
 
     soundDiv.addEventListener("click", () => {
       if (audio.paused) {
