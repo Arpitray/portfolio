@@ -1,0 +1,7 @@
+node_modules
+.vscode
+public/PlayGround/virtual project
+src/assets/**/.*
+README.md
+*.log
+.DS_Store
