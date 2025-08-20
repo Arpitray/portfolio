@@ -1,8 +1,5 @@
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import img1 from './image1.png'
-import img2 from './image3.png'
-import img3 from './image4.png'
 import Image1 from './imag1.jpg'
 import Image2 from './load2.jpg'
 import Image3 from './load3.jpg'
@@ -182,17 +179,17 @@ const Loader = ({ onComplete } = {}) => {
     <div ref={containerRef} style={containerStyle}>
       <div style={stageStyle}>
   <div ref={el => imgRefs.current[0] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 10 }}>
-    <img className="loader-img" src={Image1} alt="i1" style={imgStyle} />
+    <img className="loader-img" src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/imag1_qig1hl.jpg" alt="i1" style={imgStyle} />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>Designing</div></div>
   </div>
 
   <div ref={el => imgRefs.current[1] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 20 }}>
-    <img className="loader-img" src={Image2} alt="i2" style={imgStyle} />
+    <img className="loader-img" src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load2_z4atye.jpg" alt="i2" style={imgStyle} />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>And</div></div>
   </div>
 
   <div ref={el => imgRefs.current[2] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 30 }}>
-    <img className="loader-img" src={Image3} alt="i3" style={imgStyle} />
+    <img className="loader-img" src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load3_oqxway.jpg" alt="i3" style={imgStyle} />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>developing</div></div>
   </div>
 
