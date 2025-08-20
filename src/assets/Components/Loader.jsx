@@ -110,32 +110,41 @@ const Loader = ({ onComplete } = {}) => {
 
   const stageStyle = {
     position: 'relative',
-    width: 360,
-    height: 260,
+  width: 360,
+  height: 340, // ensure stage is tall enough for the images to animate into center
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
   }
 
   const imgStyle = {
-    width: 280,
-    height: 340,
+    width: '100%',
+    height: 'calc(100% - 52px)', // fill the card up to the caption area
     borderRadius: 0,
     boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
-    position: 'absolute',
+    position: 'relative',
     objectFit: 'cover',
-    border: '6px solid white',
-    paddingBottom: "52px",
-    background:"#fff"
+    border: '12px solid white',
+    boxSizing: 'border-box',
+    background: 'transparent' // avoid white block before JS runs
   }
 
   const cardStyle = {
     width: 280,
     height: 340,
     position: 'absolute',
+    inset: 0, // absolute center both axes
+    margin: 'auto',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
+  }
+
+  // initial inline state matches the GSAP set() so the browser paints elements
+  // in the hidden/translated state before JS executes, preventing a flash.
+  const cardInitial = {
+  // let GSAP control translate (yPercent); only set opacity to avoid permanent hidden state
+  opacity: 0
   }
 
   const overlayTextStyle = {
@@ -146,10 +155,11 @@ const Loader = ({ onComplete } = {}) => {
     fontWeight: 700,
     left: 0,
     right: 0,
-    bottom: 0, // Align text to the bottom of the image
-    padding: '8px 0', // Add padding to center the text within the white area
-    background: '#fff', // Ensure text background matches the white padding
-    fontFamily: 'trial'
+  bottom: 0, // Align text to the bottom of the image
+  height: '52px', // fixed caption height to match image calc
+  padding: '8px 0', // Add padding to center the text within the white area
+  background: '#fff', // Ensure text background matches the white padding
+    fontFamily: 'trial',
   }
 
   const whiteOverlayStyle = {
@@ -162,21 +172,27 @@ const Loader = ({ onComplete } = {}) => {
     backgroundRepeat: 'repeat, repeat'
   }
 
+  // ensure overlay also doesn't flash before GSAP's timeline runs
+  const whiteInitial = {
+  // GSAP will set yPercent and autoAlpha; keep initial opacity 0 so element is hidden until animation
+  opacity: 0
+  }
+
   return (
     <div ref={containerRef} style={containerStyle}>
       <div style={stageStyle}>
-  <div ref={el => imgRefs.current[0] = el} style={{ ...cardStyle, zIndex: 10 }}>
-    <img src={Image1} alt="i1" style={imgStyle} />
+  <div ref={el => imgRefs.current[0] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 10 }}>
+    <img className="loader-img" src={Image1} alt="i1" style={imgStyle} />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>Designing</div></div>
   </div>
 
-  <div ref={el => imgRefs.current[1] = el} style={{ ...cardStyle, zIndex: 20 }}>
-    <img src={Image2} alt="i2" style={imgStyle} />
+  <div ref={el => imgRefs.current[1] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 20 }}>
+    <img className="loader-img" src={Image2} alt="i2" style={imgStyle} />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>And</div></div>
   </div>
 
-  <div ref={el => imgRefs.current[2] = el} style={{ ...cardStyle, zIndex: 30 }}>
-    <img src={Image3} alt="i3" style={imgStyle} />
+  <div ref={el => imgRefs.current[2] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 30 }}>
+    <img className="loader-img" src={Image3} alt="i3" style={imgStyle} />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>developing</div></div>
   </div>
 
@@ -184,7 +200,7 @@ const Loader = ({ onComplete } = {}) => {
   <div
     className='flex font-["demo"] justify-center loader-overlay pt-8 text-4xl'
     ref={whiteRef}
-    style={whiteOverlayStyle}
+    style={{ ...whiteOverlayStyle, ...whiteInitial, position: 'absolute', inset: 0, margin: 'auto', display: 'flex', alignItems: 'start', justifyContent: 'center' }}
   >Welcome</div>
       </div>
     </div>
