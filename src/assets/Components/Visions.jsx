@@ -10,7 +10,7 @@ import DecayCard from './DecayCard'
 import PG2 from './pg1.png'
 
 export default function Visions({
-  image = '/PlayGround/virtual project/index.html',
+  image = '/PlayGround/virtual-project/index.html',
   title = 'Visions',
   description = 'Visceral Visions is an interactive web project that lets users explore detailed 3D models of the human brain, heart, lungs, kidneys, liver, and stomach. Built with WebGL (via Three.js) and JavaScript, it delivers smooth real-time rendering and intuitive camera controls for rotation, zoom, and reset.',
   description2="Each organ is paired with clear educational text, making it both visually engaging and informative. Hosted on GitHub Pages, this project reflects my dedication to creating useful, immersive, and accessible learning experiences as my second major build.",

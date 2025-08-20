@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dreadcell</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    was<div id="room">
+  <div class="overlay darkness"></div>
+  <div class="overlay zoom"></div>
+  <div class="overlay inv-bg"></div>
+  <div class="room-wrap">
+    <div class="room">
+
+      <div class="wall wall-front">
+        <div class="div"><img src="Assets/photos/no e.png" alt=""></div>
+        <div class="flat door inner"></div>
+        <div class="flat door" data-title="Locked Door" data-comment="Get rid of the stranger first!"></div>
+      </div>
+
+      <div class="wall wall-left">
+        
+        <div class="cube shelf">
+          <div class="cube shelf-level level-1">
+            <div class="item gift" data-title="Nuclear?" data-item="bom" data-comment="feels heavy!!">
+              <div class="item-inner"></div>
+            </div>
+            <div class="item vhs" data-title="peppaa!" data-item="pig" data-comment="??">
+              <div class="item-inner"></div>
+            </div>
+            <div class="item mod" data-title="spoiled ig!" data-item="cake" data-comment="looks good?">
+              <div class="item-inner"></div>
+            </div>
+          </div>
+          <div class="cube shelf-level level-2">
+            <div class="item milk" data-title="duck!!" data-item="duck" data-comment="edible. wow!!">
+              <div class="item-inner"></div>
+            </div>
+            <div class="item scraps" data-title="Capybara!!" data-item="bara" data-comment="looks advanced">
+              <div class="item-inner"></div>
+            </div>
+            <div class="item book" data-title="Yummy" data-comment="Nugget" data-item="book">
+              <div class="item-inner"></div>
+            </div>
+          </div>
+          <div class="cube shelf-level level-3">
+            <div class="item item-cube left-cube" data-title="Minecraft!" data-comment="<q class='green'>whts this doing here?</q>">
+              <div class="cube minecraft"></div>
+            </div>
+            <div class="item item-cube right-cube" data-title="WhiteStone" data-comment="what is even that?">
+              <div class="cube cobblestone"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="wall wall-back">
+        
+        
+        <div class="flat switch hover day" data-title="Light Switch" data-comment="I'm not going anywhere"></div>
+        <div class="flat switch hover night" data-title="Light Switch" data-comment="betterr!"></div>
+        
+      </div>
+
+      <div class="wall wall-right wall-window">
+      </div>
+       <div class="wall wall-right wall-window2">
+      </div>
+
+      <div class="wall wall-top">
+      </div>
+
+      <div class="wall wall-bottom">
+           <div class="TV  cubeTv" data-title="A Mysterious Tv" data-comment="Nothing new!!">
+  <div class="face front"></div>
+  <div class="face back"></div>
+  <div class="face left"></div>
+  <div class="face right"></div>
+  <div class="face top"></div>
+  <div class="face bottom"></div>
+</div>
+      <div class="TV2  cubeTv2" data-title="Ugh!!" data-comment="Stinks">
+  <div class="face front"></div>
+  <div class="face back"></div>
+  <div class="face left"></div>
+  <div class="face right"></div>
+  <div class="face top"></div>
+  <div class="face bottom"></div>
+</div>
+<div data-title="Carefull" data-comment="Might be poisonous" class="moving-object"></div>
+<div class="chair">
+  <div class="gif"></div>
+</div>
+        <div class="grate flat" data-title="Grungy Grate" data-comment="I wonder whts down there!"></div>
+      </div>
+      
+      <div class="porthole day" data-title="Intriguing Porthole" data-comment="Whats there??"></div>
+      <div class="porthole night" data-title="Intrusive Porthole" data-comment="Think i'll Stay here!"></div>
+      <div class="porthole2 day" data-title="ohh!!" data-comment="There's Nothing"></div>
+      <div class="porthole2 night" data-title="ohh!!" data-comment="thats not blood ryt?"></div>
+      <div class="outside day face"></div>
+      <div class="outside night face"></div>
+
+      <div class="fan" data-title="Ceiling Fan" data-comment="WTH!!!">
+        <div class="blades"></div>
+      </div>
+
+      <div class="cage-wrap">
+        <div class="face2 cage hover" data-title="Stranger!! " data-comment="<q class='red'>Stay putttt!!!</q>"></div>
+        
+      </div>
+        <div class="cube Cube cube-2" data-title="Surprise! More Crates!"></div>
+        <div class="cube CuBe cube-3" data-title="new!"></div>
+      <div class="cube cUbe cube-5" data-title="A BIG Boring Crate"></div>
+      <div class="cube cUbe cube-6" data-title="A Little Boring Crate"></div>
+      <div class="cube cUbe cube-7" data-title="Another Boring Crate"></div>
+    </div>
+  </div>
+
+  <nav class="room-nav">
+    <button id="turnLeft" data-title="Move Left"><i>◀</i>
+      <span class="hidden">Move Left</span></button>
+    <button id="turnRight" data-title="Move Right"><i>▶</i>
+      <span class="hidden">Move Right</span></button>
+    <button id="inv" data-title="Bag"><i>👝</i>
+      <span class="hidden">Stuff</span></button>
+       <button id="zoom" data-title="Zoom In"><i>🔍</i>
+      <span class="hidden">Zoom In</span></button>
+    <button id="hint" data-title="Tip!"><i>💁</i>
+      <span class="hidden">Tip</span></button>
+      <button id="Joke" data-title="Joke!"><i>😁</i>
+      <span class="hidden">joke</span></button>
+      <button id="Facts" data-title="Facts!"><i>⚗️</i>
+      <span class="hidden">fact</span></button>
+       <button id="supernatural" data-title="SuperNatural faxx!"><i>🧟</i>
+      <span class="hidden">fact2</span></button>
+
+
+  </nav>
+
+  <div id="inventory" class="inventory-wrap">
+    <div class="inventory">
+      <div class="inv-head">
+        <div class="profile"></div>
+        <h3>What are these??</h3>
+      </div>
+      <ul id="invGrid">
+        <li id="inv1"></li>
+        <li id="inv2"></li>
+        <li id="inv3"></li>
+        <li id="inv4"></li>
+        <li id="inv5"></li>
+        <li id="inv6"></li>
+        <li id="inv7"></li>
+        <li id="inv8"></li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="dialog">
+  </div>
+
+  <div id="tooltip"></div>
+  <div id="itemCur"></div>
+
+</div>
+ <audio id="loop-sound" loop>
+    <source src="Assets/audio/backgroundSound (mp3cut.net).wav" type="audio/mpeg">
+  </audio>
+
+    <button id="stop-button">Stop Sound</button>
+    <script src="script.js"></script>
+</body>
+</html>

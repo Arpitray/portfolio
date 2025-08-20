@@ -5,7 +5,7 @@ export default function PlayGround() {
   // Spaces in folder names must be URL-encoded when used in `src`.
   // If possible, it's better to rename the folder to remove spaces (recommended).
   // Example PowerShell to rename: Rename-Item -Path "public/PlayGround/virtual project" -NewName "virtual-project"
-  const iframeSrc = '/PlayGround/virtual%20project/index.html'
+  const iframeSrc = '/PlayGround/virtual-project/index.html'
 
   const containerRef = useRef(null)
   const iframeRef = useRef(null)
