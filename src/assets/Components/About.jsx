@@ -78,7 +78,7 @@ function About() {
     const imgAnim = gsap.from(imageRef.current, {
       x: '-100%', // Start completely off-screen to the left
       opacity: 0,
-      duration: 1.5,
+      duration: 1,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: imageRef.current,

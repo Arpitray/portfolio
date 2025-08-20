@@ -9,8 +9,22 @@ import back1 from './back1.png'
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
 
+// Custom debounce function since gsap.utils.debounce might not be available
+const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
 function Projects() {
   const containerRef = useRef(null)
+  const projectsContainerRef = useRef(null) // Add ref for projects container
   const projectsRef = useRef([])
   const frameRefs = useRef([])
   const videoRefs = useRef([])
@@ -91,26 +105,155 @@ function Projects() {
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) return;
+    const projectsContainer = projectsContainerRef.current;
+    
+    // Early return if refs are not ready
+    if (!container || !projectsContainer) return;
+    
+    // Filter out null/undefined refs and ensure we have valid projects
+    const validProjects = projectsRef.current.filter(Boolean);
+    if (validProjects.length === 0) return;
 
-    // Optimize animations by batching them
-    gsap.to(projectsRef.current, {
-      y: 0,
-      opacity: 1,
-      scale: 1,
-      stagger: 0.2, // Stagger animations for better performance
-      duration: 0.8,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: container,
-        start: "top 80%",
-        end: "bottom 50%",
-        scrub: true, // Smooth scrolling
-      },
+    // Enable GSAP performance optimizations
+    gsap.config({ 
+      force3D: true, 
+      nullTargetWarn: false,
     });
 
+    // Set initial state for all project elements (no opacity/scale — only transform origin and perf)
+    gsap.set(validProjects, {
+      transformOrigin: "50% 50%",
+      force3D: true,
+    });
+
+    // Create optimized ScrollTrigger animation for projects grid with per-element directional entrances
+    const projectAnimations = validProjects.map((project, index) => {
+      if (!project) return null;
+
+      const isEvenProject = index % 2 === 0;
+
+      // Find description (text) and panel (visual) elements inside the project container
+      const textEl = project.querySelector('.text-start');
+      // panel has flex-1 and relative classes; query the nearest matching element
+      const panelEl = project.querySelector('.flex-1.relative') || project.querySelector('.flex-1');
+
+      // Determine from-direction offsets (opposite of their visual placement)
+      // If text is on the left (isEven), it should come from the right (+x), and panel from the left (-x), and vice versa.
+      const textFromX = isEvenProject ? 120 : -120;
+      const panelFromX = isEvenProject ? -140 : 140;
+
+      // Ensure we don't operate on nulls
+      const targets = [textEl, panelEl].filter(Boolean);
+
+      // Set only the initial x offset for each child to animate from opposite directions
+      gsap.set(targets, {
+        x: (i, el) => (el === textEl ? textFromX : panelFromX),
+        force3D: true,
+      });
+
+      // Build a timeline that animates text and panel into their final positions
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: project,
+          // trigger as soon as the element's top hits near the bottom of the viewport
+          start: 'top 100%',
+          // finish as it approaches the top
+          end: 'top -1%',
+          // snappier scrub for quicker reveal
+          scrub: 1,
+          invalidateOnRefresh: true,
+          once: false,
+        }
+      });
+
+  // Text should lead slightly, panel follows for a pleasing staggered entrance
+  if (textEl) tl.to(textEl, { x: 0, duration: 0.9, ease: 'power3.out' }, 0);
+  if (panelEl) tl.to(panelEl, { x: 0, duration: 1.1, ease: 'power3.out' }, 0.06);
+
+      return tl;
+    }).filter(Boolean);
+
+    // Enhanced batch animation for better performance and visual appeal
+    // Keep a lightweight batch that only ensures x positions are reset if needed
+    ScrollTrigger.batch(validProjects, {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          x: 0,
+          duration: 0.9,
+          ease: "power2.out",
+          stagger: {
+            amount: 0.25,
+            from: "start",
+          },
+          overwrite: true,
+          force3D: true,
+        });
+      },
+      // no opacity/scale changes on leave or enterBack — keep position-focused only
+      start: "top 95%",
+      end: "bottom 60%",
+      refreshPriority: 1,
+    });
+
+    // Add a subtle parallax effect for enhanced visual depth
+    validProjects.forEach((project, index) => {
+      if (!project) return;
+      
+      const parallaxElement = project.querySelector('.parallax-element') || project;
+      
+      gsap.to(parallaxElement, {
+        yPercent: -10,
+        ease: "none",
+        scrollTrigger: {
+          trigger: project,
+          // parallax begins when element top hits the bottom of viewport
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.5,
+          invalidateOnRefresh: true,
+        }
+      });
+    });
+
+    // Optimize ScrollTrigger refresh with debounced resize handler
+    const handleResize = debounce(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+
+    // Intersection Observer for additional performance optimization
+    const observerOptions = {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, observerOptions);
+
+    validProjects.forEach(project => {
+      if (project) observer.observe(project);
+    });
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      window.removeEventListener('resize', handleResize);
+      observer.disconnect();
+      // Clean up all animations and triggers with safety checks
+      projectAnimations.forEach(anim => {
+        if (anim && typeof anim.kill === 'function') {
+          anim.kill();
+        }
+      });
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (trigger && typeof trigger.kill === 'function') {
+          trigger.kill();
+        }
+      });
     };
   }, [])
 
@@ -185,7 +328,7 @@ function Projects() {
       </div>
 
       {/* Projects Container */}
-      <div className='flex-1 pb-20 '>
+      <div ref={projectsContainerRef} className='flex-1 pb-20 '>
         {projects.map((project, index) => {
           const isEven = index % 2 === 0
           
@@ -194,9 +337,14 @@ function Projects() {
               key={project.id}
               id={`project-${project.id}`}
               ref={el => projectsRef.current[index] = el}
-              className={` last:mb-0 font-['belly'] tracking-widest ${
+              className={`parallax-element last:mb-0 font-['belly'] tracking-widest transition-all duration-300 ${
                 isEven ? 'md:flex-row' : 'md:flex-row-reverse'
               } flex flex-col md:flex-row gap-8 md:gap-6 px-6 md:px-16 lg:px-4 items-center`}
+              style={{ 
+                willChange: 'transform, opacity',
+                backfaceVisibility: 'hidden',
+                perspective: '1000px'
+              }}
             >
               {/* Project Description */}
               <div className='text-start w-full md:w-1/2 px-4 md:px-8 font-["demo"]'>
@@ -281,7 +429,6 @@ function Projects() {
                           playsInline
                           autoPlay
                           onEnded={() => handleVideoEnd(index)}
-                          poster="https://via.placeholder.com/800x720/4F46E5/FFFFFF?text=Video+Preview"
                         />
                       </div>
                     </div>
