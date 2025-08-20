@@ -64,7 +64,7 @@ export default function PlaygroundPreview({
           <h3 className="text-black font-[100] tracking-tight text-start text-[34px] sm:text-[40px] md:text-[88px] lg:text-[84px]">{title}</h3>
           <p className="text-[30px] text-black/90 leading-10 tracking-wide font-semibold  font-['pepper']">{description}</p>
           <div className="mt-6">
-            <button onClick={() => nav('/playground')} className="inline-flex items-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-bold">Visit</button>
+            <button onClick={() => { window.location.href = '/PlayGround/virtual%20project/index.html' }} className="inline-flex items-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-bold">Visit</button>
           </div>
         </div>
         </div>
