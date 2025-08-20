@@ -20,13 +20,19 @@ export default function PlayGround() {
       el.style.opacity = '1'
       el.style.transform = 'translateY(0)'
     }
+    let attached = false
+    if (typeof window !== 'undefined' && window.__loaderComplete) {
+      requestAnimationFrame(() => show())
+    } else {
+      window.addEventListener('loaderComplete', show)
+      attached = true
+    }
 
-    window.addEventListener('loaderComplete', show)
-    // fallback: show after a short delay in case loader already finished
-    const t = setTimeout(show, 120)
+    // fallback: show after a short delay in case events are missed
+    const t = setTimeout(() => show(), 120)
 
     return () => {
-      window.removeEventListener('loaderComplete', show)
+      if (attached) window.removeEventListener('loaderComplete', show)
       clearTimeout(t)
     }
   }, [])

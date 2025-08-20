@@ -187,19 +187,33 @@ function Landing() {
     }
 
     // Pause timeline and wait for the loader to finish.
-    // The loader will dispatch a global 'startLanding' or 'loaderComplete' event when it's ready.
+    // If the loader already finished earlier (for example events fired while
+    // the page was backgrounded), play immediately using the global flag.
+    // The loader normally dispatches a global 'startLanding' or 'loaderComplete'
+    // event when it's ready.
     tl.pause()
 
+    let listenersAttached = false
     const startHandler = () => {
       try {
         tl.play()
       } catch (e) { /* noop */ }
-      window.removeEventListener('startLanding', startHandler)
-      window.removeEventListener('loaderComplete', startHandler)
+      if (listenersAttached) {
+        window.removeEventListener('startLanding', startHandler)
+        window.removeEventListener('loaderComplete', startHandler)
+        listenersAttached = false
+      }
     }
 
-  window.addEventListener('startLanding', startHandler)
-  window.addEventListener('loaderComplete', startHandler)
+    // If loader already completed (set by App.onLoaderComplete), start immediately.
+    if (typeof window !== 'undefined' && window.__loaderComplete) {
+      // give React/DOM a tick so any layout fixes apply, then play
+      requestAnimationFrame(() => startHandler())
+    } else {
+      window.addEventListener('startLanding', startHandler)
+      window.addEventListener('loaderComplete', startHandler)
+      listenersAttached = true
+    }
 
     // notify other components that the entrance animation finished
     tl.call(() => window.dispatchEvent(new Event('landingTextAnimated')))
