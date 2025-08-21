@@ -8,6 +8,7 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
   const rafRef = useRef(null)
   const hiddenRef = useRef(false)
   const lastPointerRef = useRef({ x: -9999, y: -9999 })
+  const clickableHideRef = useRef(false)
   const [customText, setCustomText] = useState(null)
   const location = useLocation()
 
@@ -119,8 +120,44 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
         setCustomText(null)
       }
       
-      // if an external hide is active, don't update the visible target
-      if (hiddenRef.current) return
+      // determine if cursor is over a clickable element; if so, show native pointer and hide glass
+      const isClickableNode = (node) => {
+        try {
+          let el = node
+          while (el) {
+            if (!el.tagName) return false
+            const tag = el.tagName.toLowerCase()
+            if (['a', 'button', 'input', 'textarea', 'select', 'label'].includes(tag)) return true
+            const role = el.getAttribute && el.getAttribute('role')
+            if (role === 'button') return true
+            if (el.getAttribute && el.getAttribute('onclick')) return true
+            if (el.tabIndex >= 0) return true
+            if (el.contentEditable === 'true') return true
+            el = el.parentElement
+          }
+        } catch (e) {}
+        return false
+      }
+
+      const clickable = isClickableNode(elementUnderCursor)
+      if (clickable && !clickableHideRef.current) {
+        clickableHideRef.current = true
+        try { document.documentElement.style.cursor = '' } catch (e) {}
+        try { el.style.opacity = '0' } catch (e) {}
+        // don't update target while native pointer is shown
+        return
+      }
+
+      if (!clickable && clickableHideRef.current) {
+        clickableHideRef.current = false
+        if (!hiddenRef.current) {
+          try { document.documentElement.style.cursor = 'none' } catch (e) {}
+          try { el.style.opacity = '1' } catch (e) {}
+        }
+      }
+
+      // if an external hide is active, or we're intentionally hidden over a clickable, don't update the visible target
+      if (hiddenRef.current || clickableHideRef.current) return
       targetRef.current.x = x
       targetRef.current.y = y
       // make sure the glass is visible when pointer moves
@@ -189,7 +226,12 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
             try {
               const clickable = isClickable(e.target)
               if (clickable) {
-                // show and snap to pointer
+                // hide glass and show native pointer when over interactive elements
+                clickableHideRef.current = true
+                onHide()
+              } else {
+                // show glass when over non-interactive areas
+                clickableHideRef.current = false
                 onShow()
                 // ensure position updates immediately
                 const rect = iframe.getBoundingClientRect()
@@ -199,9 +241,6 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
                 lastPointerRef.current.y = y
                 targetRef.current.x = x
                 targetRef.current.y = y
-              } else {
-                // hide when not over interactive element
-                onHide()
               }
             } catch (e) {}
           }
@@ -211,7 +250,13 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
             try {
               const related = e.relatedTarget
               const nowClickable = related && isClickable(related)
-              if (!nowClickable) onHide()
+              if (nowClickable) {
+                clickableHideRef.current = true
+                onHide()
+              } else {
+                clickableHideRef.current = false
+                onShow()
+              }
             } catch (e) {}
           }
 
@@ -221,8 +266,8 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
           cw.addEventListener('pointerover', onIframePointerOver)
           cw.addEventListener('pointerout', onIframePointerOut)
           cw.addEventListener('pointerdown', (e) => {
-            // show on pointerdown if clicking an interactive element
-            try { if (isClickable(e.target)) onShow() } catch (e) {}
+            // ensure native pointer when clicking interactive elements inside iframe
+            try { if (isClickable(e.target)) { clickableHideRef.current = true; onHide() } } catch (e) {}
           })
 
           // also handle when pointer leaves the iframe element itself
@@ -235,13 +280,27 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
       })
     } catch (e) {}
 
-    // Follow loop with easing (higher = snappier)
-    const ease = 0.7
+    // Follow loop with easing (higher = snappier).
+    // Use a high-but-stable lerp factor and snap when very close to remove subtle lag.
+    const ease = 1
     const loop = () => {
       const p = posRef.current
       const t = targetRef.current
-      p.x += (t.x - p.x) * ease
-      p.y += (t.y - p.y) * ease
+
+      // If target is sentinel off-screen, jump instantly to avoid long drifts
+      if (t.x === -9999 && t.y === -9999) {
+        p.x = t.x
+        p.y = t.y
+      } else {
+        // Lerp towards target; snap when within a pixel or two
+        p.x += (t.x - p.x) * ease
+        p.y += (t.y - p.y) * ease
+        if (Math.abs(t.x - p.x) + Math.abs(t.y - p.y) < 0.7) {
+          p.x = t.x
+          p.y = t.y
+        }
+      }
+
       // position the element offset so it centers on the pointer
       el.style.transform = `translate3d(${p.x - size/2}px, ${p.y - size/2}px, 0) scale(1)`
       rafRef.current = requestAnimationFrame(loop)
