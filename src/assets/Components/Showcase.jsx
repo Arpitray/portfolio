@@ -1,16 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import imgA from './image1.png'
-import imgB from './image3.png'
-import imgC from './image4.png'
-import imgD from './image1.png'
-import ss1 from './ss1.png'
-import ss2 from './ss2.png'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import SC1 from './sc1.png'
-import SC2 from './sc2.png'
-import SC3 from './sc3.png'
-import SC4 from './sc4.png'
+
 
 // Showcase: pinned area that lasts ~200vh with four vertical slips (columns).
 // Each slip contains two tall screenshots stacked vertically. As you scroll while
@@ -207,45 +198,44 @@ export default function Showcase() {
   }
 
   return (
-    <section className='showcase-outer px-6 overflow-hidden' ref={outerRef} style={outerStyle} aria-hidden={false}>
+    <section className='showcase-outer  overflow-hidden' ref={outerRef} style={outerStyle} aria-hidden={false}>
       <div ref={stickyRef} style={stickyStyle}>
-        <div style={colsWrap}>
-          <div style={colOuter} ref={el => (wrapRefs.current[0] = el)}>
+        <div  style={colsWrap}>
+          <div style={colOuter} className='mx-8' ref={el => (wrapRefs.current[0] = el)}>
             <div ref={el => (colRefs.current[0] = el)} style={innerImgContainer}>
-              <div style={imgWrapStyle}><img src={SC1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766127/sc1_wac5g1.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/ss1_paw1nh.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766127/sc1_wac5g1.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/ss1_paw1nh.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766127/sc1_wac5g1.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/ss1_paw1nh.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766127/sc1_wac5g1.png" alt='' style={imgStyle} /></div>
             </div>
           </div>
 
-          <div style={colOuter} ref={el => (wrapRefs.current[1] = el)}>
+          <div style={colOuter} className='mr-8' ref={el => (wrapRefs.current[1] = el)}>
             <div ref={el => (colRefs.current[1] = el)} style={innerImgContainer}>
-              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss1} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={ss2} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC2} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766129/sc2_bunhhj.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766129/sc2_bunhhj.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/ss1_paw1nh.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766129/sc2_bunhhj.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766412/ss2_y3kvc7.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766129/sc2_bunhhj.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766412/ss2_y3kvc7.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766129/sc2_bunhhj.png" alt='' style={imgStyle} /></div>
             </div>
           </div>
 
           <div style={colOuter} ref={el => (wrapRefs.current[2] = el)}>
             <div ref={el => (colRefs.current[2] = el)} style={innerImgContainer}>
-              <div style={imgWrapStyle}><img src={SC3} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC4} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC3} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC4} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC3} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC4} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC3} alt='' style={imgStyle} /></div>
-              <div style={imgWrapStyle}><img src={SC4} alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766132/sc3_ropu29.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/sc4_dbza1r.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766132/sc3_ropu29.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/sc4_dbza1r.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766132/sc3_ropu29.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/sc4_dbza1r.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766132/sc3_ropu29.png" alt='' style={imgStyle} /></div>
+              <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/sc4_dbza1r.png" alt='' style={imgStyle} /></div>
             </div>
           </div>
         </div>
