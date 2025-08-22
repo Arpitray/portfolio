@@ -7,7 +7,10 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
   const [enabled, setEnabled] = useState(() => {
     try {
       return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(min-width: 1024px)').matches
-    } catch (e) { return false }
+    } catch (error) { 
+      console.warn('Failed to detect desktop:', error)
+      return false 
+    }
   })
   // keep a listener so changing orientation/resize updates enablement
   useEffect(() => {
@@ -17,8 +20,12 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
     if (mql.addEventListener) mql.addEventListener('change', onChange)
     else if (mql.addListener) mql.addListener(onChange)
     return () => {
-      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (e) {}
-      try { if (mql.removeListener) mql.removeListener(onChange) } catch (e) {}
+      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (error) {
+        console.warn('Failed to remove event listener:', error)
+      }
+      try { if (mql.removeListener) mql.removeListener(onChange) } catch (error) {
+        console.warn('Failed to remove listener:', error)
+      }
     }
   }, [])
   const posRef = useRef({ x: -9999, y: -9999 })
@@ -48,10 +55,14 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
   // re-enable hiding transition for normal behavior (no transform easing)
   el.style.transition = 'opacity 120ms ease'
         // hide native cursor again so glass can manage appearance
-        try { document.documentElement.style.cursor = 'none' } catch (e) {}
+        try { document.documentElement.style.cursor = 'none' } catch (error) {
+          console.warn('Failed to hide cursor:', error)
+        }
       }
-    } catch (e) {}
-  }, [location && location.pathname])
+    } catch (error) {
+      console.warn('Failed to handle route-based cursor visibility:', error)
+    }
+  }, [location])
 
   // Don't exit early here; keep hooks order stable across renders.
 
@@ -61,7 +72,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
 
     // If disabled (mobile/tablet), skip attaching listeners
     if (!enabled) {
-      try { document.documentElement.style.cursor = '' } catch (e) {}
+      try { document.documentElement.style.cursor = '' } catch (error) {
+        console.warn('Failed to restore cursor:', error)
+      }
       return
     }
 
@@ -74,7 +87,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
         hiddenRef.current = true
         el.style.opacity = '0'
         document.documentElement.style.cursor = ''
-      } catch (e) {}
+      } catch (error) {
+        console.warn('Failed to hide cursor glass:', error)
+      }
     }
 
     const onShow = () => {
@@ -116,7 +131,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
         setTimeout(() => {
           hiddenRef.current = false
         }, 180)
-      } catch (e) {}
+      } catch (error) {
+        console.warn('Failed to show cursor glass:', error)
+      }
     }
 
     // Handler for custom text updates
@@ -162,15 +179,21 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
             if (el.contentEditable === 'true') return true
             el = el.parentElement
           }
-        } catch (e) {}
+        } catch (error) {
+          console.warn('Failed to check clickable element:', error)
+        }
         return false
       }
 
       const clickable = isClickableNode(elementUnderCursor)
       if (clickable && !clickableHideRef.current) {
         clickableHideRef.current = true
-        try { document.documentElement.style.cursor = '' } catch (e) {}
-        try { el.style.opacity = '0' } catch (e) {}
+        try { document.documentElement.style.cursor = '' } catch (error) {
+          console.warn('Failed to show native cursor:', error)
+        }
+        try { el.style.opacity = '0' } catch (error) {
+          console.warn('Failed to hide glass:', error)
+        }
         // don't update target while native pointer is shown
         return
       }
@@ -178,8 +201,12 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
       if (!clickable && clickableHideRef.current) {
         clickableHideRef.current = false
         if (!hiddenRef.current) {
-          try { document.documentElement.style.cursor = 'none' } catch (e) {}
-          try { el.style.opacity = '1' } catch (e) {}
+          try { document.documentElement.style.cursor = 'none' } catch (error) {
+            console.warn('Failed to hide native cursor:', error)
+          }
+          try { el.style.opacity = '1' } catch (error) {
+            console.warn('Failed to show glass:', error)
+          }
         }
       }
 
@@ -245,7 +272,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
                 if (el.contentEditable === 'true') return true
                 el = el.parentElement
               }
-            } catch (e) {}
+            } catch (error) {
+              console.warn('Failed to check iframe clickable element:', error)
+            }
             return false
           }
 
@@ -269,7 +298,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
                 targetRef.current.x = x
                 targetRef.current.y = y
               }
-            } catch (e) {}
+            } catch (error) {
+              console.warn('Failed to handle iframe pointer over:', error)
+            }
           }
 
           const onIframePointerOut = (e) => {
@@ -284,7 +315,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
                 clickableHideRef.current = false
                 onShow()
               }
-            } catch (e) {}
+            } catch (error) {
+              console.warn('Failed to handle iframe pointer out:', error)
+            }
           }
 
           // add listeners on the iframe's window so internal pointer moves are caught
@@ -294,18 +327,22 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
           cw.addEventListener('pointerout', onIframePointerOut)
           cw.addEventListener('pointerdown', (e) => {
             // ensure native pointer when clicking interactive elements inside iframe
-            try { if (isClickable(e.target)) { clickableHideRef.current = true; onHide() } } catch (e) {}
+            try { if (isClickable(e.target)) { clickableHideRef.current = true; onHide() } } catch (error) {
+              console.warn('Failed to handle iframe click:', error)
+            }
           })
 
           // also handle when pointer leaves the iframe element itself
           iframe.addEventListener('pointerleave', onIframeLeave)
 
           iframeListeners.push({ iframe, cw, onIframeMove, onIframeLeave, onIframePointerOver, onIframePointerOut })
-        } catch (e) {
-          // cross-origin iframes will throw; ignore them
+        } catch (error) {
+          console.warn('Cross-origin iframe access denied:', error)
         }
       })
-    } catch (e) {}
+    } catch (error) {
+      console.warn('Failed to setup iframe listeners:', error)
+    }
 
     // Follow loop with immediate snapping (no easing) so the glass follows the pointer exactly.
     const loop = () => {
@@ -338,11 +375,19 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
       // cleanup iframe listeners
       try {
         iframeListeners.forEach(({ iframe, cw, onIframeMove, onIframeLeave }) => {
-          try { if (cw && cw.removeEventListener) cw.removeEventListener('pointermove', onIframeMove) } catch (e) {}
-          try { if (cw && cw.removeEventListener) cw.removeEventListener('pointerleave', onIframeLeave) } catch (e) {}
-          try { iframe.removeEventListener('pointerleave', onIframeLeave) } catch (e) {}
+          try { if (cw && cw.removeEventListener) cw.removeEventListener('pointermove', onIframeMove) } catch (error) {
+            console.warn('Failed to remove iframe pointermove listener:', error)
+          }
+          try { if (cw && cw.removeEventListener) cw.removeEventListener('pointerleave', onIframeLeave) } catch (error) {
+            console.warn('Failed to remove iframe pointerleave listener:', error)
+          }
+          try { iframe.removeEventListener('pointerleave', onIframeLeave) } catch (error) {
+            console.warn('Failed to remove iframe element listener:', error)
+          }
         })
-      } catch (e) {}
+      } catch (error) {
+        console.warn('Failed to cleanup iframe listeners:', error)
+      }
       document.documentElement.style.cursor = ''
     }
   }, [size, enabled])

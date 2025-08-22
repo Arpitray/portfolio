@@ -62,8 +62,8 @@ export default function PlayGround() {
         cw.addEventListener('pointermove', onEnter)
         cw.addEventListener('pointerleave', onLeave)
       }
-    } catch (e) {
-      // cross-origin iframe will throw; ignore silently
+    } catch (error) {
+      console.warn('Cross-origin iframe access denied:', error)
     }
 
     return () => {
@@ -74,9 +74,11 @@ export default function PlayGround() {
           cw.removeEventListener('pointermove', onEnter)
           cw.removeEventListener('pointerleave', onLeave)
         }
-      } catch (e) {}
+      } catch (error) {
+        console.warn('Failed to remove iframe listeners:', error)
+      }
     }
-  }, [iframeRef.current])
+  }, []) // Fixed dependency array
 
   return (
     <main style={{ minHeight: '100vh', background: '#E1E1E1' }}>

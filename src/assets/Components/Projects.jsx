@@ -1,9 +1,7 @@
 import React, { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import ScrollVelocity from './ScrollVelocity'
-import maincam from './maincam.jpg'
 import back1 from './back1.png'
 
 // Register ScrollTrigger plugin
@@ -196,7 +194,7 @@ function Projects() {
     });
 
     // Add a subtle parallax effect for enhanced visual depth
-    validProjects.forEach((project, index) => {
+    validProjects.forEach((project) => {
       if (!project) return;
       
       const parallaxElement = project.querySelector('.parallax-element') || project;
@@ -304,8 +302,8 @@ function Projects() {
             try {
               videoEl.currentTime = 0
               videoEl.play()
-            } catch (e) {
-              // ignore autoplay errors
+            } catch (error) {
+              console.warn('Video autoplay failed:', error)
             }
           }
         }

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { motion } from 'framer-motion'
 import Polaroid from './sc1.png'
 import DragSvg from './drag.svg'
 import Arpit3 from './Arpit3.png'
@@ -11,7 +10,6 @@ export default function Contact() {
   const polaroidRef = useRef(null)
   const revealRef = useRef(null)
   const [dropped, setDropped] = useState(false)
-  const [cursorText, setCursorText] = useState('')
   const [isMobile, setIsMobile] = useState(false)
   const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 })
 
@@ -95,7 +93,9 @@ export default function Contact() {
       polaroid.style.pointerEvents = 'auto'
       polaroid.style.cursor = 'grabbing'
       polaroid.style.zIndex = '9999'
-    } catch (e) {}
+    } catch (error) {
+      console.warn('Failed to set polaroid drag styles:', error)
+    }
   }
 
   const handleDrag = () => {
@@ -121,13 +121,13 @@ export default function Contact() {
   }
 
   const handleMouseEnter = () => {
-    setCursorText('drag')
+    // setCursorText('drag') // Removed unused variable
     // Dispatch custom event to update cursor glass text
     window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: 'DRAG' }))
   }
 
   const handleMouseLeave = () => {
-    setCursorText('')
+    // setCursorText('') // Removed unused variable
     // Reset cursor glass to default text
     window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: null }))
   }

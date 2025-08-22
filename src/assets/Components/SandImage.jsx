@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 
-const SandImage = ({ src, width = 800, height = 750, activationRect = null, cursorGlassSize = 90, cursorRingPadding = 12, uRadiusProp = null, showOverlay = true }) => {
+const SandImage = ({ src, width = 800, height = 750, activationRect = null, cursorGlassSize = 90, uRadiusProp = null, showOverlay = true }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -49,9 +49,13 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null, curs
   renderer.setSize(width, height, false);
     // three r150+ removed outputEncoding; use outputColorSpace instead
     if ('outputColorSpace' in renderer) {
-      try { renderer.outputColorSpace = THREE.SRGBColorSpace; } catch (e) {}
+      try { renderer.outputColorSpace = THREE.SRGBColorSpace; } catch (error) {
+        console.warn('Failed to set outputColorSpace:', error)
+      }
     } else if ('outputEncoding' in renderer) {
-      try { renderer.outputEncoding = THREE.sRGBEncoding; } catch (e) {}
+      try { renderer.outputEncoding = THREE.sRGBEncoding; } catch (error) {
+        console.warn('Failed to set outputEncoding:', error)
+      }
     }
   containerRef.current.appendChild(renderer.domElement);
   // ensure the canvas fills the container but keeps pixelated rendering
@@ -215,7 +219,9 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null, curs
       // recompute normalized radius on resize so pixel radius matches CursorGlass
       try {
         uniforms.uRadius.value = computeNormalizedRadius(w, h);
-      } catch (e) {}
+      } catch (error) {
+        console.warn('Failed to update radius uniform:', error)
+      }
       camera.left = -w / 2; camera.right = w / 2; camera.top = h / 2; camera.bottom = -h / 2; camera.updateProjectionMatrix();
     };
     window.addEventListener('resize', handleResize);
@@ -226,7 +232,9 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null, curs
           containerRef.current.removeEventListener('pointermove', onPointerMove);
           containerRef.current.removeEventListener('pointerenter', onEnter);
           containerRef.current.removeEventListener('pointerleave', onLeave);
-        } catch (e) {}
+        } catch (error) {
+          console.warn('Failed to remove pointer listeners:', error)
+        }
       }
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(rafId);
@@ -234,11 +242,21 @@ const SandImage = ({ src, width = 800, height = 750, activationRect = null, curs
         if (renderer && renderer.domElement) {
           if (renderer.domElement.parentNode) renderer.domElement.parentNode.removeChild(renderer.domElement);
         }
-      } catch (e) {}
-      try { material && material.dispose(); } catch (e) {}
-      try { geom && geom.dispose(); } catch (e) {}
-      try { texture && texture.dispose && texture.dispose(); } catch (e) {}
-      try { renderer && renderer.dispose && renderer.dispose(); } catch (e) {}
+      } catch (error) {
+        console.warn('Failed to remove renderer element:', error)
+      }
+      try { material && material.dispose(); } catch (error) {
+        console.warn('Failed to dispose material:', error)
+      }
+      try { geom && geom.dispose(); } catch (error) {
+        console.warn('Failed to dispose geometry:', error)
+      }
+      try { texture && texture.dispose && texture.dispose(); } catch (error) {
+        console.warn('Failed to dispose texture:', error)
+      }
+      try { renderer && renderer.dispose && renderer.dispose(); } catch (error) {
+        console.warn('Failed to dispose renderer:', error)
+      }
     };
   }, [src, width, height]);
 

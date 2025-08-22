@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useRef, useLayoutEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { gsap } from 'gsap'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -28,9 +28,11 @@ function Landing() {
       // start from hidden state to avoid flash; only animate opacity (no vertical motion)
       gsapCore.set(el, { autoAlpha: 0, force3D: true })
       const id = gsapCore.to(el, { autoAlpha: 1, duration: 1, ease: 'power3.out' })
-      return () => { try { id.kill() } catch (e) {} }
-    } catch (e) {
-      // noop
+      return () => { try { id.kill() } catch (error) { 
+        console.warn('Failed to kill GSAP animation:', error)
+      } }
+    } catch (error) {
+      console.warn('Portal nav animation failed:', error)
     }
   }, [navVisible])
   // close mobile menu if nav hides or when route changes
@@ -48,169 +50,114 @@ function Landing() {
   const navItems = [
     { label: 'HOME', href: '#home' },
   { label: 'ABOUT', href: '#about' },
-  { label: 'PLAYGROUND', href: '/playground' },
-  { label: 'WORK', href: '#work' },
-  { label: 'CONTACT', href: '#contact' }
+    { label: 'WORK', href: '#work' },
+    { label: 'PLAYGROUND', href: '#playground' },
+    { label: 'CONTACT', href: '#contact' },
   ]
 
-  useEffect(() => {
-    // Show nav once loader finished or when user navigates directly to landing
-    const showNav = () => setNavVisible(true)
-    const hideNav = () => setNavVisible(false)
+  // const hideNav = () => setNavVisible(false) // Removed unused function
 
-    // if already on landing (direct open), show nav only after loader finishes
-    if (location && (location.pathname === '/' || location.pathname === '')) {
-      // If loader already finished earlier, show immediately
-      if (typeof window !== 'undefined' && window.__loaderComplete) {
-        showNav()
-        return
-      }
-      // otherwise wait for loaderComplete event
-      window.addEventListener('loaderComplete', showNav)
-      return () => { window.removeEventListener('loaderComplete', showNav) }
-    }
-    const section = sectionRef.current
-    if (!section) return
-
-    // Ensure starting position is normalized and repeat is enabled using GSAP (no CSS keyframes)
-    gsap.set(section, {
-      backgroundPosition: '0px 0px, 0px 0px',
-      backgroundRepeat: 'repeat',
-    })
-
-    // Two layered backgrounds already defined in CSS with background-size 60px 60px
-    // Animate Y position by 60px for a seamless loop
-    const animation = gsap.to(section, {
-      backgroundPositionY: '+=60px, +=60px',
-      duration: 1,
-      ease: 'linear',
-      repeat: -1,
-    })
-
-    return () => {
-      animation.kill()
-    }
-  }, [])
-
+  // main heading animation
   const headingRef = useRef(null)
   const heroBlockRef = useRef(null)
-  const originalHeadingHtmlRef = useRef('')
+  const originalHeadingHtmlRef = useRef(null)
 
+  // Text animation that waits for loader to complete or the 'startLanding' event
   useLayoutEffect(() => {
+    if (!headingRef.current) return
+    
     const heading = headingRef.current
-    if (!heading) return
+    let didSplit = false
 
-    originalHeadingHtmlRef.current = heading.innerHTML
+    // Check if the heading has already been split into spans (e.g., by a previous effect run)
+    const existingSpans = heading.querySelectorAll('span[data-char]')
+    if (existingSpans.length === 0) {
+      // Store original HTML before any manipulation
+      originalHeadingHtmlRef.current = heading.innerHTML
 
-    const splitText = (rootEl) => {
-      // split text nodes into per-letter inner spans so each character can be
-      // animated/targeted independently by other components (canvas)
-      const animatedSpans = []
-      const walker = document.createTreeWalker(
-        rootEl,
-        NodeFilter.SHOW_TEXT,
-        {
-          acceptNode: (node) => (node.nodeValue && node.nodeValue.trim().length ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT),
-        },
-      )
-      const textNodes = []
-      while (walker.nextNode()) textNodes.push(walker.currentNode)
-
-      const wrapLetters = (textNode) => {
-        const text = textNode.nodeValue
-        const frag = document.createDocumentFragment()
-        for (let i = 0; i < text.length; i++) {
-          const ch = text[i]
-          if (ch === ' ' || ch === '\t' || ch === '\n') {
-            frag.appendChild(document.createTextNode(ch))
-            continue
-          }
-          const outer = document.createElement('span')
-          outer.style.display = 'inline-block'
-          outer.style.overflow = 'hidden'
-          outer.style.verticalAlign = 'bottom'
-          const inner = document.createElement('span')
-          inner.setAttribute('data-letter', '')
-          inner.textContent = ch
-          inner.style.display = 'inline-block'
-          outer.appendChild(inner)
-          frag.appendChild(outer)
-          animatedSpans.push(inner)
+      // Split text content into individual character spans for animation
+      const splitText = (element) => {
+        const walker = document.createTreeWalker(
+          element,
+          NodeFilter.SHOW_TEXT,
+          null,
+          false
+        )
+        const textNodes = []
+        let node
+        while ((node = walker.nextNode())) {
+          if (node.nodeValue.trim()) textNodes.push(node)
         }
-        textNode.parentNode.replaceChild(frag, textNode)
+
+        textNodes.forEach((textNode) => {
+          const chars = textNode.nodeValue.split('')
+          const fragment = document.createDocumentFragment()
+          
+          chars.forEach((char) => {
+            const span = document.createElement('span')
+            span.textContent = char
+            span.setAttribute('data-char', char)
+            span.style.display = 'inline-block'
+            fragment.appendChild(span)
+          })
+          
+          textNode.parentNode.replaceChild(fragment, textNode)
+        })
       }
 
-      textNodes.forEach(wrapLetters)
-      return animatedSpans
-    }
-
-    const targetsFromSplit = splitText(heading)
-    // If splitText actually wrapped text nodes, it returns inner spans. Otherwise
-    // fall back to existing spans (e.g. other scripts already split letters).
-    let targets = targetsFromSplit
-    const didSplit = targetsFromSplit && targetsFromSplit.length > 0
-    if (!didSplit) {
-      // try to find already-split inner spans (per-word or per-letter)
-      const existing = Array.from(heading.querySelectorAll('span > span, span[data-letter]'))
-      targets = existing
-    }
-    const imageContainers = Array.from(heading.querySelectorAll('.image1'))
-    const canvasEl = heroBlockRef.current?.querySelector('canvas') || null
-
-    const tl = gsap.timeline()
-
-  // navbar fade-in should match the hero text entrance
-  const navEl = sectionRef.current ? sectionRef.current.querySelector('nav') : null
-  // start slightly up and transparent; hint GPU for smoother animation
-  if (navEl) gsap.set(navEl, { autoAlpha: 0, force3D: true })
-
-    if (canvasEl) {
-      // keep canvas hidden until after text animation to avoid heavy paint work
-      gsap.set(canvasEl, { opacity: 0 })
-      tl.to(canvasEl, { opacity: 1, duration: 0.8, ease: 'power1.out' }, 0)
-    }
-
-    // fade in navbar alongside the hero text (only opacity)
-      if (navEl) {
-        tl.to(navEl, { autoAlpha: 1, duration:2, ease: 'power3.out', force3D: true }, 0.05)
+      try {
+        splitText(heading)
+        didSplit = true
+      } catch (error) {
+        console.warn('Text splitting failed:', error)
+        return
       }
+    }
 
-    // hint GPU acceleration and avoid layout thrash
-    gsap.set(targets, { yPercent: 120, opacity: 0, force3D: true })
-    tl.to(targets, {
-      yPercent: 0,
+    const chars = heading.querySelectorAll('span[data-char]')
+    if (chars.length === 0) return
+
+    // Create timeline for character animations
+    const tl = gsap.timeline({ paused: true })
+    
+    // Set initial state
+    gsap.set(chars, { 
+      opacity: 0, 
+      y: 100, 
+      rotationX: -90,
+      transformOrigin: '50% 50% -50px'
+    })
+
+    // Animate characters in sequence
+    tl.to(chars, {
       opacity: 1,
-      duration: 1,
-      ease: 'expo.out',
-      stagger: 0.02,
-      delay: 0.15,
-      force3D: true,
-    }, 0.05)
+      y: 0,
+      rotationX: 0,
+      duration: 1.2,
+      ease: 'back.out(1.7)',
+      stagger: {
+        amount: 0.8,
+        from: 'start'
+      },
+      onComplete: () => {
+        // Dispatch event when text animation completes
+        try {
+          window.dispatchEvent(new Event('landingTextAnimated'))
+        } catch (error) {
+          console.warn('Failed to dispatch landingTextAnimated event:', error)
+        }
+        setNavVisible(true)
+      }
+    })
 
-    if (imageContainers.length) {
-      gsap.set(imageContainers, { y: 40, opacity: 0, force3D: true })
-      tl.to(imageContainers, {
-        y: 0,
-        opacity: 1,
-        duration: 0.9,
-        ease: 'expo.out',
-        stagger: 0.08,
-        force3D: true,
-      }, '<0.1')
-    }
-
-    // Pause timeline and wait for the loader to finish.
-    // If the loader already finished earlier (for example events fired while
-    // the page was backgrounded), play immediately using the global flag.
-    // The loader normally dispatches a global 'startLanding' or 'loaderComplete'
-    // event when it's ready.
-    tl.pause()
-
+    // Handler to start the animation
     let listenersAttached = false
     const startHandler = () => {
       try {
         tl.play()
-      } catch (e) { /* noop */ }
+      } catch (error) {
+        console.warn('Failed to play landing animation:', error)
+      }
       if (listenersAttached) {
         window.removeEventListener('startLanding', startHandler)
         window.removeEventListener('loaderComplete', startHandler)
@@ -218,34 +165,16 @@ function Landing() {
       }
     }
 
-    // If loader already completed (set by App.onLoaderComplete), start immediately.
-    if (typeof window !== 'undefined' && window.__loaderComplete) {
-      // give React/DOM a tick so any layout fixes apply, then play
+    // Check if loader has already completed
+    const loaderComplete = typeof window !== 'undefined' && window.__loaderComplete
+    if (loaderComplete) {
+      // Start immediately
       requestAnimationFrame(() => startHandler())
     } else {
       window.addEventListener('startLanding', startHandler)
       window.addEventListener('loaderComplete', startHandler)
       listenersAttached = true
     }
-
-    // notify other components that the entrance animation finished
-    tl.call(() => window.dispatchEvent(new Event('landingTextAnimated')))
-
-    // after the entrance finishes, remove overflow:hidden from wrapper spans
-    // so descenders (like 'p') are not clipped after the animation
-    tl.call(() => {
-      try {
-        const inners = heading.querySelectorAll('span[data-letter], span > span')
-        inners.forEach((inner) => {
-          const wrap = inner.parentElement
-          if (wrap && wrap.tagName.toLowerCase() === 'span') {
-            wrap.style.overflow = 'visible'
-          }
-        })
-      } catch (e) {
-        // noop
-      }
-    })
 
     return () => {
       window.removeEventListener('startLanding', startHandler)
@@ -254,7 +183,7 @@ function Landing() {
       // only restore original HTML if we performed the split ourselves
       if (didSplit && heading && originalHeadingHtmlRef.current) heading.innerHTML = originalHeadingHtmlRef.current
     }
-  }, [])
+  }, [location])
 
   // Vertical slider effect: cycles stacked images inside each .vertical-slider
   useEffect(() => {
@@ -275,7 +204,8 @@ function Landing() {
       // this guarantees the visible slide occupies full available height/width
       try {
         gsap.set(slides, { height: slideH, width: '100%', flex: '0 0 auto' })
-      } catch (e) {
+      } catch (error) {
+        console.warn('GSAP slide setup failed:', error)
         // fallback if GSAP can't set flex shorthand on older browsers
         slides.forEach((s) => {
           s.style.height = `${slideH}px`
@@ -311,7 +241,9 @@ function Landing() {
       timelines.forEach((t) => t.kill())
       // remove clones we appended
       clones.forEach(({ track, clone }) => {
-        try { track.removeChild(clone) } catch (e) { /* noop */ }
+        try { track.removeChild(clone) } catch (error) { 
+          console.warn('Failed to remove slider clone:', error)
+        }
       })
     }
   }, [])
@@ -331,14 +263,16 @@ function Landing() {
               <div className="h-12 px-2 sm:px-4 flex items-center justify-between min-w-0 overflow-x-hidden">
                 <button
                   type="button"
-                  onClick={(e) => {
+                  onClick={() => {
                     try {
                       if (location && (location.pathname === '/' || location.pathname === '')) {
                         // Hard refresh to restart the entire site experience
-                        window.location.href = window.location.href
+                        window.location.reload()
                         return
                       }
-                    } catch (err) {}
+                    } catch (error) {
+                      console.warn('Navigation failed:', error)
+                    }
                     navigate('/')
                   }}
                   className="text-xl sm:text-2xl font-extrabold tracking-tight text-black bg-transparent border-0 p-0 cursor-pointer flex-shrink-0"
@@ -348,51 +282,45 @@ function Landing() {
                 {/* Mobile hamburger - visible on small screens only */}
                 <button
                   type="button"
-                  className="md:hidden inline-flex items-center justify-center p-1 sm:p-2 rounded-md text-black hover:opacity-80 flex-shrink-0"
-                  aria-expanded={mobileMenuOpen}
-                  aria-label="Toggle menu"
-                  onClick={() => setMobileMenuOpen((v) => !v)}
+                  className="md:hidden flex items-center justify-center w-10 h-10 rounded-md text-black hover:opacity-80 focus:outline-none"
+                  onClick={() => setMobileMenuOpen(true)}
+                  aria-label="Open menu"
                 >
-                  {/* simple 3-bar icon */}
-                  <span className="sr-only">Open menu</span>
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 relative">
-                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 rotate-45' : 'translate-y-0'}`}></span>
-                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-all duration-200 ${mobileMenuOpen ? 'opacity-0' : 'translate-y-2'}`}></span>
-                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 -rotate-45' : 'translate-y-4'}`}></span>
-                  </div>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 12H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M3 6H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M3 18H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
                 </button>
 
-                <div className="hidden md:flex items-center gap-6 text-[14px] font-medium text-black overflow-x-hidden">
+                {/* Desktop navigation - hidden on mobile */}
+                <div className="hidden md:flex items-center gap-8">
                   {navItems.map(({ label, href }) => {
-                    // PLAYGROUND behavior (existing)
                     if (label === 'PLAYGROUND') {
                       return (
-                        <a
+                        <button
                           key={label}
-                          href={href}
-                          onClick={(e) => {
-                            if (location && (location.pathname === '/' || location.pathname === '')) {
-                              e.preventDefault()
-                              try {
-                                const el = document.getElementById('playground-preview')
-                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                                else navigate('/playground')
-                              } catch (err) {
+                          type="button"
+                          onClick={() => {
+                            try {
+                              const el = document.getElementById('playground-preview')
+                              if (el) {
+                                el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                              } else {
                                 navigate('/playground')
                               }
-                            } else {
-                              e.preventDefault()
+                            } catch (error) {
+                              console.warn('Playground navigation failed:', error)
                               navigate('/playground')
                             }
                           }}
-                          className="hover:opacity-70 transition-opacity"
+                          className="hover:opacity-70 transition-opacity text-black font-medium"
                         >
                           {label}
-                        </a>
+                        </button>
                       )
                     }
 
-                    // HOME, ABOUT, WORK, and CONTACT: smooth scroll when on landing, otherwise navigate to anchor
                     if (label === 'HOME' || label === 'ABOUT' || label === 'WORK' || label === 'CONTACT') {
                       return (
                         <a
@@ -413,7 +341,8 @@ function Landing() {
                                     window.location.hash = href;
                                   }
                                 }
-                              } catch (err) {
+                              } catch (error) {
+                                console.warn('Scroll navigation failed:', error)
                                 window.location.hash = href
                               }
                             } else {
@@ -472,7 +401,10 @@ function Landing() {
                     const el = document.getElementById('playground-preview')
                     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
                     else navigate('/playground')
-                  } catch (err) { navigate('/playground') }
+                  } catch (error) { 
+                    console.warn('Mobile playground navigation failed:', error)
+                    navigate('/playground') 
+                  }
                   return
                 }
                 if (label === 'HOME' || label === 'ABOUT' || label === 'WORK' || label === 'CONTACT') {
@@ -484,7 +416,10 @@ function Landing() {
                       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                       else window.location.hash = href;
                     }
-                  } catch (err) { window.location.hash = href }
+                  } catch (error) { 
+                    console.warn('Mobile scroll navigation failed:', error)
+                    window.location.hash = href 
+                  }
                   return
                 }
                 navigate('/' + href)

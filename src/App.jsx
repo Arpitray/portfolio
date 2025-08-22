@@ -5,7 +5,6 @@ import About from "./assets/Components/About"
 import Lenis from "lenis"
 import Projects from "./assets/Components/Projects"
 import CursorGlass from './assets/Components/CursorGlass'
-import { motion } from "motion/react"
 import Loader from './assets/Components/Loader'
 import Showcase from "./assets/Components/Showcase"
 import PlayGround from './assets/Components/PlayGround'
@@ -42,7 +41,9 @@ function App() {
             // jump to value immediately using Lenis
             try {
               lenis.scrollTo(value, { immediate: true, duration: 0 })
-            } catch (e) {}
+            } catch (error) {
+              console.warn('Lenis scrollTo failed:', error)
+            }
           }
           // return the current scrollTop for the scroller element
           return scrollerEl.scrollTop || document.documentElement.scrollTop
@@ -61,8 +62,8 @@ function App() {
 
       // ensure ScrollTrigger recalculates after setup
       ScrollTrigger.refresh()
-    } catch (e) {
-      // non-fatal if scroller proxy setup fails
+    } catch (error) {
+      console.warn('ScrollTrigger setup failed:', error)
     }
 
     function raf(time) {
@@ -90,9 +91,13 @@ function App() {
     setTimeout(() => {
       setLoading(false)
       // mark globally that loader finished so other components can check instantly
-      try { window.__loaderComplete = true } catch (e) { /* noop */ }
+      try { window.__loaderComplete = true } catch (error) { 
+        console.warn('Failed to set loader complete flag:', error)
+      }
       // also dispatch the global event so listeners relying on it run
-      try { window.dispatchEvent(new Event('loaderComplete')) } catch (e) { /* noop */ }
+      try { window.dispatchEvent(new Event('loaderComplete')) } catch (error) {
+        console.warn('Failed to dispatch loaderComplete event:', error)
+      }
     }, 80)
   }
 

@@ -13,9 +13,6 @@ export const ScrollVelocity = ({
   // New: control how fast the strip moves per wheel delta unit
   speed = 0.5,
   // Reserved props kept for compatibility (not used now)
-  damping = 50,
-  stiffness = 400,
-  velocityMapping = { input: [-1000, 1000], output: [-50, 50] },
 }) => {
   const scrollerRef = useRef(null);
   const wrapperRef = useRef(null);

@@ -10,7 +10,7 @@ import DecayCard from './DecayCard'
 import PG2 from './pg1.png'
 
 export default function Visions({
-  image = '/PlayGround/virtual-project/index.html',
+  // image = '/PlayGround/virtual-project/index.html', // Removed unused parameter
   title = 'Visions',
   description = 'Visceral Visions is an interactive web project that lets users explore detailed 3D models of the human brain, heart, lungs, kidneys, liver, and stomach. Built with WebGL (via Three.js) and JavaScript, it delivers smooth real-time rendering and intuitive camera controls for rotation, zoom, and reset.',
   description2="Each organ is paired with clear educational text, making it both visually engaging and informative. Hosted on GitHub Pages, this project reflects my dedication to creating useful, immersive, and accessible learning experiences as my second major build.",
@@ -19,7 +19,10 @@ export default function Visions({
   const sectionRef = useRef(null)
   const maskRef = useRef(null)
   const [isMobile, setIsMobile] = useState(() => {
-    try { return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches } catch (e) { return false }
+    try { return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches } catch (error) { 
+      console.warn('Failed to detect mobile:', error)
+      return false 
+    }
   })
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
@@ -28,8 +31,12 @@ export default function Visions({
     if (mql.addEventListener) mql.addEventListener('change', onChange)
     else if (mql.addListener) mql.addListener(onChange)
     return () => {
-      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (e) {}
-      try { if (mql.removeListener) mql.removeListener(onChange) } catch (e) {}
+      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (error) {
+        console.warn('Failed to remove event listener:', error)
+      }
+      try { if (mql.removeListener) mql.removeListener(onChange) } catch (error) {
+        console.warn('Failed to remove listener:', error)
+      }
     }
   }, [])
 
@@ -61,7 +68,9 @@ export default function Visions({
       try {
         tween && tween.kill && tween.kill()
         ScrollTrigger.getAll().forEach(t => t.kill && t.kill())
-      } catch (e) {}
+      } catch (error) {
+        console.warn('Failed to cleanup animations:', error)
+      }
     }
   }, [])
 

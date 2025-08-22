@@ -230,8 +230,8 @@ const DotGrid = ({ baseColor = '#E1E1E1', dotSize = 7, gap = 20, interactionRadi
         // mark letters active so we don't apply transforms before GSAP entrance finishes
         lettersActiveRef.current = true;
         initLetters();
-      } catch (err) {
-        // swallow any init errors during teardown
+      } catch (error) {
+        console.warn('Failed to initialize snow letters:', error)
       }
     };
     window.addEventListener('landingTextAnimated', landingListener);
@@ -245,8 +245,8 @@ const DotGrid = ({ baseColor = '#E1E1E1', dotSize = 7, gap = 20, interactionRadi
       // remove landing event listener safely
       try {
         window.removeEventListener('landingTextAnimated', landingListener);
-      } catch (e) {
-        // noop
+      } catch (error) {
+        console.warn('Failed to remove landing listener:', error)
       }
       cancelAnimationFrame(rafRef.current);
       parent.removeEventListener('mousemove', handleMove);
