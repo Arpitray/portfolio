@@ -55,6 +55,60 @@ function App() {
     return () => clearTimeout(t);
   }, [])
 
+  // Centralized ScrollTrigger refresh logic to handle mobile production issues
+  useEffect(() => {
+    const raf = (cb) => requestAnimationFrame(() => requestAnimationFrame(cb))
+    const debounced = (fn, wait = 180) => {
+      let id
+      return (...a) => { clearTimeout(id); id = setTimeout(() => fn(...a), wait) }
+    }
+    const doRefresh = () => {
+      try { ScrollTrigger.refresh(true) } catch (e) {}
+    }
+    const schedule = () => raf(doRefresh)
+    const debouncedSchedule = debounced(schedule, 120)
+
+    // When loader finishes we need a refresh because initial triggers were created under overlay & before fonts/images
+    const onLoader = () => {
+      debouncedSchedule()
+      // extra pass after fonts settle
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => debouncedSchedule())
+      }
+      // images lazy loading may shift layout
+      setTimeout(debouncedSchedule, 450)
+      setTimeout(debouncedSchedule, 900)
+    }
+
+    // Orientation / resize on mobile dynamic toolbar changes
+    const onOrient = () => setTimeout(debouncedSchedule, 350)
+    const onResize = debouncedSchedule
+    const onVisibility = () => { if (!document.hidden) debouncedSchedule() }
+
+    window.addEventListener('loaderComplete', onLoader)
+    window.addEventListener('load', onLoader)
+    window.addEventListener('orientationchange', onOrient)
+    window.addEventListener('resize', onResize)
+    document.addEventListener('visibilitychange', onVisibility)
+    // Font readiness if it resolves after initial load
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => debouncedSchedule())
+    }
+
+    // Safety: do an initial delayed refresh (first paint + layout settle)
+    const early = setTimeout(schedule, 300)
+    const later = setTimeout(schedule, 1200)
+
+    return () => {
+      window.removeEventListener('loaderComplete', onLoader)
+      window.removeEventListener('load', onLoader)
+      window.removeEventListener('orientationchange', onOrient)
+      window.removeEventListener('resize', onResize)
+      document.removeEventListener('visibilitychange', onVisibility)
+      clearTimeout(early); clearTimeout(later)
+    }
+  }, [])
+
   const onLoaderComplete = () => {
     // allow a tiny overlap for a smooth crossfade
     setTimeout(() => {
