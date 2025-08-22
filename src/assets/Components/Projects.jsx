@@ -30,6 +30,9 @@ function Projects() {
   const videoRefs = useRef([])
   const panelRefs = useRef([])
 
+  // detect mobile once for animation tuning
+  const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches
+
   // Sample project data
   const projects = [
     {
@@ -160,9 +163,9 @@ function Projects() {
           // finish as it approaches the top
           end: 'top -1%',
           // snappier scrub for quicker reveal
-          scrub: 1,
+          scrub: isMobile ? false : 1,
           invalidateOnRefresh: true,
-          once: false,
+          once: isMobile,
         }
       });
 
@@ -202,14 +205,14 @@ function Projects() {
       const parallaxElement = project.querySelector('.parallax-element') || project;
       
       gsap.to(parallaxElement, {
-        yPercent: -10,
+        yPercent: isMobile ? 0 : -10,
         ease: "none",
         scrollTrigger: {
           trigger: project,
           // parallax begins when element top hits the bottom of viewport
           start: "top bottom",
           end: "bottom top",
-          scrub: 1.5,
+          scrub: isMobile ? false : 1.5,
           invalidateOnRefresh: true,
         }
       });
@@ -222,8 +225,8 @@ function Projects() {
 
     // Intersection Observer for additional performance optimization
     const observerOptions = {
-      rootMargin: '50px 0px',
-      threshold: 0.1
+      rootMargin: '150px 0px',
+      threshold: 0.05
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -264,12 +267,12 @@ function Projects() {
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
-            videoEl.play();
+            try { videoEl.play() } catch (e) {}
           } else {
-            videoEl.pause();
+            try { videoEl.pause() } catch (e) {}
           }
         },
-        { threshold: 0.5 } // Play video when 50% visible
+        { rootMargin: '200px 0px', threshold: 0.25 }
       );
       observer.observe(videoEl);
     }
@@ -419,15 +422,16 @@ function Projects() {
                         </div>
                       </div>
                       
-                      {/* Video Container with background image */}
-                      <div className='rounded-b-lg overflow-hidden bg-center bg-cover' style={{ backgroundImage: `url(${back1})` }}>
+                      {/* Video Container */}
+                      <div className='rounded-b-lg overflow-hidden'>
                         <video
                           ref={el => videoRefs.current[index] = el}
                           src={project.video}
                           className='w-full h-full object-cover min-h-[180px] sm:min-h-[240px] md:min-h-[280px]'
                           muted
                           playsInline
-                          autoPlay
+                          preload="none"
+                          controls={isMobile}
                           onEnded={() => handleVideoEnd(index)}
                         />
                       </div>
