@@ -133,9 +133,9 @@ function Projects() {
       const isEvenProject = index % 2 === 0;
 
       // Find description (text) and panel (visual) elements inside the project container
-      const textEl = project.querySelector('.text-start');
-      // panel has flex-1 and relative classes; query the nearest matching element
-      const panelEl = project.querySelector('.flex-1.relative') || project.querySelector('.flex-1');
+      const textEl = project.querySelector('[data-role="project-text"]');
+      // panel has explicit data-role to avoid className selector issues on mobile
+      const panelEl = project.querySelector('[data-role="project-panel"]') || project.querySelector('.flex-1');
 
       // Determine from-direction offsets (opposite of their visual placement)
       // If text is on the left (isEven), it should come from the right (+x), and panel from the left (-x), and vice versa.
@@ -269,7 +269,7 @@ function Projects() {
             videoEl.pause();
           }
         },
-        { threshold: 0.5 } // Play video when 50% visible
+        { threshold: 0.4, rootMargin: '200px 0px' } // Start slightly early for smoother UX
       );
       observer.observe(videoEl);
     }
@@ -347,7 +347,7 @@ function Projects() {
               }}
             >
               {/* Project Description */}
-              <div className='w-full md:w-1/2 px-4 md:px-8 font-["demo"] text-center md:text-start'>
+              <div data-role='project-text' className='w-full md:w-1/2 px-4 md:px-8 font-["demo"] text-center md:text-start'>
                 <h2 className='text-4xl sm:text-3xl md:text-6xl lg:text-5xl xl:text-8xl font-extrabold text-black mb-3 md:mb-5 tracking-tight leading-tight'>
                   {project.title}
                 </h2>
@@ -391,7 +391,7 @@ function Projects() {
               </div>
 
               {/* Laptop Interface (only the window panel) */}
-              <div ref={el => panelRefs.current[index] = el} className='flex-1 flex items-center justify-center w-full md:w-1/2 relative h-auto md:h-[98vh] rounded-2xl overflow-visible px-6 md:px-2 py-6 md:py-12 md:mt-0'>
+              <div data-role='project-panel' ref={el => panelRefs.current[index] = el} className='flex-1 flex items-center justify-center w-full md:w-1/2 relative h-auto md:h-[98vh] rounded-2xl overflow-visible px-6 md:px-2 py-6 md:py-12 md:mt-0'>
                 <div className='relative group w-full max-w-[920px] overflow-visible'>
                   <div className='inline-block w-full'>
                       {/* Laptop Frame */}
@@ -427,7 +427,7 @@ function Projects() {
                           className='w-full h-full object-cover min-h-[180px] sm:min-h-[240px] md:min-h-[280px]'
                           muted
                           playsInline
-                          autoPlay
+                          preload='metadata'
                           onEnded={() => handleVideoEnd(index)}
                         />
                       </div>
