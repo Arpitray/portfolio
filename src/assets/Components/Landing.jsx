@@ -317,7 +317,7 @@ function Landing() {
   }, [])
 
   return (
-    <div className="w-full h-screen max-w-full overflow-hidden">
+    <div className="w-full h-screen max-w-full overflow-x-hidden">
     {/* Navbar rendered into a portal to guarantee it sits above other stacking contexts */}
   {navVisible && typeof document !== 'undefined' && createPortal(
         <nav id="portal-nav"
@@ -500,10 +500,10 @@ function Landing() {
     document.body
   )}
 
-  <section id="home" ref={sectionRef} className="relative h-screen w-full bg-grid z-10">
-  <div className="relative z-40 flex h-full items-center font-['belly']">
-        <div className="mx-auto px-4 sm:px-6 lg:px-10 lg:py-12">
-          <div ref={heroBlockRef} className="relative inline-block">
+  <section id="home" ref={sectionRef} className="relative h-screen w-full bg-grid z-10 overflow-x-hidden">
+  <div className="relative z-40 flex h-full items-center font-['belly'] max-w-full overflow-x-hidden">
+        <div className="mx-auto px-2 sm:px-4 lg:px-10 lg:py-12 max-w-full">
+          <div ref={heroBlockRef} className="relative inline-block max-w-full overflow-x-hidden">
             {/* Snow effect canvas (covers only the text block) */}
             <SnowCanvas />
             <h1 ref={headingRef} className="relative z-10 text-black font-[100] leading-none text-5xl sm:text-7xl md:text-8xl lg:text-[170px] tracking-tight">
