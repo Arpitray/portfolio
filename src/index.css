@@ -56,6 +56,10 @@ html { scroll-behavior: auto; }
     font-family: 'dk';
     src: url('./assets/dk.otf');
 }
+@font-face {
+    font-family: 'dk2';
+    src: url('./assets/dk2.otf');
+}
 
 /* Hide native scrollbars visually but keep scroll functionality.
      - Firefox: scrollbar-width: none

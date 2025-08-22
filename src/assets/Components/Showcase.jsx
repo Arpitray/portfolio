@@ -141,7 +141,7 @@ export default function Showcase() {
   const outerStyle = {
     position: 'relative',
     width: '100%',
-  height: '300vh', // enough vertical space for the pin + long scroll
+  height: '200vh', // enough vertical space for the pin + long scroll
   // lift the showcase up so it visually appears beneath the Projects section
   // the Projects component adds a 160px SVG mask; match that with negative margin
   marginTop: '-140px',
@@ -198,10 +198,10 @@ export default function Showcase() {
   }
 
   return (
-    <section className='showcase-outer  overflow-hidden' ref={outerRef} style={outerStyle} aria-hidden={false}>
-      <div ref={stickyRef} style={stickyStyle}>
+    <section className='showcase-outer hidden md:block' ref={outerRef} style={outerStyle} aria-hidden={false}>
+      <div className='' ref={stickyRef} style={stickyStyle}>
         <div  style={colsWrap}>
-          <div style={colOuter} className='mx-8' ref={el => (wrapRefs.current[0] = el)}>
+          <div style={colOuter} className='mr-8 ml-8' ref={el => (wrapRefs.current[0] = el)}>
             <div ref={el => (colRefs.current[0] = el)} style={innerImgContainer}>
               <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766127/sc1_wac5g1.png" alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/ss1_paw1nh.png" alt='' style={imgStyle} /></div>
@@ -226,7 +226,7 @@ export default function Showcase() {
             </div>
           </div>
 
-          <div style={colOuter} ref={el => (wrapRefs.current[2] = el)}>
+          <div className='mr-8' style={colOuter} ref={el => (wrapRefs.current[2] = el)}>
             <div ref={el => (colRefs.current[2] = el)} style={innerImgContainer}>
               <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766132/sc3_ropu29.png" alt='' style={imgStyle} /></div>
               <div style={imgWrapStyle}><img src="https://res.cloudinary.com/dsjjdnife/image/upload/f_auto,q_auto/v1755766131/sc4_dbza1r.png" alt='' style={imgStyle} /></div>

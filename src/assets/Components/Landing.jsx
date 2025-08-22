@@ -18,6 +18,7 @@ function Landing() {
   const navigate = useNavigate()
   const location = useLocation()
   const [navVisible, setNavVisible] = React.useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   // animate portal nav when it becomes visible
   useEffect(() => {
     if (!navVisible) return
@@ -32,6 +33,18 @@ function Landing() {
       // noop
     }
   }, [navVisible])
+  // close mobile menu if nav hides or when route changes
+  useEffect(() => {
+    if (!navVisible) setMobileMenuOpen(false)
+  }, [navVisible, location.pathname])
+
+  // close on ESC
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const onKey = (e) => { if (e.key === 'Escape') setMobileMenuOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [mobileMenuOpen])
   const navItems = [
     { label: 'HOME', href: '#home' },
   { label: 'ABOUT', href: '#about' },
@@ -304,18 +317,18 @@ function Landing() {
   }, [])
 
   return (
-    <>
+    <div className="w-full h-screen max-w-full overflow-hidden">
     {/* Navbar rendered into a portal to guarantee it sits above other stacking contexts */}
   {navVisible && typeof document !== 'undefined' && createPortal(
         <nav id="portal-nav"
-      className="fixed top-[3%] left-0 w-full "
-  style={{ position: 'fixed', top: '3%', left: 0, opacity: 0, willChange: 'opacity, transform', zIndex: 2147483647 }}
+      className="fixed top-[3%] left-0 w-full overflow-x-hidden"
+  style={{ position: 'fixed', left: 0, right: 0, opacity: 0, willChange: 'opacity, transform', zIndex: 2147483647, maxWidth: '100vw', overflow: 'hidden' }}
           onPointerEnter={() => window.dispatchEvent(new Event('cursorGlass:hide'))}
           onPointerLeave={() => window.dispatchEvent(new Event('cursorGlass:show'))}
         >
-          <div className="mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mt-3 rounded-xl border border-white/10 bg-white/40 backdrop-blur-[4px] backdrop-saturate-150 ring-1 ring-black/5 py-4 shadow-md">
-              <div className="h-12 px-4 flex items-center justify-between">
+          <div className="mx-auto px-2 sm:px-6 lg:px-8 max-w-screen-2xl w-full overflow-x-hidden">
+            <div className="mt-3 mx-1 sm:mx-2 rounded-xl border overflow-x-hidden border-white/10 bg-white/40 backdrop-blur-[4px] backdrop-saturate-150 ring-1 ring-black/5 py-4 shadow-md relative max-w-full">
+              <div className="h-12 px-2 sm:px-4 flex items-center justify-between min-w-0 overflow-x-hidden">
                 <button
                   type="button"
                   onClick={(e) => {
@@ -328,11 +341,28 @@ function Landing() {
                     } catch (err) {}
                     navigate('/')
                   }}
-                  className="text-2xl font-extrabold tracking-tight text-black bg-transparent border-0 p-0 cursor-pointer"
+                  className="text-xl sm:text-2xl font-extrabold tracking-tight text-black bg-transparent border-0 p-0 cursor-pointer flex-shrink-0"
                 >
                   Arpit.
                 </button>
-                <div className="hidden md:flex items-center gap-6 text-[14px] font-medium text-black">
+                {/* Mobile hamburger - visible on small screens only */}
+                <button
+                  type="button"
+                  className="md:hidden inline-flex items-center justify-center p-1 sm:p-2 rounded-md text-black hover:opacity-80 flex-shrink-0"
+                  aria-expanded={mobileMenuOpen}
+                  aria-label="Toggle menu"
+                  onClick={() => setMobileMenuOpen((v) => !v)}
+                >
+                  {/* simple 3-bar icon */}
+                  <span className="sr-only">Open menu</span>
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 relative">
+                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 rotate-45' : 'translate-y-0'}`}></span>
+                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-all duration-200 ${mobileMenuOpen ? 'opacity-0' : 'translate-y-2'}`}></span>
+                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 -rotate-45' : 'translate-y-4'}`}></span>
+                  </div>
+                </button>
+
+                <div className="hidden md:flex items-center gap-6 text-[14px] font-medium text-black overflow-x-hidden">
                   {navItems.map(({ label, href }) => {
                     // PLAYGROUND behavior (existing)
                     if (label === 'PLAYGROUND') {
@@ -405,9 +435,70 @@ function Landing() {
               </div>
             </div>
           </div>
+          {/* overlay moved — rendered separately as its own portal to ensure full viewport coverage */}
   </nav>,
         document.body
       )}
+
+  {mobileMenuOpen && typeof document !== 'undefined' && createPortal(
+    <div
+      className="md:hidden fixed left-0 top-0 z-[2147483650] w-[100vw] bg-gradient-to-br from-white/5 via-white/3 to-white/2 backdrop-blur-lg backdrop-saturate-150 border border-white/10 shadow-2xl"
+      style={{ height: 'calc(var(--vh, 1vh) * 100)', paddingTop: 'env(safe-area-inset-top, 0px)', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      onClick={() => setMobileMenuOpen(false)}
+    >
+      <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>
+        <button
+          type="button"
+          aria-label="Close menu"
+          className="absolute top-6 right-6 z-50 p-3 rounded-md text-white hover:opacity-80"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <path d="M18 6L6 18" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M6 6L18 18" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        <div className="h-full flex flex-col items-center justify-center gap-8 px-8 text-center">
+          {navItems.map(({ label, href }) => (
+            <a
+              key={label}
+              href={href}
+              onClick={(e) => {
+                e.preventDefault()
+                setMobileMenuOpen(false)
+                if (label === 'PLAYGROUND') {
+                  try {
+                    const el = document.getElementById('playground-preview')
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    else navigate('/playground')
+                  } catch (err) { navigate('/playground') }
+                  return
+                }
+                if (label === 'HOME' || label === 'ABOUT' || label === 'WORK' || label === 'CONTACT') {
+                  try {
+                    if (label === 'CONTACT') {
+                      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                    } else {
+                      const el = document.getElementById(href.replace('#', ''))
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      else window.location.hash = href;
+                    }
+                  } catch (err) { window.location.hash = href }
+                  return
+                }
+                navigate('/' + href)
+              }}
+              className="block text-zinc-700 font-bold text-5xl sm:text-5xl tracking-widest hover:opacity-80"
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body
+  )}
 
   <section id="home" ref={sectionRef} className="relative h-screen w-full bg-grid z-10">
   <div className="relative z-40 flex h-full items-center font-['belly']">
@@ -435,7 +526,7 @@ function Landing() {
                   <img className='h-full w-full object-cover ' src={Image4} alt="" />
                 </div>
               </div>
-              <span className="block">Exceptional UI</span>
+              <span className="block flex-wrap whitespace-pre-line">Exceptional UI</span>
             </h1>
           </div>
         </div>
@@ -443,7 +534,7 @@ function Landing() {
 
   {/* Playground preview is rendered once in App.jsx (after Showcase) with id "playground-preview" */}
     </section>
-    </>
+    </div>
   )
 }
 

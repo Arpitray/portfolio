@@ -95,7 +95,12 @@ const Loader = ({ onComplete } = {}) => {
 
   const containerStyle = {
     position: 'fixed',
-    inset: 0,
+    left: 0,
+    top: 0,
+    width: '100vw',
+    height: 'calc(var(--vh, 1vh) * 100)',
+    paddingTop: 'env(safe-area-inset-top, 0px)',
+    paddingBottom: 'env(safe-area-inset-bottom, 0px)',
     background: '#212427',
     display: 'flex',
     alignItems: 'center',

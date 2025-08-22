@@ -7,6 +7,7 @@ const DecayCard = ({
   image = 'https://picsum.photos/300/400?grayscale',
   children,
   bare = false,
+  mobile = false,
 }) => {
   const wrapperRef = useRef(null);
 
@@ -34,8 +35,9 @@ const DecayCard = ({
         </div>
       </div>
       {!bare && (
-        <div className="absolute bottom-[1.2em] left-[1em] text-zinc-400 tracking-[-0.5px] font-black text-[2.5rem] leading-[1.5em] first-line:text-[6rem]">
-          ARPIT
+        // overlay label; on mobile keep it absolute but lower so it sits on the image
+        <div className={mobile ? 'absolute left-[1em] text-zinc-400 tracking-[-0.5px] font-black leading-[1.2em] text-[1.4rem] md:text-[2.5rem]' : 'absolute bottom-[1.2em] left-[1em] text-zinc-400 tracking-[-0.5px] font-black text-[2.5rem] leading-[1.5em] first-line:text-[6rem]'} style={mobile ? { bottom: '0.5em' } : {}}>
+          {children || 'ARPIT'}
         </div>
       )}
     </div>

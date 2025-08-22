@@ -313,14 +313,14 @@ function Projects() {
   }
 
   return (
-    <section id="work" ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 min-h-screen flex flex-col overflow-visible'>
+  <section id="work" ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 flex flex-col min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen'>
       {/* ScrollVelocity Title Section */}
       <div className='w-full pt-8'>
         <ScrollVelocity
           texts={["PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS"]}
           velocity={80}
           numCopies={8}
-          className="uppercase px-6 md:px-10 text-[190px] font-medium tracking-[0.08em] font-['demo']"
+          className="uppercase px-6 md:px-10 lg:text-[130px] text-8xl font-medium tracking-widest lg:tracking-[0.08em] font-['demo']"
           parallaxClassName="w-full"
           scrollerClassName="gap-8"
           velocityMapping={{ input: [-1000, 1000], output: [-1000, 1000] }}
@@ -347,17 +347,17 @@ function Projects() {
               }}
             >
               {/* Project Description */}
-              <div className='text-start w-full md:w-1/2 px-4 md:px-8 font-["demo"]'>
-                <h2 className='text-2xl md:text-3xl lg:text-5xl xl:text-8xl font-extrabold text-black mb-3 md:mb-5 tracking-tight leading-tight text-start'>
+              <div className='w-full md:w-1/2 px-4 md:px-8 font-["demo"] text-center md:text-start'>
+                <h2 className='text-4xl sm:text-3xl md:text-6xl lg:text-5xl xl:text-8xl font-extrabold text-black mb-3 md:mb-5 tracking-tight leading-tight'>
                   {project.title}
                 </h2>
-                <p className='text-sm md:text-base lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed max-w-prose text-start'>
+                <p className='text-sm sm:text-base md:text-lg lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
                   {project.description}
                 </p>
-                <p className='text-sm md:text-base lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed max-w-prose text-start'>
+                <p className='text-sm sm:text-base md:text-lg lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
                   {project.description2}
                 </p>
-                <div className={`flex flex-wrap font-['pp'] gap-3 font-semibold items-center ${isEven ? 'justify-start' : 'justify-start'}`}>
+                <div className={`flex flex-wrap font-['pp'] font-semibold ${isEven ? 'justify-center md:justify-start' : 'justify-center md:justify-start'}`}>
                   {project.tags.map((tag, tagIndex) => (
                     <span
                       key={tagIndex}
@@ -367,7 +367,7 @@ function Projects() {
                     </span>
                   ))}
                 </div>
-                <div className={`flex gap-3 mt-6 md:mt-8 ${isEven ? 'justify-start' : 'justify-start'}`}>
+                <div className={`hidden md:flex gap-3 mt-6 md:mt-8 ${isEven ? 'justify-center md:justify-start' : 'justify-center md:justify-start'}`}>
                   <a href={project.githubLink} target="_blank" rel="noopener noreferrer" aria-label="View on GitHub" className="inline-flex items-center justify-center bg-gray-900 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold text-sm md:text-base hover:bg-gray-800 transition-colors">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 md:w-6 md:h-6">
                       <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.416-4.042-1.416-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.305-5.466-1.332-5.466-5.93 0-1.31.468-2.381 1.235-3.221-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.911 1.23 3.221 0 4.61-2.805 5.625-5.475 5.92.435.375.81 1.11.81 2.235 0 1.615-.015 2.915-.015 3.315 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
@@ -391,7 +391,7 @@ function Projects() {
               </div>
 
               {/* Laptop Interface (only the window panel) */}
-              <div ref={el => panelRefs.current[index] = el} className='flex-1 flex items-center justify-center w-full md:w-1/2 relative h-auto md:h-[98vh] rounded-2xl overflow-visible px-6 md:px-2 py-6 md:py-12'>
+              <div ref={el => panelRefs.current[index] = el} className='flex-1 flex items-center justify-center w-full md:w-1/2 relative h-auto md:h-[98vh] rounded-2xl overflow-visible px-6 md:px-2 py-6 md:py-12 md:mt-0'>
                 <div className='relative group w-full max-w-[920px] overflow-visible'>
                   <div className='inline-block w-full'>
                       {/* Laptop Frame */}
@@ -424,7 +424,7 @@ function Projects() {
                         <video
                           ref={el => videoRefs.current[index] = el}
                           src={project.video}
-                          className='w-full h-full object-cover min-h-[280px]'
+                          className='w-full h-full object-cover min-h-[180px] sm:min-h-[240px] md:min-h-[280px]'
                           muted
                           playsInline
                           autoPlay
@@ -448,17 +448,21 @@ function Projects() {
                   </div>
                 </div>
 
+            {/* Mobile-only actions placed below the project panel so order becomes: description -> panel -> actions */}
+            <div className='md:hidden w-full flex justify-center mt-4 mb-8 gap-4 relative' style={{ zIndex: 9999 }}>
+              <a href={project.githubLink} target="_blank" rel="noopener noreferrer" aria-label="View on GitHub" className="inline-flex items-center justify-center bg-gray-900 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-800 transition-colors">
+                GitHub
+              </a>
+              <a href={project.liveDemoLink} target="_blank" rel="noopener noreferrer" className="inline-block bg-[#101828] text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-zinc-800 transition-colors">
+                Live Demo
+              </a>
+            </div>
+
             </div>
           )
         })}
       </div>
-      {/* Bottom mask divider to make the Showcase appear underneath Projects (modern overlapping reveal) */}
-      <div aria-hidden="true" className="projects-bottom-mask" style={{ position: 'absolute', left: 0, right: 0, bottom: -1, height: 160, pointerEvents: 'none', zIndex: 50, display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
-        <svg viewBox="0 0 1440 160" preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
-          {/* Wave path filled with the same Projects background to visually mask the Showcase below */}
-          <path d="M0,32 C240,80 360,0 720,32 C1080,64 1200,32 1440,48 L1440,160 L0,160 Z" fill="#E1E1E1" />
-        </svg>
-      </div>
+  {/* bottom mask removed to avoid wave overlap on mobile */}
     </section>
   )
 }

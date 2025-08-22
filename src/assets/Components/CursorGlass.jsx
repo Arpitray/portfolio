@@ -3,6 +3,24 @@ import { useLocation } from 'react-router-dom'
 
 export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,0.12)' }) {
   const elRef = useRef(null)
+  // only enable on large viewports (desktop). Mobile/tablet will have this disabled.
+  const [enabled, setEnabled] = useState(() => {
+    try {
+      return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(min-width: 1024px)').matches
+    } catch (e) { return false }
+  })
+  // keep a listener so changing orientation/resize updates enablement
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+    const mql = window.matchMedia('(min-width: 1024px)')
+    const onChange = (e) => setEnabled(e.matches)
+    if (mql.addEventListener) mql.addEventListener('change', onChange)
+    else if (mql.addListener) mql.addListener(onChange)
+    return () => {
+      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (e) {}
+      try { if (mql.removeListener) mql.removeListener(onChange) } catch (e) {}
+    }
+  }, [])
   const posRef = useRef({ x: -9999, y: -9999 })
   const targetRef = useRef({ x: -9999, y: -9999 })
   const rafRef = useRef(null)
@@ -27,17 +45,25 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
       } else {
         // Allow the glass to show again; restore hidden state to false so main effect can manage visibility
         hiddenRef.current = false
-        // re-enable hiding transition for normal behavior
-        el.style.transition = 'opacity 120ms ease, transform 80ms linear'
+  // re-enable hiding transition for normal behavior (no transform easing)
+  el.style.transition = 'opacity 120ms ease'
         // hide native cursor again so glass can manage appearance
         try { document.documentElement.style.cursor = 'none' } catch (e) {}
       }
     } catch (e) {}
   }, [location && location.pathname])
 
+  // Don't exit early here; keep hooks order stable across renders.
+
   useEffect(() => {
     const el = elRef.current
     if (!el) return
+
+    // If disabled (mobile/tablet), skip attaching listeners
+    if (!enabled) {
+      try { document.documentElement.style.cursor = '' } catch (e) {}
+      return
+    }
 
     // Hide native cursor
     document.documentElement.style.cursor = 'none'
@@ -67,7 +93,8 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
         posRef.current.y = last.y
         document.documentElement.style.cursor = 'none'
         // start with opacity 0 and positioned below pointer
-        el.style.transition = 'opacity 160ms ease, transform 160ms ease'
+  // animate opacity only; movement will snap immediately via RAF loop
+  el.style.transition = 'opacity 160ms ease'
         // set posRef to the start position so RAF loop doesn't pull from the old position
         posRef.current.x = last.x
         posRef.current.y = startY
@@ -280,25 +307,19 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
       })
     } catch (e) {}
 
-    // Follow loop with easing (higher = snappier).
-    // Use a high-but-stable lerp factor and snap when very close to remove subtle lag.
-    const ease = 1
+    // Follow loop with immediate snapping (no easing) so the glass follows the pointer exactly.
     const loop = () => {
       const p = posRef.current
       const t = targetRef.current
 
-      // If target is sentinel off-screen, jump instantly to avoid long drifts
+      // If target is sentinel off-screen, jump instantly
       if (t.x === -9999 && t.y === -9999) {
         p.x = t.x
         p.y = t.y
       } else {
-        // Lerp towards target; snap when within a pixel or two
-        p.x += (t.x - p.x) * ease
-        p.y += (t.y - p.y) * ease
-        if (Math.abs(t.x - p.x) + Math.abs(t.y - p.y) < 0.7) {
-          p.x = t.x
-          p.y = t.y
-        }
+        // Immediate follow — no interpolation
+        p.x = t.x
+        p.y = t.y
       }
 
       // position the element offset so it centers on the pointer
@@ -324,7 +345,7 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
       } catch (e) {}
       document.documentElement.style.cursor = ''
     }
-  }, [size])
+  }, [size, enabled])
 
   // The element uses pointer-events:none so it doesn't block interaction.
   // For "used to navigate" we keep native click behavior (so links still work)
@@ -332,6 +353,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
   const pathId = 'cursor-glass-path'
   const ringPadding = 12
   const radius = (svgSize - ringPadding * 2) / 2
+
+  // Now it's safe to short-circuit render after all hooks are declared
+  if (!enabled) return null
 
   return (
     <div
@@ -346,7 +370,7 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
         borderRadius: '50%',
         pointerEvents: 'none',
         transform: 'translate3d(-9999px,-9999px,0)',
-  transition: 'opacity 120ms ease, transform 80ms linear',
+  transition: 'opacity 120ms ease',
         opacity: 0,
   zIndex: 2000000,
   backdropFilter: `blur(${blur}px)`,

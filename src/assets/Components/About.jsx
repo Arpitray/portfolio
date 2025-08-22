@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import DecayCard from './DecayCard'
 import Maincam from './maincam.jpg'
 import Arpit3 from './Arpit3.png'
@@ -134,24 +134,41 @@ function About() {
     }
   }, [])
 
-  return (
-    <section id="about" className="relative min-h-screen w-full bg-[#E1E1E1]  flex font-['trial'] sm:px-8">
-      <div className=" w-full flex justify-center mt-32 items-start gap-12 px-6">
-        <div className="flex w-full justify-center lg:justify-center saturate-120" ref={imageRef}>
-          <DecayCard width={550} height={600} image={Arpit3}>
-            <div>Arpit</div>
-          </DecayCard>
-        </div>
+  // detect mobile viewport to adjust image size
+  const [isMobile, setIsMobile] = useState(() => {
+    try {
+      return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches
+    } catch (e) { return false }
+  })
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia) return
+    const mql = window.matchMedia('(max-width: 767px)')
+    const onChange = (e) => setIsMobile(e.matches)
+    if (mql.addEventListener) mql.addEventListener('change', onChange)
+    else if (mql.addListener) mql.addListener(onChange)
+    return () => {
+      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (e) {}
+      try { if (mql.removeListener) mql.removeListener(onChange) } catch (e) {}
+    }
+  }, [])
 
-        <div className="space-y-6 w-full items-start">
-          <h2 ref={(el) => (textRefs.current.heading = el)} className="text-black font-[100] tracking-tight text-start text-[34px] sm:text-[40px] md:text-[48px] lg:text-[100px]">About Me</h2>
-          <p ref={(el) => (textRefs.current.p1 = el)} className="text-[22px] text-black leading-6 mr-44 font-['demo']">
+  return (
+    <section id="about" className="relative min-h-screen w-full font-normal bg-[#E1E1E1] z-[99]  flex font-['dk2'] sm:px-8">
+      <div className="w-full flex flex-col md:flex-row justify-center mt-12 md:mt-32 items-start gap-8 md:gap-12 px-6">
+        <div className="flex w-full justify-center md:justify-center saturate-120 mb-6 md:mb-0" ref={imageRef}>
+              <DecayCard width={isMobile ? 300 : 550} height={isMobile ? 300 : 600} image={Arpit3} mobile={isMobile}>
+                <div className='text-4xl'>Arpit</div>
+              </DecayCard>
+        </div>
+        <div className="space-y-6 w-full items-start md:pl-6">
+          <h2 ref={(el) => (textRefs.current.heading = el)} className="text-black font-[100] tracking-tight text-center md:text-start text-[50px] sm:text-[40px] md:text-[48px] lg:text-[100px]">About Me</h2>
+          <p ref={(el) => (textRefs.current.p1 = el)} className="text-[18px] md:text-[26px] text-black leading-6 md:mr-44 font-['dk']">
           I build pixel perfect, design accurate frontends enriched with modern animations and seamless interactivity — ensuring every project feels as good as it looks. Leveraging technologies like React, JavaScript, GSAP, and Framer Motion, I craft fluid user experiences, while WebGL and Three.js bring immersive 3D visuals to life.
           </p>
-          <p ref={(el) => (textRefs.current.p2 = el)} className="text-[22px] text-black leading-6 mr-44 font-['demo']">
+          <p ref={(el) => (textRefs.current.p2 = el)} className="text-[18px] md:text-[26px] text-black leading-6 md:mr-44 font-['dk']">
             My work focuses on marrying design and engineering: translating visual language into performant, accessible UIs
           </p>
-          <div className="mt-6">
+          <div className="mt-6 flex justify-center md:block md:justify-start">
             <a href="#contact" className="inline-flex items-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-bold">Get in touch</a>
           </div>
         </div>
