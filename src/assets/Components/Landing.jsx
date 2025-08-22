@@ -442,8 +442,8 @@ function Landing() {
 
   {mobileMenuOpen && typeof document !== 'undefined' && createPortal(
     <div
-      className="md:hidden fixed left-0 top-0 z-[2147483650] w-[100vw] bg-gradient-to-br from-white/5 via-white/3 to-white/2 backdrop-blur-lg backdrop-saturate-150 border border-white/10 shadow-2xl"
-      style={{ height: 'calc(var(--vh, 1vh) * 100)', paddingTop: 'env(safe-area-inset-top, 0px)', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      className="md:hidden fixed inset-0 z-[2147483650] bg-gradient-to-br from-white/5 via-white/3 to-white/2 backdrop-blur-lg backdrop-saturate-150 border border-white/10 shadow-2xl"
+      style={{ paddingTop: 'env(safe-area-inset-top, 0px)', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       onClick={() => setMobileMenuOpen(false)}
     >
       <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>

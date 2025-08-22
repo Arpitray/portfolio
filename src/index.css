@@ -83,3 +83,7 @@ html, body {
     height: 100%;
     margin: 0;
 }
+
+/* NEW: make layout robust on mobile to avoid horizontal overflow */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { max-width: 100%; overflow-x: clip; }
