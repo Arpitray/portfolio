@@ -95,10 +95,9 @@ const Loader = ({ onComplete } = {}) => {
 
   const containerStyle = {
     position: 'fixed',
-    left: 0,
-    top: 0,
-    width: '100vw',
-    height: 'calc(var(--vh, 1vh) * 100)',
+    inset: 0,
+    width: 'auto',
+    height: 'auto',
     paddingTop: 'env(safe-area-inset-top, 0px)',
     paddingBottom: 'env(safe-area-inset-bottom, 0px)',
     background: '#212427',
