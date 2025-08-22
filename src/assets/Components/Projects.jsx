@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -8,6 +8,23 @@ import back1 from './back1.png'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
+
+// Mobile production fix: ensure ScrollTrigger initializes after DOM ready
+if (typeof window !== 'undefined') {
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (isMobile) {
+    // Force ScrollTrigger refresh on mobile after a delay to handle production timing issues
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        try {
+          ScrollTrigger.refresh(true);
+        } catch (e) {
+          console.warn('Initial mobile ScrollTrigger refresh failed:', e);
+        }
+      }, 500);
+    });
+  }
+}
 
 // Custom debounce function since gsap.utils.debounce might not be available
 const debounce = (func, wait) => {
@@ -29,6 +46,52 @@ function Projects() {
   const frameRefs = useRef([])
   const videoRefs = useRef([])
   const panelRefs = useRef([])
+  const [mobileReady, setMobileReady] = useState(false)
+
+  // Mobile readiness detection for production
+  useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (!isMobile) {
+      setMobileReady(true);
+      return;
+    }
+
+    let readyChecks = 0;
+    const totalChecks = 3;
+    
+    const checkReady = () => {
+      readyChecks++;
+      if (readyChecks >= totalChecks) {
+        setTimeout(() => setMobileReady(true), 100);
+      }
+    };
+
+    // Check 1: Loader completion
+    if (window.__loaderComplete) {
+      checkReady();
+    } else {
+      window.addEventListener('loaderComplete', checkReady, { once: true });
+    }
+
+    // Check 2: Font loading
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(checkReady);
+    } else {
+      setTimeout(checkReady, 200);
+    }
+
+    // Check 3: Basic DOM ready
+    if (document.readyState === 'complete') {
+      checkReady();
+    } else {
+      window.addEventListener('load', checkReady, { once: true });
+    }
+
+    // Fallback timeout
+    const fallback = setTimeout(() => setMobileReady(true), 1000);
+    
+    return () => clearTimeout(fallback);
+  }, []);
 
   // Sample project data
   const projects = [
@@ -104,77 +167,63 @@ function Projects() {
   ]
 
   useEffect(() => {
+    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) return; // Skip GSAP animations on mobile
+
     const container = containerRef.current;
     const projectsContainer = projectsContainerRef.current;
-    
+
     // Early return if refs are not ready
     if (!container || !projectsContainer) return;
-    
-    // Filter out null/undefined refs and ensure we have valid projects
+
     const validProjects = projectsRef.current.filter(Boolean);
     if (validProjects.length === 0) return;
 
-    // Enable GSAP performance optimizations
     gsap.config({ 
       force3D: true, 
       nullTargetWarn: false,
     });
 
-    // Set initial state for all project elements (no opacity/scale — only transform origin and perf)
     gsap.set(validProjects, {
       transformOrigin: "50% 50%",
       force3D: true,
     });
 
-    // Create optimized ScrollTrigger animation for projects grid with per-element directional entrances
     const projectAnimations = validProjects.map((project, index) => {
       if (!project) return null;
 
       const isEvenProject = index % 2 === 0;
 
-      // Find description (text) and panel (visual) elements inside the project container
       const textEl = project.querySelector('.text-start');
-      // panel has flex-1 and relative classes; query the nearest matching element
       const panelEl = project.querySelector('.flex-1.relative') || project.querySelector('.flex-1');
 
-      // Determine from-direction offsets (opposite of their visual placement)
-      // If text is on the left (isEven), it should come from the right (+x), and panel from the left (-x), and vice versa.
       const textFromX = isEvenProject ? 120 : -120;
       const panelFromX = isEvenProject ? -140 : 140;
 
-      // Ensure we don't operate on nulls
       const targets = [textEl, panelEl].filter(Boolean);
 
-      // Set only the initial x offset for each child to animate from opposite directions
       gsap.set(targets, {
         x: (i, el) => (el === textEl ? textFromX : panelFromX),
         force3D: true,
       });
 
-      // Build a timeline that animates text and panel into their final positions
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: project,
-          // trigger as soon as the element's top hits near the bottom of the viewport
           start: 'top 100%',
-          // finish as it approaches the top
           end: 'top -1%',
-          // snappier scrub for quicker reveal
           scrub: 1,
           invalidateOnRefresh: true,
           once: false,
         }
       });
 
-  // Text should lead slightly, panel follows for a pleasing staggered entrance
-  if (textEl) tl.to(textEl, { x: 0, duration: 0.9, ease: 'power3.out' }, 0);
-  if (panelEl) tl.to(panelEl, { x: 0, duration: 1.1, ease: 'power3.out' }, 0.06);
+      if (textEl) tl.to(textEl, { x: 0, duration: 0.9, ease: 'power3.out' }, 0);
+      if (panelEl) tl.to(panelEl, { x: 0, duration: 1.1, ease: 'power3.out' }, 0.06);
 
       return tl;
     }).filter(Boolean);
 
-    // Enhanced batch animation for better performance and visual appeal
-    // Keep a lightweight batch that only ensures x positions are reset if needed
     ScrollTrigger.batch(validProjects, {
       onEnter: (elements) => {
         gsap.to(elements, {
@@ -189,24 +238,21 @@ function Projects() {
           force3D: true,
         });
       },
-      // no opacity/scale changes on leave or enterBack — keep position-focused only
       start: "top 95%",
       end: "bottom 60%",
       refreshPriority: 1,
     });
 
-    // Add a subtle parallax effect for enhanced visual depth
     validProjects.forEach((project, index) => {
       if (!project) return;
-      
+
       const parallaxElement = project.querySelector('.parallax-element') || project;
-      
+
       gsap.to(parallaxElement, {
         yPercent: -10,
         ease: "none",
         scrollTrigger: {
           trigger: project,
-          // parallax begins when element top hits the bottom of viewport
           start: "top bottom",
           end: "bottom top",
           scrub: 1.5,
@@ -215,35 +261,14 @@ function Projects() {
       });
     });
 
-    // Optimize ScrollTrigger refresh with debounced resize handler
     const handleResize = debounce(() => {
       ScrollTrigger.refresh();
     }, 250);
-
-    // Intersection Observer for additional performance optimization
-    const observerOptions = {
-      rootMargin: '50px 0px',
-      threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-        }
-      });
-    }, observerOptions);
-
-    validProjects.forEach(project => {
-      if (project) observer.observe(project);
-    });
 
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      observer.disconnect();
-      // Clean up all animations and triggers with safety checks
       projectAnimations.forEach(anim => {
         if (anim && typeof anim.kill === 'function') {
           anim.kill();
@@ -255,7 +280,7 @@ function Projects() {
         }
       });
     };
-  }, [])
+  }, [mobileReady])
 
   // Lazy load videos
   const handleVideoVisibility = (index) => {

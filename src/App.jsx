@@ -20,20 +20,50 @@ gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   useEffect(() => {
-    ScrollTrigger.config({ ignoreMobileResize: true })
+    // More aggressive mobile-specific ScrollTrigger config
+    const isMobile = window.matchMedia('(max-width: 768px)').matches
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    
+    ScrollTrigger.config({ 
+      ignoreMobileResize: true,
+      autoRefreshEvents: "visibilitychange,DOMContentLoaded,load,resize"
+    })
+
+    // Mobile-specific fixes for production issues
+    if (isMobile || isTouchDevice) {
+      // Force ScrollTrigger to use native scroll on mobile for better compatibility
+      ScrollTrigger.normalizeScroll(true)
+      
+      // Set CSS custom property for mobile viewport
+      const setVH = () => {
+        const vh = window.innerHeight * 0.01
+        document.documentElement.style.setProperty('--vh', `${vh}px`)
+      }
+      setVH()
+      window.addEventListener('resize', setVH)
+      window.addEventListener('orientationchange', () => setTimeout(setVH, 100))
+    }
 
     const lenis = new Lenis({
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      smoothTouch: false,
+      smoothTouch: false, // Keep disabled on mobile to avoid conflicts
       touchMultiplier: 1.2,
     })
 
     try { if (typeof window !== 'undefined') window.lenis = lenis } catch (e) {}
 
-    // keep ScrollTrigger in sync with Lenis
-    lenis.on && lenis.on('scroll', () => ScrollTrigger.update())
+    // Enhanced ScrollTrigger sync with Lenis + mobile refresh
+    const updateScrollTrigger = () => {
+      ScrollTrigger.update()
+      if (isMobile || isTouchDevice) {
+        // Additional refresh delay for mobile layout settling
+        setTimeout(() => ScrollTrigger.refresh(true), 16)
+      }
+    }
+    
+    lenis.on && lenis.on('scroll', updateScrollTrigger)
 
     function raf(time) {
       lenis.raf(time)
