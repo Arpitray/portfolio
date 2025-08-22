@@ -14,17 +14,8 @@ function About() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
 
-    // Ensure ScrollTrigger is registered before any animations
-    if (!gsap.core.globals().ScrollTrigger) {
-      console.error('ScrollTrigger plugin is not registered.')
-    } else {
-      console.log('ScrollTrigger plugin is registered successfully.')
-    }
-
-    // helper: wrap words in spans for a split-word reveal
     const wrapWords = (el) => {
       if (!el) return []
-      // preserve original
       if (!el.dataset.original) el.dataset.original = el.innerHTML
       const text = el.textContent.trim()
       const words = text.split(/\s+/)
@@ -38,58 +29,35 @@ function About() {
         inner.textContent = w
         outer.appendChild(inner)
         el.appendChild(outer)
-        // add space after word except last
         if (i !== words.length - 1) el.appendChild(document.createTextNode(' '))
         nodeList.push(inner)
       })
       return nodeList
     }
 
-    // Debugging: Ensure the imageRef is correctly assigned and visible
     if (imageRef.current) {
-      console.log('imageRef element:', imageRef.current)
-      imageRef.current.style.border = '2px solid blue' // Temporary border for visibility
-      imageRef.current.style.backgroundColor = 'rgba(0, 0, 255, 0.1)' // Temporary background color
-    } else {
-      console.error('imageRef is not assigned correctly.')
+      gsap.set(imageRef.current, { x: 0, opacity: 1 })
     }
 
-    // Log element details for debugging
-    if (imageRef.current) {
-      const rect = imageRef.current.getBoundingClientRect();
-      console.log('imageRef details:', {
-        position: window.getComputedStyle(imageRef.current).position,
-        display: window.getComputedStyle(imageRef.current).display,
-        visibility: window.getComputedStyle(imageRef.current).visibility,
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-      });
-    }
+    const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches
 
-    // Temporarily disable animation for debugging
-    gsap.set(imageRef.current, {
-      x: 0,
-      opacity: 1,
-    });
-
-    // Restore animations for the About section
-    const imgAnim = gsap.from(imageRef.current, {
-      x: '-100%', // Start completely off-screen to the left
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: imageRef.current,
-        start: 'top 80%',
-        end: 'top 10%',
-        scrub: true, // Enable markers for debugging
-        onEnter: () => console.log('Image animation started'),
-        onLeave: () => console.log('Image animation left viewport'),
-        onUpdate: (self) => console.log(`Animation progress: ${self.progress}`), // Log animation progress
-      },
-    })
+    const imgAnim = imageRef.current ? gsap.fromTo(imageRef.current,
+      { x: '-16%', opacity: 0 },
+      {
+        x: '0%',
+        opacity: 1,
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: imageRef.current,
+          start: 'top 85%',
+          end: 'top 40%',
+          scrub: isMobile ? false : 0.8,
+          once: true,
+          invalidateOnRefresh: true,
+        },
+      }
+    ) : null
 
     const animateWords = (nodes, delay = 0) => {
       if (!nodes || nodes.length === 0) return null
@@ -102,7 +70,8 @@ function About() {
         delay,
         scrollTrigger: {
           trigger: nodes[0] ? nodes[0].closest('p, h1, h2, h3, div') : imageRef.current,
-          start: 'top 80%',
+          start: 'top 92%',
+          once: true,
         },
       })
     }
@@ -115,15 +84,8 @@ function About() {
     const p1Anim = animateWords(p1Spans, 0.1)
     const p2Anim = animateWords(p2Spans, 0.2)
 
-    // Cleanup temporary debugging styles
-    if (imageRef.current) {
-      imageRef.current.style.border = ''
-      imageRef.current.style.backgroundColor = ''
-    }
-
     return () => {
-      // cleanup: restore original text
-      [textRefs.current.heading, textRefs.current.p1, textRefs.current.p2].forEach((el) => {
+      ;[textRefs.current.heading, textRefs.current.p1, textRefs.current.p2].forEach((el) => {
         if (el && el.dataset && el.dataset.original) el.innerHTML = el.dataset.original
       })
       imgAnim && imgAnim.kill()
