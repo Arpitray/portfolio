@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -8,23 +8,6 @@ import back1 from './back1.png'
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger)
-
-// Mobile production fix: ensure ScrollTrigger initializes after DOM ready
-if (typeof window !== 'undefined') {
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  if (isMobile) {
-    // Force ScrollTrigger refresh on mobile after a delay to handle production timing issues
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        try {
-          ScrollTrigger.refresh(true);
-        } catch (e) {
-          console.warn('Initial mobile ScrollTrigger refresh failed:', e);
-        }
-      }, 500);
-    });
-  }
-}
 
 // Custom debounce function since gsap.utils.debounce might not be available
 const debounce = (func, wait) => {
@@ -46,52 +29,6 @@ function Projects() {
   const frameRefs = useRef([])
   const videoRefs = useRef([])
   const panelRefs = useRef([])
-  const [mobileReady, setMobileReady] = useState(false)
-
-  // Mobile readiness detection for production
-  useEffect(() => {
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
-    if (!isMobile) {
-      setMobileReady(true);
-      return;
-    }
-
-    let readyChecks = 0;
-    const totalChecks = 3;
-    
-    const checkReady = () => {
-      readyChecks++;
-      if (readyChecks >= totalChecks) {
-        setTimeout(() => setMobileReady(true), 100);
-      }
-    };
-
-    // Check 1: Loader completion
-    if (window.__loaderComplete) {
-      checkReady();
-    } else {
-      window.addEventListener('loaderComplete', checkReady, { once: true });
-    }
-
-    // Check 2: Font loading
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(checkReady);
-    } else {
-      setTimeout(checkReady, 200);
-    }
-
-    // Check 3: Basic DOM ready
-    if (document.readyState === 'complete') {
-      checkReady();
-    } else {
-      window.addEventListener('load', checkReady, { once: true });
-    }
-
-    // Fallback timeout
-    const fallback = setTimeout(() => setMobileReady(true), 1000);
-    
-    return () => clearTimeout(fallback);
-  }, []);
 
   // Sample project data
   const projects = [
@@ -167,63 +104,93 @@ function Projects() {
   ]
 
   useEffect(() => {
-    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-    if (isMobile) return; // Skip GSAP animations on mobile
-
     const container = containerRef.current;
     const projectsContainer = projectsContainerRef.current;
-
+    
     // Early return if refs are not ready
     if (!container || !projectsContainer) return;
-
+    
+    // Check if mobile device and skip GSAP to avoid production viewport issues
+    const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) return;
+    
+    // Filter out null/undefined refs and ensure we have valid projects
     const validProjects = projectsRef.current.filter(Boolean);
     if (validProjects.length === 0) return;
 
+    // Mobile viewport height fix for ScrollTrigger calculations
+    const refreshScrollTrigger = () => {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    };
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', refreshScrollTrigger);
+    }
+
+    // Enable GSAP performance optimizations
     gsap.config({ 
       force3D: true, 
       nullTargetWarn: false,
     });
 
+    // Set initial state for all project elements (no opacity/scale — only transform origin and perf)
     gsap.set(validProjects, {
       transformOrigin: "50% 50%",
       force3D: true,
     });
 
+    // Create optimized ScrollTrigger animation for projects grid with per-element directional entrances
     const projectAnimations = validProjects.map((project, index) => {
       if (!project) return null;
 
       const isEvenProject = index % 2 === 0;
 
+      // Find description (text) and panel (visual) elements inside the project container
       const textEl = project.querySelector('.text-start');
+      // panel has flex-1 and relative classes; query the nearest matching element
       const panelEl = project.querySelector('.flex-1.relative') || project.querySelector('.flex-1');
 
+      // Determine from-direction offsets (opposite of their visual placement)
+      // If text is on the left (isEven), it should come from the right (+x), and panel from the left (-x), and vice versa.
       const textFromX = isEvenProject ? 120 : -120;
       const panelFromX = isEvenProject ? -140 : 140;
 
+      // Ensure we don't operate on nulls
       const targets = [textEl, panelEl].filter(Boolean);
 
+      // Set only the initial x offset for each child to animate from opposite directions
       gsap.set(targets, {
         x: (i, el) => (el === textEl ? textFromX : panelFromX),
         force3D: true,
       });
 
+      // Build a timeline that animates text and panel into their final positions
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: project,
+          // trigger as soon as the element's top hits near the bottom of the viewport
           start: 'top 100%',
+          // finish as it approaches the top
           end: 'top -1%',
+          // snappier scrub for quicker reveal
           scrub: 1,
           invalidateOnRefresh: true,
           once: false,
+          refreshPriority: -1,
         }
       });
 
-      if (textEl) tl.to(textEl, { x: 0, duration: 0.9, ease: 'power3.out' }, 0);
-      if (panelEl) tl.to(panelEl, { x: 0, duration: 1.1, ease: 'power3.out' }, 0.06);
+  // Text should lead slightly, panel follows for a pleasing staggered entrance
+  if (textEl) tl.to(textEl, { x: 0, duration: 0.9, ease: 'power3.out' }, 0);
+  if (panelEl) tl.to(panelEl, { x: 0, duration: 1.1, ease: 'power3.out' }, 0.06);
 
       return tl;
     }).filter(Boolean);
 
+    // Enhanced batch animation for better performance and visual appeal
+    // Keep a lightweight batch that only ensures x positions are reset if needed
     ScrollTrigger.batch(validProjects, {
       onEnter: (elements) => {
         gsap.to(elements, {
@@ -238,37 +205,70 @@ function Projects() {
           force3D: true,
         });
       },
+      // no opacity/scale changes on leave or enterBack — keep position-focused only
       start: "top 95%",
       end: "bottom 60%",
       refreshPriority: 1,
     });
 
+    // Add a subtle parallax effect for enhanced visual depth
     validProjects.forEach((project, index) => {
       if (!project) return;
-
+      
       const parallaxElement = project.querySelector('.parallax-element') || project;
-
+      
       gsap.to(parallaxElement, {
         yPercent: -10,
         ease: "none",
         scrollTrigger: {
           trigger: project,
+          // parallax begins when element top hits the bottom of viewport
           start: "top bottom",
           end: "bottom top",
           scrub: 1.5,
           invalidateOnRefresh: true,
+          refreshPriority: -1,
         }
       });
     });
 
+    // Optimize ScrollTrigger refresh with debounced resize handler
     const handleResize = debounce(() => {
       ScrollTrigger.refresh();
     }, 250);
 
+    // Intersection Observer for additional performance optimization
+    const observerOptions = {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, observerOptions);
+
+    validProjects.forEach(project => {
+      if (project) observer.observe(project);
+    });
+
     window.addEventListener('resize', handleResize);
 
+    // Force ScrollTrigger refresh after animations are set up
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 50);
+
     return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', refreshScrollTrigger);
+      }
       window.removeEventListener('resize', handleResize);
+      observer.disconnect();
+      // Clean up all animations and triggers with safety checks
       projectAnimations.forEach(anim => {
         if (anim && typeof anim.kill === 'function') {
           anim.kill();
@@ -280,7 +280,7 @@ function Projects() {
         }
       });
     };
-  }, [mobileReady])
+  }, [])
 
   // Lazy load videos
   const handleVideoVisibility = (index) => {
@@ -353,7 +353,7 @@ function Projects() {
       </div>
 
       {/* Projects Container */}
-      <div ref={projectsContainerRef} className='flex-1 pb-20 '>
+      <div ref={projectsContainerRef} className='flex-1 pb-32'>
         {projects.map((project, index) => {
           const isEven = index % 2 === 0
           
@@ -362,7 +362,7 @@ function Projects() {
               key={project.id}
               id={`project-${project.id}`}
               ref={el => projectsRef.current[index] = el}
-              className={`parallax-element last:mb-0 font-['belly'] tracking-widest transition-all duration-300 ${
+              className={`parallax-element mb-16 md:mb-24 font-['belly'] tracking-widest transition-all duration-300 ${
                 isEven ? 'md:flex-row' : 'md:flex-row-reverse'
               } flex flex-col md:flex-row gap-8 md:gap-6 px-6 md:px-16 lg:px-4 items-center`}
               style={{ 
@@ -474,11 +474,14 @@ function Projects() {
                 </div>
 
             {/* Mobile-only actions placed below the project panel so order becomes: description -> panel -> actions */}
-            <div className='md:hidden w-full flex justify-center mt-4 mb-8 gap-4 relative' style={{ zIndex: 9999 }}>
-              <a href={project.githubLink} target="_blank" rel="noopener noreferrer" aria-label="View on GitHub" className="inline-flex items-center justify-center bg-gray-900 text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-gray-800 transition-colors">
+            <div className='md:hidden w-full flex justify-center mt-6 mb-8 gap-4 px-4' style={{ zIndex: 10000 }}>
+              <a href={project.githubLink} target="_blank" rel="noopener noreferrer" aria-label="View on GitHub" className="inline-flex items-center justify-center bg-gray-900 text-white px-6 py-3 rounded-lg font-semibold text-base hover:bg-gray-800 transition-colors shadow-lg">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2">
+                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.416-4.042-1.416-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.305-5.466-1.332-5.466-5.93 0-1.31.468-2.381 1.235-3.221-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.911 1.23 3.221 0 4.61-2.805 5.625-5.475 5.92.435.375.81 1.11.81 2.235 0 1.615-.015 2.915-.015 3.315 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                </svg>
                 GitHub
               </a>
-              <a href={project.liveDemoLink} target="_blank" rel="noopener noreferrer" className="inline-block bg-[#101828] text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-zinc-800 transition-colors">
+              <a href={project.liveDemoLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center bg-[#101828] text-white px-6 py-3 rounded-lg font-semibold text-base hover:bg-zinc-800 transition-colors shadow-lg">
                 Live Demo
               </a>
             </div>

@@ -3,6 +3,22 @@
 /* Lenis recommends disabling native smooth scrolling to avoid conflicts */
 html { scroll-behavior: auto; }
 
+/* Fix viewport height for real mobile browsers */
+:root {
+  --vh: 1vh;
+}
+
+/* Mobile viewport height fix */
+.min-h-screen {
+  min-height: 100vh; /* Fallback for browsers that don't support CSS custom properties */
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
+.h-screen {
+  height: 100vh; /* Fallback */
+  height: calc(var(--vh, 1vh) * 100);
+}
+
 /* Tailwind utility for the subtle grid background */
 @layer utilities {
 	.bg-grid {

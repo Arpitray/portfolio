@@ -8,157 +8,117 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 function About() {
-  const imageRef = useRef(null);
-  const textRefs = useRef({ heading: null, p1: null, p2: null });
-  const [mobileReady, setMobileReady] = useState(false);
+  const imageRef = useRef(null)
+  const textRefs = useRef({ heading: null, p1: null, p2: null })
 
   useEffect(() => {
-    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-    if (!isMobile) {
-      setMobileReady(true);
-      return;
-    }
-
-    let readyChecks = 0;
-    const totalChecks = 3;
-
-    const checkReady = () => {
-      readyChecks++;
-      if (readyChecks >= totalChecks) {
-        setTimeout(() => setMobileReady(true), 100);
-      }
-    };
-
-    if (window.__loaderComplete) {
-      checkReady();
-    } else {
-      window.addEventListener('loaderComplete', checkReady, { once: true });
-    }
-
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(checkReady);
-    } else {
-      setTimeout(checkReady, 200);
-    }
-
-    if (document.readyState === 'complete') {
-      checkReady();
-    } else {
-      window.addEventListener('load', checkReady, { once: true });
-    }
-
-    const fallback = setTimeout(() => setMobileReady(true), 1000);
-
-    return () => clearTimeout(fallback);
-  }, []);
-
-  useEffect(() => {
-    if (!mobileReady) return;
-
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger)
 
     const wrapWords = (el) => {
-      if (!el) return [];
-      if (!el.dataset.original) el.dataset.original = el.innerHTML;
-      const text = el.textContent.trim();
-      const words = text.split(/\s+/);
-      el.innerHTML = '';
-      const nodeList = [];
+      if (!el) return []
+      if (!el.dataset.original) el.dataset.original = el.innerHTML
+      const text = el.textContent.trim()
+      const words = text.split(/\s+/)
+      el.innerHTML = ''
+      const nodeList = []
       words.forEach((w, i) => {
-        const outer = document.createElement('span');
-        outer.className = 'inline-block overflow-hidden mr-2';
-        const inner = document.createElement('span');
-        inner.className = 'inline-block';
-        inner.textContent = w;
-        outer.appendChild(inner);
-        el.appendChild(outer);
-        if (i !== words.length - 1) el.appendChild(document.createTextNode(' '));
-        nodeList.push(inner);
-      });
-      return nodeList;
-    };
-
-    if (imageRef.current) {
-      gsap.set(imageRef.current, { x: 0, opacity: 1 });
+        const outer = document.createElement('span')
+        outer.className = 'inline-block overflow-hidden mr-2'
+        const inner = document.createElement('span')
+        inner.className = 'inline-block'
+        inner.textContent = w
+        outer.appendChild(inner)
+        el.appendChild(outer)
+        if (i !== words.length - 1) el.appendChild(document.createTextNode(' '))
+        nodeList.push(inner)
+      })
+      return nodeList
     }
 
-    const imgAnim = imageRef.current
-      ? gsap.fromTo(
-          imageRef.current,
-          { x: '-16%', opacity: 0 },
-          {
-            x: '0%',
-            opacity: 1,
-            duration: 0.9,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: imageRef.current,
-              start: 'top 85%',
-              end: 'top 40%',
-              scrub: 0.8,
-              once: true,
-              invalidateOnRefresh: true,
-            },
-          }
-        )
-      : null;
+    if (imageRef.current) {
+      gsap.set(imageRef.current, { x: 0, opacity: 1 })
+    }
 
-    const headingSpans = wrapWords(textRefs.current.heading);
-    const p1Spans = wrapWords(textRefs.current.p1);
-    const p2Spans = wrapWords(textRefs.current.p2);
+    const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches
 
-    const hAnim = gsap.from(headingSpans, {
-      yPercent: 100,
-      opacity: 0,
-      stagger: 0.03,
-      duration: 0.8,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: textRefs.current.heading,
-        start: 'top 92%',
-        once: true,
-      },
-    });
+    // Skip GSAP on mobile to avoid production viewport issues
+    if (isMobile) return;
 
-    const p1Anim = gsap.from(p1Spans, {
-      yPercent: 100,
-      opacity: 0,
-      stagger: 0.03,
-      duration: 0.8,
-      ease: 'power3.out',
-      delay: 0.1,
-      scrollTrigger: {
-        trigger: textRefs.current.p1,
-        start: 'top 92%',
-        once: true,
-      },
-    });
+    // Mobile viewport height fix for ScrollTrigger calculations
+    const refreshScrollTrigger = () => {
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 100);
+    };
 
-    const p2Anim = gsap.from(p2Spans, {
-      yPercent: 100,
-      opacity: 0,
-      stagger: 0.03,
-      duration: 0.8,
-      ease: 'power3.out',
-      delay: 0.2,
-      scrollTrigger: {
-        trigger: textRefs.current.p2,
-        start: 'top 92%',
-        once: true,
-      },
-    });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', refreshScrollTrigger);
+    }
+
+    const imgAnim = imageRef.current ? gsap.fromTo(imageRef.current,
+      { x: '-16%', opacity: 0 },
+      {
+        x: '0%',
+        opacity: 1,
+        duration: 0.9,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: imageRef.current,
+          start: 'top 85%',
+          end: 'top 40%',
+          scrub: 0.8,
+          once: true,
+          invalidateOnRefresh: true,
+          refreshPriority: -1,
+        },
+      }
+    ) : null
+
+    const animateWords = (nodes, delay = 0) => {
+      if (!nodes || nodes.length === 0) return null
+      return gsap.from(nodes, {
+        yPercent: 100,
+        opacity: 0,
+        stagger: 0.03,
+        duration: 0.8,
+        ease: 'power3.out',
+        delay,
+        scrollTrigger: {
+          trigger: nodes[0] ? nodes[0].closest('p, h1, h2, h3, div') : imageRef.current,
+          start: 'top 92%',
+          once: true,
+          refreshPriority: -1,
+        },
+      })
+    }
+
+    const headingSpans = wrapWords(textRefs.current.heading)
+    const p1Spans = wrapWords(textRefs.current.p1)
+    const p2Spans = wrapWords(textRefs.current.p2)
+
+    const hAnim = animateWords(headingSpans)
+    const p1Anim = animateWords(p1Spans, 0.1)
+    const p2Anim = animateWords(p2Spans, 0.2)
+
+    // Force ScrollTrigger refresh after animations are set up
+    setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 50);
 
     return () => {
-      [textRefs.current.heading, textRefs.current.p1, textRefs.current.p2].forEach((el) => {
-        if (el && el.dataset && el.dataset.original) el.innerHTML = el.dataset.original;
-      });
-      imgAnim && imgAnim.kill();
-      hAnim && hAnim.kill();
-      p1Anim && p1Anim.kill();
-      p2Anim && p2Anim.kill();
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, [mobileReady]);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', refreshScrollTrigger);
+      }
+      ;[textRefs.current.heading, textRefs.current.p1, textRefs.current.p2].forEach((el) => {
+        if (el && el.dataset && el.dataset.original) el.innerHTML = el.dataset.original
+      })
+      imgAnim && imgAnim.kill()
+      hAnim && hAnim.kill()
+      p1Anim && p1Anim.kill()
+      p2Anim && p2Anim.kill()
+      ScrollTrigger.getAll().forEach((t) => t.kill())
+    }
+  }, [])
 
   // detect mobile viewport to adjust image size
   const [isMobile, setIsMobile] = useState(() => {
@@ -179,7 +139,7 @@ function About() {
   }, [])
 
   return (
-    <section id="about" className="relative min-h-screen w-full font-normal bg-[#E1E1E1] z-[99]  flex font-['dk2'] sm:px-8">
+    <section id="about" className="relative min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen w-full font-normal bg-[#E1E1E1] z-[99]  flex font-['dk2'] sm:px-8">
       <div className="w-full flex flex-col md:flex-row justify-center mt-12 md:mt-32 items-start gap-8 md:gap-12 px-6">
         <div className="flex w-full justify-center md:justify-center saturate-120 mb-6 md:mb-0" ref={imageRef}>
               <DecayCard width={isMobile ? 300 : 550} height={isMobile ? 300 : 600} image={Arpit3} mobile={isMobile}>
