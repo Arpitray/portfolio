@@ -11,12 +11,19 @@ const DecayCard = ({
 }) => {
   const wrapperRef = useRef(null);
 
+  // lightweight device check: prefer explicit prop, otherwise detect coarse pointer
+  const isTouchLike = mobile || (typeof window !== 'undefined' && matchMedia && matchMedia('(pointer: coarse)').matches)
+
   return (
     <div ref={wrapperRef} className="relative" style={{ width: `${width}px`, height: `${height}px` }}>
       <div className="relative w-full h-full block rounded-2xl overflow-hidden shadow-2xl border border-white/8 bg-white">
         {/* image/canvas */}
         <div className="relative w-full h-full">
-          <SandImage src={image} width={width} height={height} showOverlay={!bare} />
+          {isTouchLike ? (
+            <img src={image} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          ) : (
+            <SandImage src={image} width={width} height={height} showOverlay={!bare} />
+          )}
 
           {/* overlays for detail: vignette + subtle frame + corner accents */}
           {!bare && (
