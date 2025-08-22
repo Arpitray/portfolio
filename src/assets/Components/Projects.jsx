@@ -129,6 +129,11 @@ function Projects() {
       force3D: true,
     });
 
+    // helper to refresh triggers safely
+    const safeRefresh = debounce(() => {
+      try { ScrollTrigger.refresh(true) } catch (e) {}
+    }, 140)
+
     // Create optimized ScrollTrigger animation for projects grid with per-element directional entrances
     const projectAnimations = validProjects.map((project, index) => {
       if (!project) return null;
@@ -136,80 +141,66 @@ function Projects() {
       const isEvenProject = index % 2 === 0;
 
       // Find description (text) and panel (visual) elements inside the project container
-      const textEl = project.querySelector('.text-start');
-      // panel has flex-1 and relative classes; query the nearest matching element
-      const panelEl = project.querySelector('.flex-1.relative') || project.querySelector('.flex-1');
+      const textEl = project.querySelector('[data-project-text]') || project.querySelector('.text-start');
+      const panelEl = project.querySelector('[data-project-panel]') || project.querySelector('.flex-1.relative') || project.querySelector('.flex-1');
 
-      // Determine from-direction offsets (opposite of their visual placement)
-      // If text is on the left (isEven), it should come from the right (+x), and panel from the left (-x), and vice versa.
-      const textFromX = isEvenProject ? 120 : -120;
-      const panelFromX = isEvenProject ? -140 : 140;
+      // Determine from-direction offsets
+      const textFromX = isEvenProject ? 110 : -110;
+      const panelFromX = isEvenProject ? -120 : 120;
 
-      // Ensure we don't operate on nulls
       const targets = [textEl, panelEl].filter(Boolean);
 
-      // Set only the initial x offset for each child to animate from opposite directions
       gsap.set(targets, {
         x: (i, el) => (el === textEl ? textFromX : panelFromX),
         force3D: true,
       });
 
-      // Build a timeline that animates text and panel into their final positions
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: project,
-          // trigger as soon as the element's top hits near the bottom of the viewport
-          start: 'top 100%',
-          // finish as it approaches the top
-          end: 'top -1%',
-          // snappier scrub for quicker reveal
-          scrub: isMobile ? false : 1,
-          invalidateOnRefresh: true,
+          start: isMobile ? 'top 94%' : 'top 100%',
+          end: isMobile ? 'top 60%' : 'top -1%',
+          scrub: isMobile ? false : 0.8,
+          toggleActions: isMobile ? 'play none none none' : 'play none none reverse',
           once: isMobile,
+          invalidateOnRefresh: true,
+          fastScrollEnd: true,
+          preventOverlaps: true,
         }
       });
 
-  // Text should lead slightly, panel follows for a pleasing staggered entrance
-  if (textEl) tl.to(textEl, { x: 0, duration: 0.9, ease: 'power3.out' }, 0);
-  if (panelEl) tl.to(panelEl, { x: 0, duration: 1.1, ease: 'power3.out' }, 0.06);
+      if (textEl) tl.to(textEl, { x: 0, duration: 0.7, ease: 'power3.out' }, 0);
+      if (panelEl) tl.to(panelEl, { x: 0, duration: 0.9, ease: 'power3.out' }, 0.06);
 
       return tl;
     }).filter(Boolean);
 
-    // Enhanced batch animation for better performance and visual appeal
-    // Keep a lightweight batch that only ensures x positions are reset if needed
+    // Batch safeguard remains lightweight
     ScrollTrigger.batch(validProjects, {
       onEnter: (elements) => {
         gsap.to(elements, {
           x: 0,
-          duration: 0.9,
+          duration: 0.8,
           ease: "power2.out",
-          stagger: {
-            amount: 0.25,
-            from: "start",
-          },
+          stagger: { amount: 0.25, from: "start" },
           overwrite: true,
           force3D: true,
         });
       },
-      // no opacity/scale changes on leave or enterBack — keep position-focused only
       start: "top 95%",
       end: "bottom 60%",
       refreshPriority: 1,
     });
 
-    // Add a subtle parallax effect for enhanced visual depth
-    validProjects.forEach((project, index) => {
+    // Parallax disabled on mobile
+    validProjects.forEach((project) => {
       if (!project) return;
-      
-      const parallaxElement = project.querySelector('.parallax-element') || project;
-      
+      const parallaxElement = project.querySelector('[data-parallax]') || project.querySelector('.parallax-element') || project;
       gsap.to(parallaxElement, {
         yPercent: isMobile ? 0 : -10,
         ease: "none",
         scrollTrigger: {
           trigger: project,
-          // parallax begins when element top hits the bottom of viewport
           start: "top bottom",
           end: "bottom top",
           scrub: isMobile ? false : 1.5,
@@ -218,45 +209,34 @@ function Projects() {
       });
     });
 
-    // Optimize ScrollTrigger refresh with debounced resize handler
-    const handleResize = debounce(() => {
-      ScrollTrigger.refresh();
-    }, 250);
+    // Debounced refresh on resize/orientation
+    const handleResize = safeRefresh
+    const handleOrientation = safeRefresh
 
-    // Intersection Observer for additional performance optimization
-    const observerOptions = {
-      rootMargin: '150px 0px',
-      threshold: 0.05
-    };
+    // Refresh on loader complete and when fonts become active
+    const onLoaderComplete = () => safeRefresh()
+    const onFontsReady = () => safeRefresh()
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-        }
-      });
-    }, observerOptions);
+    // Refresh when videos report metadata (size known)
+    const onVideoMeta = () => safeRefresh()
+    videoRefs.current.forEach((v) => {
+      if (!v) return
+      v.addEventListener('loadedmetadata', onVideoMeta, { once: true })
+    })
 
-    validProjects.forEach(project => {
-      if (project) observer.observe(project);
-    });
-
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('orientationchange', handleOrientation)
+    window.addEventListener('loaderComplete', onLoaderComplete)
+    if (document && 'fonts' in document) {
+      try { document.fonts.ready.then(onFontsReady) } catch (e) {}
+    }
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      observer.disconnect();
-      // Clean up all animations and triggers with safety checks
-      projectAnimations.forEach(anim => {
-        if (anim && typeof anim.kill === 'function') {
-          anim.kill();
-        }
-      });
-      ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger && typeof trigger.kill === 'function') {
-          trigger.kill();
-        }
-      });
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('orientationchange', handleOrientation)
+      window.removeEventListener('loaderComplete', onLoaderComplete)
+      projectAnimations.forEach(anim => { try { anim && anim.kill && anim.kill() } catch (e) {} })
+      ScrollTrigger.getAll().forEach((trigger) => { try { trigger && trigger.kill && trigger.kill() } catch (e) {} })
     };
   }, [])
 
@@ -288,28 +268,21 @@ function Projects() {
     const videoEl = videoRefs.current[index]
     if (!panelEl) return
 
-    // Ensure transform origin is centered
     gsap.set(panelEl, { transformOrigin: '50% 50%' })
 
     const tl = gsap.timeline()
-    // scale down to 0 using expo.out easing
     tl.to(panelEl, { scale: 0, duration: 1, ease: 'expo.out' })
-      // hold for 1 second
       .to(panelEl, { duration: 1 })
-      // scale back up using expo.out easing
       .to(panelEl, {
         scale: 1,
         duration: 1.5,
         ease: 'expo.out',
         onComplete: () => {
-          // restart video playback after animation
           if (videoEl) {
             try {
               videoEl.currentTime = 0
               videoEl.play()
-            } catch (e) {
-              // ignore autoplay errors
-            }
+            } catch (e) {}
           }
         }
       })
@@ -340,6 +313,7 @@ function Projects() {
               key={project.id}
               id={`project-${project.id}`}
               ref={el => projectsRef.current[index] = el}
+              data-project
               className={`parallax-element last:mb-0 font-['belly'] tracking-widest transition-all duration-300 ${
                 isEven ? 'md:flex-row' : 'md:flex-row-reverse'
               } flex flex-col md:flex-row gap-8 md:gap-6 px-6 md:px-16 lg:px-4 items-center`}
@@ -350,7 +324,7 @@ function Projects() {
               }}
             >
               {/* Project Description */}
-              <div className='w-full md:w-1/2 px-4 md:px-8 font-["demo"] text-center md:text-start'>
+              <div data-project-text className='w-full md:w-1/2 px-4 md:px-8 font-["demo"] text-center md:text-start'>
                 <h2 className='text-4xl sm:text-3xl md:text-6xl lg:text-5xl xl:text-8xl font-extrabold text-black mb-3 md:mb-5 tracking-tight leading-tight'>
                   {project.title}
                 </h2>
@@ -423,7 +397,7 @@ function Projects() {
                       </div>
                       
                       {/* Video Container */}
-                      <div className='rounded-b-lg overflow-hidden'>
+                      <div className='rounded-b-lg overflow-hidden' data-project-panel>
                         <video
                           ref={el => videoRefs.current[index] = el}
                           src={project.video}
