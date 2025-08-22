@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -10,7 +10,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 export default function Showcase() {
   const outerRef = useRef(null)
   const stickyRef = useRef(null)
-  const colsWrapRef = useRef(null)
   const wrapRefs = useRef([])
   const colRefs = useRef([])
   const offsetRef = useRef([])
@@ -38,7 +37,7 @@ export default function Showcase() {
     let triggers = []
 
     const setup = () => {
-      const { maxShift } = recalc()
+      // const { maxShift } = recalc() // Removed unused variable
       const outerRect = outer.getBoundingClientRect()
       const totalScrollable = Math.max(2, outerRect.height - window.innerHeight)
 

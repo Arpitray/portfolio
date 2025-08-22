@@ -2,13 +2,14 @@
 //Brain_model//
 const viewer = document.querySelector('#brainModel');
 
-let initialCameraTarget;
-let initialCameraOrbit;
+// Camera state variables for brain model (used in viewer load event)
+let INITIAL_CAMERA_TARGET;
+let INITIAL_CAMERA_ORBIT;
 
 viewer.addEventListener("load", () => {
   // Save starting camera state
-  initialCameraTarget = viewer.getCameraTarget();
-  initialCameraOrbit = viewer.getCameraOrbit();
+  INITIAL_CAMERA_TARGET = viewer.getCameraTarget();
+  INITIAL_CAMERA_ORBIT = viewer.getCameraOrbit();
 });
 
 // Highlight part
@@ -173,23 +174,25 @@ document.querySelectorAll('#heart-buttons button').forEach(button => {
 // ==================== HEART MODEL CAMERA HANDLERS =====================
 
 // Get the model viewer element
+let HEART_INITIAL_ORBIT;
 
-function highlightHeartPartForHeart(button, part) {
-  // Save the camera position if this is the first click
-  if (!heartInitialOrbit) {
-    heartInitialOrbit = heartModelViewer.getAttribute('camera-orbit');
-  }
-
-  // Move the camera
-  heartModelViewer.setAttribute('camera-orbit', heartPartPositions[part]);
-
-  // Highlight label
-  // if (button && button.querySelector('.label')) {
-  //   document.querySelectorAll('#heart-model .label')
-  //     .forEach(label => label.classList.remove('active'));
-  //   button.querySelector('.label')?.classList.add('active');
-  // }
-}
+// Remove unused function - replaced with proper heart interaction
+// function highlightHeartPartForHeart(button, part) {
+//   // Save the camera position if this is the first click
+//   if (!heartInitialOrbit) {
+//     heartInitialOrbit = heartModelViewer.getAttribute('camera-orbit');
+//   }
+//
+//   // Move the camera
+//   heartModelViewer.setAttribute('camera-orbit', heartPartPositions[part]);
+//
+//   // Highlight label
+//   // if (button && button.querySelector('.label')) {
+//   //   document.querySelectorAll('#heart-model .label')
+//   //     .forEach(label => label.classList.remove('active'));
+//   //   button.querySelector('.label')?.classList.add('active');
+//   // }
+// }
 const heartModelViewer = document.querySelector('#heart-model');
 const initialHeartOrbit = heartModelViewer.getAttribute('camera-orbit');
 const heartResetButton = document.querySelector('#reset-camera');
@@ -416,13 +419,21 @@ document.querySelectorAll('[data-part]').forEach(button => {
   });
 });
 
+// Lung parts information
+const lungPartsInfo = {
+  leftLung: "The Left Lung is smaller than the right lung and has two lobes. It processes oxygen from the air we breathe and removes carbon dioxide from the blood. Its unique shape accommodates the heart's position.",
+  rightLung: "The Right Lung is larger and has three lobes. It works with the left lung to facilitate gas exchange, bringing oxygen into the bloodstream and removing waste carbon dioxide through breathing.",
+  trachea: "The Trachea is the windpipe that carries air from the nose and mouth to the lungs. It's lined with cilia that help filter and humidify incoming air, protecting the delicate lung tissue.",
+  bronchi: "The Bronchi are the main air passages that branch from the trachea into each lung. They continue to divide into smaller tubes, eventually leading to the alveoli where gas exchange occurs."
+};
+
 // Event listener for all buttons with data-part
 document.querySelectorAll('[data-part]').forEach(button => {
   button.addEventListener('click', e => {
     const part = e.currentTarget.getAttribute('data-part');
     if (lungPartsInfo[part]) {
       cancelTyping();
-      runTyping(lungPartsInfo[part]);
+      typeWriter(lungPartsInfo[part]);
     }
   });
 });
@@ -531,13 +542,21 @@ document.querySelectorAll('[data-part]').forEach(button => {
   });
 });
 
+// Liver parts information
+const liverPartsInfo = {
+  liver: "The Liver is the largest internal organ and performs over 500 vital functions. It detoxifies harmful substances, produces bile for digestion, stores vitamins and minerals, and helps regulate blood sugar levels.",
+  gallbladder: "The Gallbladder stores and concentrates bile produced by the liver. When you eat fatty foods, it releases bile into the small intestine to help break down fats for proper digestion.",
+  hepaticArtery: "The Hepatic Artery supplies oxygen-rich blood to the liver. This arterial blood provides the energy the liver needs to perform its many metabolic functions.",
+  portalVein: "The Portal Vein carries nutrient-rich blood from the digestive organs to the liver. This allows the liver to process nutrients and filter toxins before blood returns to the heart."
+};
+
 // Event listener for all buttons with data-part
 document.querySelectorAll('[data-part]').forEach(button => {
   button.addEventListener('click', e => {
     const part = e.currentTarget.getAttribute('data-part');
     if (liverPartsInfo[part]) {
       cancelTyping();
-      runTyping(liverPartsInfo[part]);
+      typeWriter(liverPartsInfo[part]);
     }
   });
 });
@@ -967,7 +986,8 @@ boneImg.onload = () => {
       toast.classList.remove("show");
     }, 3000);
   });
-  (function () {
-    const locomotiveScroll = new LocomotiveScroll();
-})();
+  // LocomotiveScroll removed - not needed for this implementation
+  // (function () {
+  //   const locomotiveScroll = new LocomotiveScroll();
+  // })();
   

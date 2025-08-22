@@ -11,11 +11,11 @@ const Loader = ({ onComplete } = {}) => {
 
   useEffect(() => {
     // preload critical images used in the loader so the browser has them before paint
-    const imgs = [Image1, Image2, Image3].map(src => {
-      const i = new Image()
-      i.src = src
-      return i
-    })
+    // const imgs = [Image1, Image2, Image3].map(src => {
+    //   const i = new Image()
+    //   i.src = src
+    //   return i
+    // }) // Removed unused variable
 
     // set initial positions and stacking
     gsap.set(containerRef.current, { yPercent: 0 })
@@ -32,7 +32,7 @@ const Loader = ({ onComplete } = {}) => {
         yPercent: 0,
         autoAlpha: 1,
         scale: 1,
-        rotation: (i) => gsap.utils.random(-30, 30),
+        rotation: () => gsap.utils.random(-30, 30), // Fixed unused i parameter
         duration: 1.2, // Reduced duration for smoother animation
         stagger: 0.5, // Adjusted stagger for better flow
         ease: 'power3.out'

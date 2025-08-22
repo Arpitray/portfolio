@@ -138,7 +138,10 @@ function About() {
   const [isMobile, setIsMobile] = useState(() => {
     try {
       return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches
-    } catch (e) { return false }
+    } catch (error) {
+      console.warn('Failed to detect mobile:', error)
+      return false
+    }
   })
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
@@ -147,8 +150,12 @@ function About() {
     if (mql.addEventListener) mql.addEventListener('change', onChange)
     else if (mql.addListener) mql.addListener(onChange)
     return () => {
-      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (e) {}
-      try { if (mql.removeListener) mql.removeListener(onChange) } catch (e) {}
+      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (error) {
+        console.warn('Failed to remove event listener:', error)
+      }
+      try { if (mql.removeListener) mql.removeListener(onChange) } catch (error) {
+        console.warn('Failed to remove listener:', error)
+      }
     }
   }, [])
 

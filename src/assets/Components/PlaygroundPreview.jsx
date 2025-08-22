@@ -2,22 +2,25 @@ import React, { useRef, useEffect, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom' // Removed unused import
 import LL3 from './ll3.png'
 import SpinGif from './spin.gif'
 import SandImage from './SandImage'
 import DecayCard from './DecayCard'
 
 export default function PlaygroundPreview({
-  image = '/PlayGround/virtual-project/index.html',
+  // image = '/PlayGround/virtual-project/index.html', // Removed unused parameter
   title = 'DreadCell',
-  description = 'This is my very first personal experimental project—built entirely from scratch using only HTML, CSS, and JavaScript, with no external libraries involved. Aiming to blend eerie, spooky vibes with a playful, interactive touch, the site invites visitors to explore a mysterious interface filled with cryptic prompts like “Move Left,” “Move Right,” “Zoom In,” “Tip,” “joke,” “⚗️fact,”—lighthearted elements woven into an unsettling digital landscape. With just a simple toggle to “Stop Sound,” Dreadcell teases your senses, offering a uniquely spooky yet fun user experience.'
+  description = 'This is my very first personal experimental project—built entirely from scratch using only HTML, CSS, and JavaScript, with no external libraries involved. Aiming to blend eerie, spooky vibes with a playful, interactive touch, the site invites visitors to explore a mysterious interface filled with cryptic prompts like "Move Left," "Move Right," "Zoom In," "Tip," "joke," "⚗️fact,"—lighthearted elements woven into an unsettling digital landscape. With just a simple toggle to "Stop Sound," Dreadcell teases your senses, offering a uniquely spooky yet fun user experience.'
 }) {
-  const nav = useNavigate()
+  // const nav = useNavigate() // Removed unused variable
   const sectionRef = useRef(null)
   const maskRef = useRef(null)
   const [isMobile, setIsMobile] = useState(() => {
-    try { return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches } catch (e) { return false }
+    try { return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches } catch (error) { 
+      console.warn('Failed to detect mobile:', error)
+      return false 
+    }
   })
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
@@ -26,8 +29,12 @@ export default function PlaygroundPreview({
     if (mql.addEventListener) mql.addEventListener('change', onChange)
     else if (mql.addListener) mql.addListener(onChange)
     return () => {
-      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (e) {}
-      try { if (mql.removeListener) mql.removeListener(onChange) } catch (e) {}
+      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (error) {
+        console.warn('Failed to remove event listener:', error)
+      }
+      try { if (mql.removeListener) mql.removeListener(onChange) } catch (error) {
+        console.warn('Failed to remove listener:', error)
+      }
     }
   }, [])
 
@@ -60,7 +67,9 @@ export default function PlaygroundPreview({
       try {
         tween && tween.kill && tween.kill()
         ScrollTrigger.getAll().forEach(t => t.kill && t.kill())
-      } catch (e) {}
+      } catch (error) {
+        console.warn('Failed to cleanup animations:', error)
+      }
     }
   }, [])
 
