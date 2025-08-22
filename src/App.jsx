@@ -28,42 +28,12 @@ function App() {
       touchMultiplier: 1.5,
     })
 
-    // integrate Lenis with GSAP ScrollTrigger so ScrollTrigger responds to the smooth scroller
+    // Integrate Lenis with ScrollTrigger without scrollerProxy for broader mobile compatibility
     try {
-      // expose for debugging
       if (typeof window !== 'undefined') window.lenis = lenis
-
-      // try to detect the element Lenis uses as the smooth scroller
-      const scrollerEl = document.querySelector('.lenis') || document.querySelector('[data-lenis]') || document.documentElement
-
-      ScrollTrigger.scrollerProxy(scrollerEl, {
-        scrollTop(value) {
-          if (arguments.length) {
-            // jump to value immediately using Lenis
-            try {
-              lenis.scrollTo(value, { immediate: true, duration: 0 })
-            } catch (e) {}
-          }
-          // return the current scrollTop for the scroller element
-          return scrollerEl.scrollTop || document.documentElement.scrollTop
-        },
-        getBoundingClientRect() {
-          return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }
-        },
-        pinType: scrollerEl.style.transform ? 'transform' : 'fixed',
-      })
-
-      // make ScrollTrigger use detected scroller by default
-      ScrollTrigger.defaults({ scroller: scrollerEl })
-
-      // update ScrollTrigger on Lenis scroll
-      lenis.on && lenis.on('scroll', ScrollTrigger.update)
-
-      // ensure ScrollTrigger recalculates after setup
+      if (lenis.on) lenis.on('scroll', ScrollTrigger.update)
       ScrollTrigger.refresh()
-    } catch (e) {
-      // non-fatal if scroller proxy setup fails
-    }
+    } catch (e) {}
 
     function raf(time) {
       lenis.raf(time)

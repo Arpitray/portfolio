@@ -15,11 +15,7 @@ function About() {
     gsap.registerPlugin(ScrollTrigger)
 
     // Ensure ScrollTrigger is registered before any animations
-    if (!gsap.core.globals().ScrollTrigger) {
-      console.error('ScrollTrigger plugin is not registered.')
-    } else {
-      console.log('ScrollTrigger plugin is registered successfully.')
-    }
+    if (!gsap.core.globals().ScrollTrigger) {}
 
     // helper: wrap words in spans for a split-word reveal
     const wrapWords = (el) => {
@@ -45,51 +41,28 @@ function About() {
       return nodeList
     }
 
-    // Debugging: Ensure the imageRef is correctly assigned and visible
-    if (imageRef.current) {
-      console.log('imageRef element:', imageRef.current)
-      imageRef.current.style.border = '2px solid blue' // Temporary border for visibility
-      imageRef.current.style.backgroundColor = 'rgba(0, 0, 255, 0.1)' // Temporary background color
-    } else {
-      console.error('imageRef is not assigned correctly.')
+    // Image animation with lightweight settings; reduces jank on mobile
+    const imgEl = imageRef.current
+    if (imgEl) {
+      gsap.set(imgEl, { willChange: 'transform, opacity' })
     }
-
-    // Log element details for debugging
-    if (imageRef.current) {
-      const rect = imageRef.current.getBoundingClientRect();
-      console.log('imageRef details:', {
-        position: window.getComputedStyle(imageRef.current).position,
-        display: window.getComputedStyle(imageRef.current).display,
-        visibility: window.getComputedStyle(imageRef.current).visibility,
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-      });
-    }
-
-    // Temporarily disable animation for debugging
-    gsap.set(imageRef.current, {
-      x: 0,
-      opacity: 1,
-    });
-
-    // Restore animations for the About section
-    const imgAnim = gsap.from(imageRef.current, {
-      x: '-100%', // Start completely off-screen to the left
-      opacity: 0,
-      duration: 1,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: imageRef.current,
-        start: 'top 80%',
-        end: 'top 10%',
-        scrub: true, // Enable markers for debugging
-        onEnter: () => console.log('Image animation started'),
-        onLeave: () => console.log('Image animation left viewport'),
-        onUpdate: (self) => console.log(`Animation progress: ${self.progress}`), // Log animation progress
-      },
-    })
+    const imgAnim = imgEl ? gsap.fromTo(
+      imgEl,
+      { xPercent: -60, opacity: 0 },
+      {
+        xPercent: 0,
+        opacity: 1,
+        duration: 0.9,
+        ease: 'power3.out',
+        overwrite: true,
+        scrollTrigger: {
+          trigger: imgEl,
+          start: 'top 85%',
+          end: 'top 40%',
+          scrub: 0.6,
+        },
+      }
+    ) : null
 
     const animateWords = (nodes, delay = 0) => {
       if (!nodes || nodes.length === 0) return null
@@ -114,12 +87,6 @@ function About() {
     const hAnim = animateWords(headingSpans)
     const p1Anim = animateWords(p1Spans, 0.1)
     const p2Anim = animateWords(p2Spans, 0.2)
-
-    // Cleanup temporary debugging styles
-    if (imageRef.current) {
-      imageRef.current.style.border = ''
-      imageRef.current.style.backgroundColor = ''
-    }
 
     return () => {
       // cleanup: restore original text
