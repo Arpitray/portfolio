@@ -20,50 +20,20 @@ gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   useEffect(() => {
+    ScrollTrigger.config({ ignoreMobileResize: true })
+
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       smoothTouch: false,
-      touchMultiplier: 1.5,
+      touchMultiplier: 1.2,
     })
 
-    // integrate Lenis with GSAP ScrollTrigger so ScrollTrigger responds to the smooth scroller
-    try {
-      // expose for debugging
-      if (typeof window !== 'undefined') window.lenis = lenis
+    try { if (typeof window !== 'undefined') window.lenis = lenis } catch (e) {}
 
-      // try to detect the element Lenis uses as the smooth scroller
-      const scrollerEl = document.querySelector('.lenis') || document.querySelector('[data-lenis]') || document.documentElement
-
-      ScrollTrigger.scrollerProxy(scrollerEl, {
-        scrollTop(value) {
-          if (arguments.length) {
-            // jump to value immediately using Lenis
-            try {
-              lenis.scrollTo(value, { immediate: true, duration: 0 })
-            } catch (e) {}
-          }
-          // return the current scrollTop for the scroller element
-          return scrollerEl.scrollTop || document.documentElement.scrollTop
-        },
-        getBoundingClientRect() {
-          return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight }
-        },
-        pinType: scrollerEl.style.transform ? 'transform' : 'fixed',
-      })
-
-      // make ScrollTrigger use detected scroller by default
-      ScrollTrigger.defaults({ scroller: scrollerEl })
-
-      // update ScrollTrigger on Lenis scroll
-      lenis.on && lenis.on('scroll', ScrollTrigger.update)
-
-      // ensure ScrollTrigger recalculates after setup
-      ScrollTrigger.refresh()
-    } catch (e) {
-      // non-fatal if scroller proxy setup fails
-    }
+    // keep ScrollTrigger in sync with Lenis
+    lenis.on && lenis.on('scroll', () => ScrollTrigger.update())
 
     function raf(time) {
       lenis.raf(time)
