@@ -141,7 +141,7 @@ export default function Showcase() {
   const outerStyle = {
     position: 'relative',
     width: '100%',
-  height: '200vh', // enough vertical space for the pin + long scroll
+  height: '300vh', // enough vertical space for the pin + long scroll
   // lift the showcase up so it visually appears beneath the Projects section
   // the Projects component adds a 160px SVG mask; match that with negative margin
   marginTop: '-140px',

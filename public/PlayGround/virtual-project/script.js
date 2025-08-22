@@ -3,7 +3,7 @@
   const roomWrap = document.querySelector(".room-wrap");
   const room = document.querySelector(".room");
   const roomCanvas = document.querySelector("#room");
-  // const inventory = document.querySelector("#inventory"); // Removed unused variable
+  const inventory = document.querySelector("#inventory");
 
   // Constants and state
   const views = ["back-view", "left-view", "front-view", "right-view"];
