@@ -61,11 +61,6 @@ html { scroll-behavior: auto; }
     src: url('./assets/dk2.otf');
 }
 
-/* Hide native scrollbars visually but keep scroll functionality.
-     - Firefox: scrollbar-width: none
-     - IE/Edge: -ms-overflow-style: none
-     - WebKit: set scrollbar size to 0
-     Keep this global but consider scoping if you need scrollbars in specific UI areas. */
 html, body {
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE 10+ */
@@ -83,3 +78,6 @@ html, body {
     height: 100%;
     margin: 0;
 }
+/* NEW: make layout robust on mobile to avoid horizontal overflow */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, #root { max-width: 100%; overflow-x: clip; }
