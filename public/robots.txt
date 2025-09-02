@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemap location (update with your actual domain)
+Sitemap: https://your-domain.com/sitemap.xml
+
+# Block access to build files
+Disallow: /dist/
+Disallow: /node_modules/

@@ -69,16 +69,16 @@ export default function PlaygroundPreview({
       <div className="content-wrap w-full" style={{ position: 'relative', zIndex: 100 }}>
         <div className=" w-full flex flex-col md:flex-row justify-center items-start md:items-center mt-12 md:mt-32 gap-8 md:gap-12 px-6">
         <div className="flex w-full md:w-1/2 justify-center lg:justify-center saturate-120">
-          <DecayCard width={isMobile ? 320 : 1050} height={isMobile ? 240 : 780} image={SpinGif} bare={true}>
+          <DecayCard width={isMobile ? 320 : 1050} height={isMobile ? 240 : 680} image={SpinGif} bare={true}>
             {/* optional caption could go here */}
           </DecayCard>
         </div>
 
         <div className="space-y-4 w-full md:w-1/2 items-start px-6 lg:px-12">
-          <h3 className="text-black font-[100] tracking-tight text-center md:text-start text-[24px] sm:text-[28px] md:text-[88px] lg:text-[84px]">{title}</h3>
-          <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 leading-6 md:leading-10 tracking-wide font-semibold  font-['pepper']">{description}</p>
+          <h3 className="text-black font-[100] tracking-tight text-center md:text-start text-[24px] sm:text-[28px] font-['dk2'] md:text-[88px] lg:text-[84px]">{title}</h3>
+          <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 font-normal leading-6 md:leading-10 tracking-wide  font-['dk']">{description}</p>
           <div className="mt-4 md:mt-6 flex justify-center md:justify-start">
-            <button onClick={() => { window.location.href = '/PlayGround/virtual-project/index.html' }} className="inline-flex items-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-bold">Visit</button>
+            <button onClick={() => { window.location.href = '/PlayGround/virtual-project/index.html' }} className="inline-flex items-center rounded-2xl bg-orange-500 hover:bg-orange-600 text-white px-9 py-4 font-bold">Visit</button>
           </div>
         </div>
         </div>

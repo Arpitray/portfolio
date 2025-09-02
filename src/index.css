@@ -3,6 +3,19 @@
 /* Lenis recommends disabling native smooth scrolling to avoid conflicts */
 html { scroll-behavior: auto; }
 
+/* Screen reader only - visually hidden but accessible to screen readers and SEO */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Fix viewport height for real mobile browsers */
 :root {
   --vh: 1vh;

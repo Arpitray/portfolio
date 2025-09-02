@@ -66,7 +66,9 @@ export default function Visions({
   }, [])
 
   return (
+    
   <section id="visions" ref={sectionRef} className="w-full flex font-['trial'] sm:px-8 pb-32  md:min-h-screen" style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1', overflow: 'visible' }}>
+    
       <div className="content-wrap w-full" style={{ position: 'relative', zIndex: 100 }}>
         <div className="w-full flex flex-col md:flex-row justify-center items-start md:items-center mt-12 md:mt-32 gap-8 md:gap-12 px-6">
 
@@ -77,11 +79,11 @@ export default function Visions({
         </div>
 
         <div className="space-y-4 w-full md:w-1/2 items-start px-6 lg:px-12">
-          <h3 className="text-black font-[100] tracking-tight text-center md:text-start text-[24px] sm:text-[28px] md:text-[88px] lg:text-[84px]">{title}</h3>
-          <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 leading-6 md:leading-10 tracking-wide font-semibold  font-['pepper']">{description}</p>
-          <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 leading-6 md:leading-8 tracking-wide font-semibold  font-['pepper']">{description2}</p>
+          <h3 className="text-black font-[100] font-['dk2'] tracking-tight text-center md:text-start text-[24px] sm:text-[28px] md:text-[88px] lg:text-[84px]">{title}</h3>
+          <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 leading-6 md:leading-10 tracking-wide font-normal  font-['dk']">{description}</p>
+          <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 leading-6 md:leading-8 tracking-wide font-normal  font-['dk']">{description2}</p>
           <div className="mt-4 md:mt-6 flex justify-center md:justify-start">
-            <button onClick={() => nav('/visions')} className="inline-flex items-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-bold">Visit</button>
+            <button onClick={() => nav('/visions')} className="inline-flex items-center rounded-2xl bg-orange-500 hover:bg-orange-600 text-white px-9 py-4 font-bold">Visit</button>
           </div>
         </div>
         </div>
