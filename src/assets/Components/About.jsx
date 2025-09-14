@@ -142,7 +142,7 @@ function About() {
     <section id="about" className="relative min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen w-full font-normal bg-[#E1E1E1] z-[99]  flex font-['dk2'] sm:px-8">
       <div className="w-full flex flex-col md:flex-row justify-center mt-12 md:mt-32 items-start gap-8 md:gap-12 px-6">
         <div className="flex w-full justify-center md:justify-center saturate-120 mb-6 md:mb-0" ref={imageRef}>
-              <DecayCard width={isMobile ? 300 : 550} height={isMobile ? 300 : 600} image={Arpit3} mobile={isMobile}>
+              <DecayCard width={isMobile ? 300 : 550} height={isMobile ? 300 : 600} image="https://res.cloudinary.com/dsjjdnife/image/upload/v1756904206/Arpit3_jgpluu" mobile={isMobile}>
                 <div className='text-4xl'>Arpit</div>
               </DecayCard>
         </div>
@@ -155,7 +155,7 @@ function About() {
             My work focuses on marrying design and engineering: translating visual language into performant, accessible UIs
           </p>
           <div className="mt-6 flex justify-center md:block md:justify-start">
-            <a href="#contact" className="inline-flex items-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-bold">Get in touch</a>
+            <a href="mailto:rayarpit72@gmail.com?subject=Let's collaborate&body=Hi Arpit, I'd like to discuss a project with you." className="inline-flex items-center rounded-full bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 font-bold">Get in touch</a>
           </div>
         </div>
       </div>
