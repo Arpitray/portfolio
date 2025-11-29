@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import ScrollVelocity from './ScrollVelocity'
-import maincam from './maincam.jpg'
 import back1 from './back1.png'
 
 // Register ScrollTrigger plugin
@@ -35,7 +34,7 @@ function Projects() {
       {
       id: 0,
       title: "Bando : Chat app",
-      description: "a real-time collaborative chat platform with encrypted messaging, multi-user live sync (Pusher), and an Excalidraw-powered whiteboard with per-element versioning and persistent state using Prisma + PostgreSQL (Neon).",
+      description: "A real-time collaborative chat platform with encrypted messaging, multi-user live sync (Pusher), and an Excalidraw-powered whiteboard with per-element versioning and persistent state using Prisma + PostgreSQL (Neon).",
       tags: ["#NextJS #TypeScript #Pusher #WebSockets #Prisma #PostgreSQL #NeonDB #NextAuth #Excalidraw #TailwindCSS #AES #Encryption #RealTime"],
       video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1764427787/bando_grbuwk", // Replace with your actual video
       link: "#",
@@ -65,10 +64,21 @@ function Projects() {
       liveDemoLink: "https://commerce-tau-lac-54.vercel.app/",
       background: "bg-green-200"
     },
+        {
+      id: 5,
+      title: "EcoTrace",
+      description: "A full-stack app that identifies plants from images and delivers details like taxonomy, growth, toxicity, and care info through a multi-API pipeline. Features Supabase Auth, a Supabase database for storing plant records/history, and a clean, responsive React/Next.js UI.",
+      tags: ['#React', '#NextJS', '#Supabase', '#SupabaseAuth', '#Database', '#TailwindCSS', '#APIs', '#AI', '#ImageRecognition'],
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1764453980/eco_voalj0",
+      link: "#",
+      githubLink: "https://github.com/Arpitray/advanceEcoTrace",
+      liveDemoLink: "https://upeco.arpitray.me",
+      background: "bg-pink-200"
+    },
     {
       id: 3,
       title: "BREW HAVEN",
-      description: "Brew Haven Cafe is a modern web application built to deliver an immersive coffee shop experience. Developed with a contemporary JavaScript stack, it combines smooth interactive animations, responsive layouts, and a clean shopping flow for browsing menu items, adding to cart, and checkout. The polished design and engaging transitions showcase my ability to create experience-driven, production-ready applications that merge functionality with aesthetic appeal.",
+      description: "Brew Haven Cafe is a modern web app offering an immersive coffee-shop experience, featuring smooth animations, responsive layouts, and a clean flow for browsing, cart management, and checkout—all showcasing my ability to build functional, aesthetic, and production-ready applications.",
       tags: ["#CafeShop", "#Animations", "#UIUX", "#ModernFrontend", "#WebApp", "#CoffeeShop"],
       video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597904/3_vyax6d",
       link: "#",
@@ -79,8 +89,8 @@ function Projects() {
     {
       id: 4,
       title: "PORTFOLIO",
-      description: "This Portfolio is a sleek, minimalist web portfolio crafted with clean design principles and subtle yet engaging hover animations. It showcases a refined aesthetic—using elegant typography, and intuitive navigation to highlight your work without distraction. Built with modern frontend technologies, the refined interactivity on hover adds just the right touch of dynamism, reflecting your eye for detail and commitment to polished, professional design.",
-      description2:"This project was inspired by Whatyoriginal design that I referenced closely, focusing on recreating its modern layout and interactive elements to demonstrate my ability to deliver clean, aesthetic, and professional web experiences.",
+      description: "A sleek, minimalist portfolio inspired by Whatyoriginal’s modern layout, crafted with clean design principles, elegant typography, and subtle hover interactions. Built using modern frontend technologies, it highlights polished UI design, smooth interactivity, and your ability to create refined, professional, and visually aesthetic web experiences.",
+  
       tags: ["#PortfolioWebsite", "#MinimalDesign", "#UIUX", "#immersive design", "#museum"],
       video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755598448/4_kc08vz",
       link: "#",
@@ -88,30 +98,19 @@ function Projects() {
       liveDemoLink: "https://next-gen-portfolio-six.vercel.app/",
       background: "bg-indigo-200"
     },
-    {
-      id: 5,
-      title: "Signi",
-      description: "Signi is a modern web presentation for a healthcare brand, built with immersive scroll-triggered animations that enhance storytelling. The design is clean and purposeful, with smooth content reveals and dynamic motion across sections. Each interaction responds to scrolling, creating a fluid experience that highlights my ability to craft interactive, production-ready animations using GSAP’s ScrollTrigger.",
-      description2:" This project was inspired by the original Significo website, where I focused on recreating its animations and interactions to demonstrate precision, attention to detail, and the ability to deliver polished, modern web experiences.",
-      tags: ["#GSAPAnimations", "#MotionDesign", "#InteractiveUI","#InspiredDesign"],
-      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755603134/1_bsm5vr",
-      link: "#",
-      githubLink: "https://github.com/Arpitray/signi",
-      liveDemoLink: "https://signi-phi.vercel.app/",
-      background: "bg-pink-200"
-    },
-    {
-      id: 6,
-      title: "BUILDER",
-      description: "Professional Portfolio Builder is a web application aimed at helping users create polished portfolios by customizing pre-designed templates. Built with a modern frontend stack, it is designed to offer real-time previews, dynamic template selection, and smooth modification controls to adapt portfolios to individual needs.",
-      description2:"This project is currently in progress and under active development, inspired by leading portfolio builder platforms. The goal is to deliver a production-ready, user-centric tool that balances performance, flexibility, and creative freedom, while also demonstrating my ability to engineer scalable web solutions.",
-      tags: ["#PortfolioBuilder", "#WebApp", "#InProgress"," #ScalableWebSolutions"],
-      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597904/5_jr4bhy",
-      link: "#",
-      githubLink: "https://github.com/Arpitray/builder",
-      liveDemoLink: "https://builder-pp9v.vercel.app/",
-      background: "bg-purple-200"
-    }
+
+    // {
+    //   id: 6,
+    //   title: "BUILDER",
+    //   description: "Professional Portfolio Builder is a web application aimed at helping users create polished portfolios by customizing pre-designed templates. Built with a modern frontend stack, it is designed to offer real-time previews, dynamic template selection, and smooth modification controls to adapt portfolios to individual needs.",
+    //   description2:"This project is currently in progress and under active development, inspired by leading portfolio builder platforms. The goal is to deliver a production-ready, user-centric tool that balances performance, flexibility, and creative freedom, while also demonstrating my ability to engineer scalable web solutions.",
+    //   tags: ["#PortfolioBuilder", "#WebApp", "#InProgress"," #ScalableWebSolutions"],
+    //   video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597904/5_jr4bhy",
+    //   link: "#",
+    //   githubLink: "https://github.com/Arpitray/builder",
+    //   liveDemoLink: "https://builder-pp9v.vercel.app/",
+    //   background: "bg-purple-200"
+    // }
   ]
 
   useEffect(() => {
@@ -349,7 +348,7 @@ function Projects() {
   }
 
   return (
-  <section id="work" ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 flex flex-col min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen'>
+  <section id="work" ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 flex flex-col min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen lg:px-14  w-full '>
       {/* ScrollVelocity Title Section */}
       <div className='w-full pt-8'>
         <ScrollVelocity
@@ -384,10 +383,10 @@ function Projects() {
             >
               {/* Project Description */}
               <div className='w-full md:w-1/2 px-4 md:px-8 font-["belly"] text-center md:text-start'>
-                <h2 className='text-4xl sm:text-3xl md:text-6xl lg:text-5xl xl:text-8xl  text-black mb-3 md:mb-5 tracking-tight leading-tight'>
+                <h2 className='text-4xl sm:text-3xl md:text-6xl lg:text-5xl xl:text-7xl  text-black mb-3 md:mb-5 tracking-tight leading-tight'>
                   {project.title}
                 </h2>
-                <p className='text-sm sm:text-base md:text-lg lg:text-3xl text-gray-700 mb-6  md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
+                <p className='text-sm sm:text-base md:text-lg lg:text-2xl text-gray-700 mb-6  md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
                   {project.description}
                 </p>
                 <p className='text-sm sm:text-base md:text-lg lg:text-2xl text-gray-700 mb-6 font-semibold md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
