@@ -148,8 +148,8 @@ function About() {
         </div>
         <div className="space-y-6 w-full items-start md:pl-6">
           <h2 ref={(el) => (textRefs.current.heading = el)} className="text-black font-[100] tracking-tight text-center md:text-start text-[50px] sm:text-[40px] md:text-[48px] lg:text-[100px]">About Me</h2>
-          <p ref={(el) => (textRefs.current.p1 = el)} className="text-[18px] md:text-[26px] text-black leading-6 md:mr-44 font-['dk']">
-          I build pixel perfect, design accurate frontends enriched with modern animations and seamless interactivity — ensuring every project feels as good as it looks. Leveraging technologies like React, JavaScript, GSAP, and Framer Motion, I craft fluid user experiences, while WebGL and Three.js bring immersive 3D visuals to life.
+          <p ref={(el) => (textRefs.current.p1 = el)} className="text-[18px] md:text-[26px] text-black leading-7 md:mr-44 font-['dk']">
+  Full-stack developer delivering pixel-perfect React UIs, smooth motion with GSAP/Framer Motion, and reliable Node.js backends powered by Prisma and a PostgreSQL database.
           </p>
           <p ref={(el) => (textRefs.current.p2 = el)} className="text-[18px] md:text-[26px] text-black leading-6 md:mr-44 font-['dk']">
             My work focuses on marrying design and engineering: translating visual language into performant, accessible UIs

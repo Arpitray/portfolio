@@ -145,7 +145,8 @@ export default function Showcase() {
   // lift the showcase up so it visually appears beneath the Projects section
   // the Projects component adds a 160px SVG mask; match that with negative margin
   marginTop: '-140px',
-  zIndex: 0
+  zIndex: 5,
+  isolation: 'isolate'
   }
 
   const stickyStyle = {
@@ -155,7 +156,7 @@ export default function Showcase() {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 0
+    zIndex: 5
   }
 
   const colsWrap = {

@@ -15,6 +15,7 @@ import VisionsFrame from "./assets/Components/VisionsFrame"
 import Contact from "./assets/Components/Contact"
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Stack from "./assets/Components/Stack"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -123,11 +124,14 @@ function App() {
         <Route path="/" element={
           <>
             <Landing />
-            <About />
             
+            <About />
+             <Stack />
             <Projects />
             <Visions />
+            
             <PlaygroundPreview />
+            
             <Showcase />
             <Contact />
             
