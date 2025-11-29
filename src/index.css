@@ -136,6 +136,10 @@ html { scroll-behavior: auto; }
     font-family: 'dk2';
     src: url('./assets/dk2.otf');
 }
+@font-face {
+    font-family: 'mb';
+    src: url('./lib/belfastgrotesk/mb.ttf');
+}
 
 html, body {
     scrollbar-width: none; /* Firefox */

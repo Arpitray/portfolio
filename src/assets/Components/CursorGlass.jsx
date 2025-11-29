@@ -150,6 +150,12 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
       // determine if cursor is over a clickable element; if so, show native pointer and hide glass
       const isClickableNode = (node) => {
         try {
+          if (!node) return false
+          
+          // Check if the element has cursor: pointer style (handles inheritance too)
+          const style = window.getComputedStyle(node)
+          if (style.cursor === 'pointer') return true
+
           let el = node
           while (el) {
             if (!el.tagName) return false
@@ -160,6 +166,9 @@ export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,
             if (el.getAttribute && el.getAttribute('onclick')) return true
             if (el.tabIndex >= 0) return true
             if (el.contentEditable === 'true') return true
+            
+            // Stop if we reach body to prevent unnecessary traversal
+            if (el === document.body) break
             el = el.parentElement
           }
         } catch (e) {}

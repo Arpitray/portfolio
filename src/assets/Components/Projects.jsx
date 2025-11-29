@@ -32,10 +32,21 @@ function Projects() {
 
   // Sample project data
   const projects = [
+      {
+      id: 0,
+      title: "Bando : Chat app",
+      description: "a real-time collaborative chat platform with encrypted messaging, multi-user live sync (Pusher), and an Excalidraw-powered whiteboard with per-element versioning and persistent state using Prisma + PostgreSQL (Neon).",
+      tags: ["#NextJS #TypeScript #Pusher #WebSockets #Prisma #PostgreSQL #NeonDB #NextAuth #Excalidraw #TailwindCSS #AES #Encryption #RealTime"],
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1764427787/bando_grbuwk", // Replace with your actual video
+      link: "#",
+      githubLink: "https://github.com/Arpitray/Realchat",
+      liveDemoLink: "https://bando.arpitray.me/",
+  background: "#F3E4D3" // Use the imported image as background
+    },
     {
       id: 1,
       title: "LENSFLOW",
-      description: "A modern React-based web experience featuring smooth scroll interactions and fluid camera animations. Built with GSAP for cinematic transitions, Lenis for buttery scrolling, Tailwind CSS for a clean responsive UI, and Vite for lightning-fast builds. Designed for immersive storytelling and interactive UI demos.",
+      description: "An interactive React experience with smooth scrolling, crisp transitions, and fluid motion design. Powered by GSAP for animations, Lenis for refined scroll feel, Tailwind for clean responsive UI, and Vite for fast builds. Crafted for immersive storytelling and polished visual interactions.",
       tags: ["#react #gsap #lenis #smooth-scrolling #camera-animations #motion-design #scroll-animation #ui-interactions #responsive-design"],
       video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597901/camera_lmj7cm", // Replace with your actual video
       link: "#",
@@ -46,8 +57,8 @@ function Projects() {
     {
       id: 2,
       title: "SUMMORE .",
-      description: "SUMMORE. is a commercial-grade e-commerce application built with React and Vite, designed to showcase my industrial development potential. It features smooth animations, responsive layouts, and an optimized shopping flow for browsing, cart management, and checkout. With Vite ensuring fast performance and React powering modular UI components, this project demonstrates my ability to build scalable, engaging, and production-ready web applications.",
-      tags: ["#CommerceApp", "#FrontendEngineering", "#UIUX", "#ModernWebApp", "#web development","#ResponsiveDesign"],
+      description: "SUMMORE is a React + Vite e-commerce app with smooth animations, responsive layouts, and a streamlined shopping flow. It uses Supabase for auth and database management, delivering fast performance and a scalable, production-ready experience.",
+      tags: ["#CommerceApp", "#FrontendEngineering", "#UIUX", "#ModernWebApp", "#web development","#ResponsiveDesign","#supabase"],
       video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597902/2_ouwpqf",
       link: "#",
       githubLink: "https://github.com/Arpitray/commerce",
@@ -372,34 +383,51 @@ function Projects() {
               }}
             >
               {/* Project Description */}
-              <div className='w-full md:w-1/2 px-4 md:px-8 font-["demo"] text-center md:text-start'>
-                <h2 className='text-4xl sm:text-3xl md:text-6xl lg:text-5xl xl:text-8xl font-extrabold text-black mb-3 md:mb-5 tracking-tight leading-tight'>
+              <div className='w-full md:w-1/2 px-4 md:px-8 font-["belly"] text-center md:text-start'>
+                <h2 className='text-4xl sm:text-3xl md:text-6xl lg:text-5xl xl:text-8xl  text-black mb-3 md:mb-5 tracking-tight leading-tight'>
                   {project.title}
                 </h2>
-                <p className='text-sm sm:text-base md:text-lg lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
+                <p className='text-sm sm:text-base md:text-lg lg:text-3xl text-gray-700 mb-6  md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
                   {project.description}
                 </p>
-                <p className='text-sm sm:text-base md:text-lg lg:text-2xl text-gray-800 mb-6 font-semibold md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
+                <p className='text-sm sm:text-base md:text-lg lg:text-2xl text-gray-700 mb-6 font-semibold md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
                   {project.description2}
                 </p>
-                <div className={`flex flex-wrap font-['pp'] font-semibold ${isEven ? 'justify-center md:justify-start' : 'justify-center md:justify-start'}`}>
-                  {project.tags.map((tag, tagIndex) => (
+                <div className={`hidden lg:flex flex-wrap gap-2  font-['pp'] font-semibold ${isEven ? 'justify-center lg:justify-start' : 'justify-center lg:justify-start'}`}>
+                  {project.tags.flatMap(t => t.split(' ')).filter(Boolean).map((tag, tagIndex) => (
                     <span
                       key={tagIndex}
-                      className='text-xs md:text-sm text-gray-600 font-semibold  px-2 py-1 rounded-sm'
+                      className='text-sm lg:text-base text-gray-600 cursor-pointer border border-gray-300 px-3 py-1 rounded-full hover:bg-black hover:text-white transition-all duration-300'
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <div className={`hidden md:flex gap-3 mt-6 md:mt-8 ${isEven ? 'justify-center md:justify-start' : 'justify-center md:justify-start'}`}>
-                  <a href={project.githubLink} target="_blank" rel="noopener noreferrer" aria-label="View on GitHub" className="inline-flex items-center justify-center bg-gray-900 text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold text-sm md:text-base hover:bg-gray-800 transition-colors">
-                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 md:w-6 md:h-6">
+                
+                {/* Action Buttons */}
+                <div className={`hidden md:flex gap-4 mt-8 ${isEven ? 'justify-center md:justify-start' : 'justify-center md:justify-start'}`}>
+                  <a 
+                    href={project.githubLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    aria-label="View on GitHub" 
+                    className="group relative inline-flex items-center justify-center bg-black text-white px-6 py-3 rounded-full font-medium text-sm transition-transform hover:scale-105 active:scale-95"
+                  >
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 mr-2 transition-transform group-hover:rotate-12">
                       <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.416-4.042-1.416-.546-1.387-1.333-1.757-1.333-1.757-1.089-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.775.418-1.305.76-1.605-2.665-.305-5.466-1.332-5.466-5.93 0-1.31.468-2.381 1.235-3.221-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.911 1.23 3.221 0 4.61-2.805 5.625-5.475 5.92.435.375.81 1.11.81 2.235 0 1.615-.015 2.915-.015 3.315 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
                     </svg>
-                    <span className="sr-only">GitHub</span>
+                    <span>GitHub</span>
                   </a>
-                  <a href={project.liveDemoLink} target="_blank" rel="noopener noreferrer" className="inline-block bg-[#101828] text-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-semibold text-sm md:text-base hover:bg-zinc-800 transition-colors">
+                  <a 
+                    href={project.liveDemoLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="group relative inline-flex items-center justify-center bg-white text-black border-2 border-black px-6 py-3 rounded-full font-medium text-sm transition-all hover:bg-black hover:text-white hover:scale-105 active:scale-95"
+                  >
+                    <span className="mr-2 relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
                     Live Demo
                   </a>
                 </div>
