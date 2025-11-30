@@ -4,7 +4,28 @@
 @custom-variant dark (&:is(.dark *));
 
 /* Lenis recommends disabling native smooth scrolling to avoid conflicts */
-html { scroll-behavior: auto; }
+html { 
+  scroll-behavior: auto;
+}
+
+/* Prevent mobile scroll jank */
+body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+  overflow-x: hidden;
+}
+
+/* Mobile optimization: prevent layout shift during scroll */
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+  }
+  
+  /* GPU acceleration for specific scrollable sections, NOT animated elements */
+  section:not([class*="loader"]) {
+    will-change: transform;
+  }
+}
 
 /* Screen reader only - visually hidden but accessible to screen readers and SEO */
 .sr-only {

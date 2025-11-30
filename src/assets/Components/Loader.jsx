@@ -10,6 +10,9 @@ const Loader = ({ onComplete } = {}) => {
   const whiteRef = useRef(null)
 
   useEffect(() => {
+    // Ensure GSAP works properly even if ScrollTrigger config affects it
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    
     // preload critical images used in the loader so the browser has them before paint
     const imgs = [Image1, Image2, Image3].map(src => {
       const i = new Image()
@@ -18,14 +21,14 @@ const Loader = ({ onComplete } = {}) => {
     })
 
     // set initial positions and stacking
-    gsap.set(containerRef.current, { yPercent: 0 })
-    gsap.set(imgRefs.current, { yPercent: 160, autoAlpha: 0, scale: 0.94, rotation: 0 })
-    gsap.set(whiteRef.current, { yPercent: 160, scale: 1, transformOrigin: 'center center', autoAlpha: 0, rotation: 0 })
+    gsap.set(containerRef.current, { yPercent: 0, force3D: true })
+    gsap.set(imgRefs.current, { yPercent: 160, autoAlpha: 0, scale: 0.94, rotation: 0, force3D: true })
+    gsap.set(whiteRef.current, { yPercent: 160, scale: 1, transformOrigin: 'center center', autoAlpha: 0, rotation: 0, force3D: true })
 
     let tl = null
     const startTimeline = () => {
       if (tl) return
-      tl = gsap.timeline()
+      tl = gsap.timeline({ force3D: true })
 
       // images rise slowly and overlap (stacked) with a wider stagger
       tl.to(imgRefs.current, {

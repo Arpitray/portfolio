@@ -21,6 +21,8 @@ gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    
     // Fix viewport height for real mobile browsers
     const setVH = () => {
       const vh = window.innerHeight * 0.01;
@@ -32,60 +34,72 @@ function App() {
     // Real mobile browsers change viewport height on scroll
     const handleResize = () => {
       setVH();
-      // Debounced refresh for ScrollTrigger
-      clearTimeout(window.vhTimeout);
-      window.vhTimeout = setTimeout(() => {
+      // Only refresh ScrollTrigger on actual resize events (not scroll-related viewport changes)
+      if (!isMobile) {
+        clearTimeout(window.vhTimeout);
+        window.vhTimeout = setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 150);
+      }
+    };
+    
+    const handleOrientationChange = () => {
+      setVH();
+      // Orientation change requires refresh even on mobile
+      setTimeout(() => {
         ScrollTrigger.refresh();
-      }, 100);
+      }, 300);
     };
     
     window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleResize);
+    window.addEventListener('orientationchange', handleOrientationChange);
     
     ScrollTrigger.config({ 
       ignoreMobileResize: true,
       autoRefreshEvents: "visibilitychange,DOMContentLoaded,load"
     });
 
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      smoothTouch: false,
-      touchMultiplier: 1.2,
-    })
+    // On mobile, use native scrolling completely (disable Lenis)
+    // On desktop, enable smooth scrolling with Lenis
+    let lenis = null;
+    let rafId = null;
+    let scrollHandler = null;
 
-    try { if (typeof window !== 'undefined') window.lenis = lenis } catch (e) {}
+    if (!isMobile) {
+      lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        smoothTouch: false,
+      })
 
-    // keep ScrollTrigger in sync with Lenis
-    lenis.on && lenis.on('scroll', () => ScrollTrigger.update())
+      try { if (typeof window !== 'undefined') window.lenis = lenis } catch (e) {}
 
-    function raf(time) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
-    }
-    const rafId = requestAnimationFrame(raf)
+      // keep ScrollTrigger in sync with Lenis
+      lenis.on && lenis.on('scroll', () => ScrollTrigger.update())
 
-    // Additional mobile-specific refresh after everything loads
-    const mobileRefresh = () => {
-      setTimeout(() => {
-        ScrollTrigger.refresh();
-      }, 300);
-    };
-    
-    if (window.matchMedia('(max-width: 768px)').matches) {
-      window.addEventListener('load', mobileRefresh);
-      document.addEventListener('DOMContentLoaded', mobileRefresh);
+      function raf(time) {
+        lenis.raf(time)
+        requestAnimationFrame(raf)
+      }
+      rafId = requestAnimationFrame(raf)
+    } else {
+      // Mobile: Use native scroll, sync ScrollTrigger with native scroll
+      scrollHandler = () => {
+        ScrollTrigger.update();
+      };
+      
+      // Passive listener for better mobile performance
+      window.addEventListener('scroll', scrollHandler, { passive: true });
     }
 
     return () => {
-      cancelAnimationFrame(rafId)
+      if (rafId) cancelAnimationFrame(rafId);
+      if (scrollHandler) window.removeEventListener('scroll', scrollHandler);
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleResize);
-      window.removeEventListener('load', mobileRefresh);
-      document.removeEventListener('DOMContentLoaded', mobileRefresh);
+      window.removeEventListener('orientationchange', handleOrientationChange);
       clearTimeout(window.vhTimeout);
-      lenis.destroy()
+      if (lenis) lenis.destroy();
     }
   }, [])
 
@@ -106,12 +120,10 @@ function App() {
       // also dispatch the global event so listeners relying on it run
       try { window.dispatchEvent(new Event('loaderComplete')) } catch (e) { /* noop */ }
       
-      // Mobile-specific ScrollTrigger refresh after loader completes
-      if (window.matchMedia('(max-width: 768px)').matches) {
-        setTimeout(() => {
-          ScrollTrigger.refresh();
-        }, 200);
-      }
+      // Single refresh after loader completes (for both mobile and desktop)
+      setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 200);
     }, 80)
   }
 
