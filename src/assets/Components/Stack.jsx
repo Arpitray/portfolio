@@ -10,6 +10,19 @@ const LogoWithTooltip = ({ children, title }) => {
   const elementRef = useRef(null);
   const rafRef = useRef(null);
   const isHoveredRef = useRef(false);
+  const isMobileRef = useRef(false);
+
+  useEffect(() => {
+    // Check if mobile/tablet (no hover support)
+    isMobileRef.current = window.matchMedia('(max-width: 1024px)').matches || 
+                          !window.matchMedia('(hover: hover)').matches;
+    
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
 
   const updatePosition = (element) => {
     if (!element) return;
@@ -20,15 +33,10 @@ const LogoWithTooltip = ({ children, title }) => {
     });
   };
 
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-    };
-  }, []);
-
   const handleMouseEnter = (e) => {
+    // Skip tooltip on mobile/tablet devices
+    if (isMobileRef.current) return;
+    
     isHoveredRef.current = true;
     setShowTooltip(true);
     const element = e.currentTarget;
@@ -66,7 +74,7 @@ const LogoWithTooltip = ({ children, title }) => {
       >
         {children}
       </span>
-      {showTooltip && createPortal(
+      {showTooltip && !isMobileRef.current && createPortal(
         <div 
           className="fixed whitespace-nowrap pointer-events-none font-['dk'] tracking-widest"
           style={{

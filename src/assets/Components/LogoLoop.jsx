@@ -74,6 +74,8 @@ const useAnimationLoop = (trackRef, targetVelocity, seqWidth, seqHeight, isHover
   const lastTimestampRef = useRef(null);
   const offsetRef = useRef(0);
   const velocityRef = useRef(0);
+  const isScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef(null);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -92,6 +94,7 @@ const useAnimationLoop = (trackRef, targetVelocity, seqWidth, seqHeight, isHover
         ? `translate3d(0, ${-offsetRef.current}px, 0)`
         : `translate3d(${-offsetRef.current}px, 0, 0)`;
       track.style.transform = transformValue;
+      track.style.willChange = 'transform';
     }
 
     if (prefersReduced) {
@@ -99,6 +102,19 @@ const useAnimationLoop = (trackRef, targetVelocity, seqWidth, seqHeight, isHover
       return () => {
         lastTimestampRef.current = null;
       };
+    }
+
+    // Detect scroll on mobile to pause RAF loop temporarily
+    const handleScroll = () => {
+      isScrollingRef.current = true;
+      clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 150);
+    };
+
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      window.addEventListener('scroll', handleScroll, { passive: true });
     }
 
     const animate = timestamp => {
@@ -114,7 +130,7 @@ const useAnimationLoop = (trackRef, targetVelocity, seqWidth, seqHeight, isHover
       const easingFactor = 1 - Math.exp(-deltaTime / ANIMATION_CONFIG.SMOOTH_TAU);
       velocityRef.current += (target - velocityRef.current) * easingFactor;
 
-      if (seqSize > 0) {
+      if (seqSize > 0 && !isScrollingRef.current) {
         let nextOffset = offsetRef.current + velocityRef.current * deltaTime;
         nextOffset = ((nextOffset % seqSize) + seqSize) % seqSize;
         offsetRef.current = nextOffset;
@@ -135,6 +151,8 @@ const useAnimationLoop = (trackRef, targetVelocity, seqWidth, seqHeight, isHover
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeoutRef.current);
       lastTimestampRef.current = null;
     };
   }, [targetVelocity, seqWidth, seqHeight, isHovered, hoverSpeed, isVertical, trackRef]);
