@@ -349,8 +349,15 @@ function Projects() {
 
   return (
   <section id="work" ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 flex flex-col min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen lg:px-14  w-full '>
-      {/* ScrollVelocity Title Section */}
-      <div className='w-full pt-8'>
+      {/* Mobile: Simple centered heading */}
+      <div className='w-full pt-12 pb-8 md:hidden'>
+        <h1 className="text-5xl font-bold uppercase text-center font-['demo']">
+          Personal Projects
+        </h1>
+      </div>
+
+      {/* Desktop: ScrollVelocity Title Section */}
+      <div className='w-full pt-8 hidden md:block'>
         <ScrollVelocity
           texts={["PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS"]}
           velocity={80}
