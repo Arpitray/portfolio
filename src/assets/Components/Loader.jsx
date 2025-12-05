@@ -13,19 +13,76 @@ const Loader = ({ onComplete } = {}) => {
     // Ensure GSAP works properly even if ScrollTrigger config affects it
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     
-    // preload critical images used in the loader so the browser has them before paint
-    const imgs = [Image1, Image2, Image3].map(src => {
-      const i = new Image()
-      i.src = src
-      return i
-    })
+    // Image URLs (match what's used in JSX)
+    const imageUrls = [
+      "https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/imag1_qig1hl.jpg",
+      "https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load2_z4atye.jpg",
+      "https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load3_oqxway.jpg"
+    ];
 
     // set initial positions and stacking
     gsap.set(containerRef.current, { yPercent: 0, force3D: true })
     gsap.set(imgRefs.current, { yPercent: 160, autoAlpha: 0, scale: 0.94, rotation: 0, force3D: true })
     gsap.set(whiteRef.current, { yPercent: 160, scale: 1, transformOrigin: 'center center', autoAlpha: 0, rotation: 0, force3D: true })
 
-    let tl = null
+    let tl = null;
+    let preloadAborted = false;
+
+    // Preload and decode images before starting animation
+    const preloadImages = async () => {
+      try {
+        const imagePromises = imageUrls.map(src => {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.crossOrigin = "anonymous"; // Handle CORS for Cloudinary
+            
+            img.onload = async () => {
+              try {
+                // Use decode() API for async decoding (prevents main thread blocking)
+                if (img.decode) {
+                  await img.decode();
+                }
+                resolve(img);
+              } catch (decodeError) {
+                // Decode failed but image loaded, still resolve
+                resolve(img);
+              }
+            };
+            
+            img.onerror = () => {
+              // Image failed to load, but don't block animation
+              console.warn(`Failed to load: ${src}`);
+              resolve(null);
+            };
+            
+            img.src = src;
+            
+            // If image is already cached, resolve immediately
+            if (img.complete) {
+              if (img.decode) {
+                img.decode().then(() => resolve(img)).catch(() => resolve(img));
+              } else {
+                resolve(img);
+              }
+            }
+          });
+        });
+
+        await Promise.all(imagePromises);
+        
+        // Only start timeline if not aborted
+        if (!preloadAborted) {
+          startTimeline();
+        }
+      } catch (error) {
+        console.warn('Image preload error:', error);
+        // Start anyway after brief delay
+        if (!preloadAborted) {
+          setTimeout(() => startTimeline(), 100);
+        }
+      }
+    };
+
     const startTimeline = () => {
       if (tl) return
       tl = gsap.timeline({ force3D: true })
@@ -88,11 +145,12 @@ const Loader = ({ onComplete } = {}) => {
       }
     }
 
-    const starter = requestAnimationFrame(() => startTimeline())
+    // Start preloading immediately
+    preloadImages();
 
     return () => {
-      cancelAnimationFrame(starter)
-      if (tl) tl.kill()
+      preloadAborted = true;
+      if (tl) tl.kill();
     }
   }, [onComplete])
 
@@ -130,7 +188,8 @@ const Loader = ({ onComplete } = {}) => {
     objectFit: 'cover',
     border: '12px solid white',
     boxSizing: 'border-box',
-    background: 'transparent' // avoid white block before JS runs
+    background: '#f0f0f0', // Light placeholder to prevent flash
+    imageRendering: '-webkit-optimize-contrast' // Optimize rendering
   }
 
   const cardStyle = {
@@ -186,17 +245,41 @@ const Loader = ({ onComplete } = {}) => {
     <div ref={containerRef} style={containerStyle}>
       <div style={stageStyle}>
   <div ref={el => imgRefs.current[0] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 10 }}>
-    <img className="loader-img" src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/imag1_qig1hl.jpg" alt="i1" style={imgStyle} />
+    <img 
+      className="loader-img" 
+      src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/imag1_qig1hl.jpg" 
+      alt="i1" 
+      style={imgStyle}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>Designing</div></div>
   </div>
 
   <div ref={el => imgRefs.current[1] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 20 }}>
-    <img className="loader-img" src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load2_z4atye.jpg" alt="i2" style={imgStyle} />
+    <img 
+      className="loader-img" 
+      src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load2_z4atye.jpg" 
+      alt="i2" 
+      style={imgStyle}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>And</div></div>
   </div>
 
   <div ref={el => imgRefs.current[2] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 30 }}>
-    <img className="loader-img" src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load3_oqxway.jpg" alt="i3" style={imgStyle} />
+    <img 
+      className="loader-img" 
+      src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load3_oqxway.jpg" 
+      alt="i3" 
+      style={imgStyle}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
     <div className='text-3xl text-black' style={overlayTextStyle}><div>developing</div></div>
   </div>
 
