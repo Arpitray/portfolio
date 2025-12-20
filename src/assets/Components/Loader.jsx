@@ -1,9 +1,5 @@
 import React, { useEffect, useRef } from 'react'
 import gsap from 'gsap'
-import Image1 from './imag1.jpg'
-import Image2 from './load2.jpg'
-import Image3 from './load3.jpg'
-
 const Loader = ({ onComplete } = {}) => {
   const containerRef = useRef(null)
   const imgRefs = useRef([])

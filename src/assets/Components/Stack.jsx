@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import LogoLoop from './LogoLoop';
-import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiPostgresql, SiPrisma, SiNodedotjs, SiDailymotion, SiFramer, SiVite, SiGit, SiGithub, SiVercel, SiSupabase, SiExpress } from 'react-icons/si';
+import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiPostgresql, SiPrisma, SiNodedotjs, SiDailymotion, SiFramer, SiVite, SiGit, SiGithub, SiVercel, SiSupabase, SiExpress,SiMongodb,SiPostman } from 'react-icons/si';
 
 // Tooltip wrapper component that works with moving elements
 const LogoWithTooltip = ({ children, title }) => {
@@ -166,6 +166,16 @@ const techLogos = [
     node: <LogoWithTooltip title="Express"><SiExpress /></LogoWithTooltip>, 
     title: "Express", 
     href: "https://expressjs.com/" 
+  },
+  { 
+    node: <LogoWithTooltip title="MongoDB"><SiMongodb /></LogoWithTooltip>, 
+    title: "MongoDB", 
+    href: "https://www.mongodb.com/" 
+  },
+  { 
+    node: <LogoWithTooltip title="Postman"><SiPostman /></LogoWithTooltip>, 
+    title: "Postman", 
+    href: "https://www.postman.com/" 
   },
 ];
 
