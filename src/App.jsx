@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Landing from "./assets/Components/Landing"
 import About from "./assets/Components/About"
@@ -16,6 +16,8 @@ import Contact from "./assets/Components/Contact"
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Stack from "./assets/Components/Stack"
+import Snowfall from "react-snowfall"
+
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -111,7 +113,7 @@ function App() {
     return () => clearTimeout(t);
   }, [])
 
-  const onLoaderComplete = () => {
+  const onLoaderComplete = useCallback(() => {
     // allow a tiny overlap for a smooth crossfade
     setTimeout(() => {
       setLoading(false)
@@ -125,11 +127,12 @@ function App() {
         ScrollTrigger.refresh();
       }, 200);
     }, 80)
-  }
+  }, [])
 
   return (
     <BrowserRouter>
-      <CursorGlass />
+    {!loading && <Snowfall style={{ position: 'fixed', inset: 0, zIndex:9999999, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />}
+      {!loading && <CursorGlass />}
       <Routes>
         <Route path="/playground" element={<PlayGround />} />
         <Route path="/visions" element={<VisionsFrame />} />

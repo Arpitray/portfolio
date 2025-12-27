@@ -1,6 +1,10 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, memo } from 'react'
 import gsap from 'gsap'
-const Loader = ({ onComplete } = {}) => {
+
+// Optimize GSAP globally for this component
+gsap.config({ force3D: true });
+
+const Loader = memo(({ onComplete } = {}) => {
   const containerRef = useRef(null)
   const imgRefs = useRef([])
   const whiteRef = useRef(null)
@@ -11,14 +15,14 @@ const Loader = ({ onComplete } = {}) => {
     
     // Image URLs (match what's used in JSX)
     const imageUrls = [
-      "https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/imag1_qig1hl.jpg",
-      "https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load2_z4atye.jpg",
-      "https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load3_oqxway.jpg"
+      "https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/imag1_qig1hl.jpg",
+      "https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load2_z4atye.jpg",
+      "https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load3_oqxway.jpg"
     ];
 
     // set initial positions and stacking
     gsap.set(containerRef.current, { yPercent: 0, force3D: true })
-    gsap.set(imgRefs.current, { yPercent: 160, autoAlpha: 0, scale: 0.94, rotation: 0, force3D: true })
+    gsap.set(imgRefs.current, { yPercent: 160, autoAlpha: 0, scale: 0.94, rotation: 0, force3D: true, transformOrigin: 'center center' })
     gsap.set(whiteRef.current, { yPercent: 160, scale: 1, transformOrigin: 'center center', autoAlpha: 0, rotation: 0, force3D: true })
 
     let tl = null;
@@ -113,7 +117,7 @@ const Loader = ({ onComplete } = {}) => {
 
       // finally expand overlay to cover the whole screen (surround)
       tl.to(whiteRef.current, {
-        scale: 140,
+        scale: 50, // Increased slightly for better coverage while maintaining performance
         duration: 0.8,
         ease: 'power4.inOut'
       }, 3.9)
@@ -132,8 +136,11 @@ const Loader = ({ onComplete } = {}) => {
           yPercent: -120,
           duration: 0.8,
           ease: 'power4.inOut',
-          onComplete: () => {
+          onStart: () => {
+            // Start landing animation as soon as loader begins sliding up for a smoother rhythm
             window.dispatchEvent(new Event('startLanding'))
+          },
+          onComplete: () => {
             if (typeof onComplete === 'function') onComplete()
             else window.dispatchEvent(new Event('loaderComplete'))
           }
@@ -163,7 +170,9 @@ const Loader = ({ onComplete } = {}) => {
     justifyContent: 'center',
     zIndex: 9999,
     overflow: 'hidden',
-    border: 'none' // Remove any dark borders from the container
+    border: 'none', // Remove any dark borders from the container
+    willChange: 'transform',
+    backfaceVisibility: 'hidden'
   }
 
   const stageStyle = {
@@ -185,7 +194,10 @@ const Loader = ({ onComplete } = {}) => {
     border: '12px solid white',
     boxSizing: 'border-box',
     background: '#f0f0f0', // Light placeholder to prevent flash
-    imageRendering: '-webkit-optimize-contrast' // Optimize rendering
+    imageRendering: '-webkit-optimize-contrast', // Optimize rendering
+    willChange: 'transform, opacity',
+    backfaceVisibility: 'hidden',
+    transformStyle: 'preserve-3d'
   }
 
   const cardStyle = {
@@ -196,7 +208,9 @@ const Loader = ({ onComplete } = {}) => {
     margin: 'auto',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    willChange: 'transform, opacity',
+    backfaceVisibility: 'hidden'
   }
 
   // initial inline state matches the GSAP set() so the browser paints elements
@@ -228,7 +242,10 @@ const Loader = ({ onComplete } = {}) => {
     backgroundColor: '#E1E1E1',
     zIndex: 40,
     backgroundPosition: '0 0, 0 0',
-    backgroundRepeat: 'repeat, repeat'
+    backgroundRepeat: 'repeat, repeat',
+    willChange: 'transform, opacity',
+    backfaceVisibility: 'hidden',
+    transformStyle: 'preserve-3d'
   }
 
   // ensure overlay also doesn't flash before GSAP's timeline runs
@@ -243,7 +260,7 @@ const Loader = ({ onComplete } = {}) => {
   <div ref={el => imgRefs.current[0] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 10 }}>
     <img 
       className="loader-img" 
-      src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/imag1_qig1hl.jpg" 
+      src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/imag1_qig1hl.jpg" 
       alt="i1" 
       style={imgStyle}
       loading="eager"
@@ -256,7 +273,7 @@ const Loader = ({ onComplete } = {}) => {
   <div ref={el => imgRefs.current[1] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 20 }}>
     <img 
       className="loader-img" 
-      src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load2_z4atye.jpg" 
+      src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load2_z4atye.jpg" 
       alt="i2" 
       style={imgStyle}
       loading="eager"
@@ -269,7 +286,7 @@ const Loader = ({ onComplete } = {}) => {
   <div ref={el => imgRefs.current[2] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 30 }}>
     <img 
       className="loader-img" 
-      src="https://res.cloudinary.com/dsjjdnife/image/upload/v1755711983/load3_oqxway.jpg" 
+      src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load3_oqxway.jpg" 
       alt="i3" 
       style={imgStyle}
       loading="eager"
@@ -288,6 +305,6 @@ const Loader = ({ onComplete } = {}) => {
       </div>
     </div>
   )
-}
+})
 
 export default Loader
