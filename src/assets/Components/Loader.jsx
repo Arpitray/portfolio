@@ -8,10 +8,11 @@ const Loader = memo(({ onComplete } = {}) => {
   const containerRef = useRef(null)
   const imgRefs = useRef([])
   const whiteRef = useRef(null)
+  const isMobileDevice = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
 
   useEffect(() => {
     // Ensure GSAP works properly even if ScrollTrigger config affects it
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    const isMobile = isMobileDevice;
     
     // Image URLs (match what's used in JSX)
     const imageUrls = [
@@ -25,20 +26,20 @@ const Loader = memo(({ onComplete } = {}) => {
     gsap.set(imgRefs.current, { 
       yPercent: 0, 
       autoAlpha: 0, 
-      scale: 0.8, 
+      scale: isMobile ? 0.9 : 0.8, 
       rotation: 0, 
       force3D: true, 
       transformOrigin: 'center center',
-      filter: 'blur(20px)'
+      filter: isMobile ? 'none' : 'blur(20px)'
     })
     gsap.set(whiteRef.current, { 
       yPercent: 0, 
-      scale: 0.8, 
+      scale: isMobile ? 0.9 : 0.8, 
       transformOrigin: 'center center', 
       autoAlpha: 0, 
       rotation: 0, 
       force3D: true,
-      filter: 'blur(20px)'
+      filter: isMobile ? 'none' : 'blur(20px)'
     })
 
     let tl = null;
@@ -112,10 +113,10 @@ const Loader = memo(({ onComplete } = {}) => {
       tl.to(imgRefs.current, {
         autoAlpha: 1,
         scale: 1,
-        filter: 'blur(0px)',
+        filter: isMobile ? 'none' : 'blur(0px)',
         rotation: (i) => gsap.utils.random(-25, 25),
-        duration: 1,
-        stagger: 0.4,
+        duration: isMobile ? 0.8 : 1,
+        stagger: isMobile ? 0.3 : 0.4,
         ease: 'back.out(1.7)' // Adds a nice organic "pop"
       }, 0.2)
 
@@ -123,9 +124,9 @@ const Loader = memo(({ onComplete } = {}) => {
       tl.to(whiteRef.current, {
         autoAlpha: 1,
         scale: 1,
-        filter: 'blur(0px)',
+        filter: isMobile ? 'none' : 'blur(0px)',
         rotation: () => gsap.utils.random(-20, 20),
-        duration: 0.8,
+        duration: isMobile ? 0.6 : 0.8,
         ease: 'back.out(1.7)'
       }, 1.8)
 
@@ -139,7 +140,7 @@ const Loader = memo(({ onComplete } = {}) => {
 
       // finally expand overlay to cover the whole screen
       tl.to(whiteRef.current, {
-        scale: 60,
+        scale: isMobile ? 40 : 60, // Smaller scale on mobile
         duration: 0.9,
         ease: 'power4.inOut'
       }, 3.1)
@@ -159,8 +160,12 @@ const Loader = memo(({ onComplete } = {}) => {
           duration: 0.8,
           ease: 'power4.inOut',
           onStart: () => {
-            // Start landing animation as soon as loader begins sliding up for a smoother rhythm
-            window.dispatchEvent(new Event('startLanding'))
+            // Start landing animation with a tiny delay on mobile to ensure smooth exit
+            if (isMobile) {
+              setTimeout(() => window.dispatchEvent(new Event('startLanding')), 100);
+            } else {
+              window.dispatchEvent(new Event('startLanding'));
+            }
           },
           onComplete: () => {
             if (typeof onComplete === 'function') onComplete()
@@ -199,8 +204,8 @@ const Loader = memo(({ onComplete } = {}) => {
 
   const stageStyle = {
     position: 'relative',
-  width: 360,
-  height: 340, // ensure stage is tall enough for the images to animate into center
+    width: isMobileDevice ? '90vw' : 360,
+    height: isMobileDevice ? '50vh' : 340, // ensure stage is tall enough for the images to animate into center
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
@@ -210,21 +215,21 @@ const Loader = memo(({ onComplete } = {}) => {
     width: '100%',
     height: 'calc(100% - 52px)', // fill the card up to the caption area
     borderRadius: 0,
-    boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
+    boxShadow: isMobileDevice ? '0 6px 15px rgba(0,0,0,0.2)' : '0 12px 30px rgba(0,0,0,0.25)',
     position: 'relative',
     objectFit: 'cover',
-    border: '12px solid white',
+    border: isMobileDevice ? '8px solid white' : '12px solid white',
     boxSizing: 'border-box',
     background: '#f0f0f0', // Light placeholder to prevent flash
-    imageRendering: '-webkit-optimize-contrast', // Optimize rendering
+    imageRendering: isMobileDevice ? 'auto' : '-webkit-optimize-contrast', // Optimize rendering
     willChange: 'transform, opacity',
     backfaceVisibility: 'hidden',
     transformStyle: 'preserve-3d'
   }
 
   const cardStyle = {
-    width: 280,
-    height: 340,
+    width: isMobileDevice ? '75vw' : 280,
+    height: isMobileDevice ? '45vh' : 340,
     position: 'absolute',
     inset: 0, // absolute center both axes
     margin: 'auto',
@@ -237,11 +242,12 @@ const Loader = memo(({ onComplete } = {}) => {
 
   // initial inline state matches the GSAP set() so the browser paints elements
   // in the hidden/translated state before JS executes, preventing a flash.
+  
   const cardInitial = {
   // let GSAP control translate (yPercent); only set opacity to avoid permanent hidden state
   opacity: 0,
-  filter: 'blur(20px)',
-  transform: 'scale(0.8)'
+  filter: isMobileDevice ? 'none' : 'blur(20px)',
+  transform: isMobileDevice ? 'scale(0.9)' : 'scale(0.8)'
   }
 
   const overlayTextStyle = {
@@ -260,8 +266,8 @@ const Loader = memo(({ onComplete } = {}) => {
   }
 
   const whiteOverlayStyle = {
-    width: 280,
-    height: 340,
+    width: isMobileDevice ? '75vw' : 280,
+    height: isMobileDevice ? '45vh' : 340,
     borderRadius: 0,
     backgroundColor: '#E1E1E1',
     zIndex: 40,
@@ -276,8 +282,8 @@ const Loader = memo(({ onComplete } = {}) => {
   const whiteInitial = {
   // GSAP will set yPercent and autoAlpha; keep initial opacity 0 so element is hidden until animation
   opacity: 0,
-  filter: 'blur(20px)',
-  transform: 'scale(0.8)'
+  filter: isMobileDevice ? 'none' : 'blur(20px)',
+  transform: isMobileDevice ? 'scale(0.9)' : 'scale(0.8)'
   }
 
   return (

@@ -106,14 +106,24 @@ function App() {
   }, [])
 
   const [loading, setLoading] = useState(true);
+  const [showBackground, setShowBackground] = useState(false);
 
   useEffect(() => {
     // fall back in case loader doesn't call onComplete
     const t = setTimeout(() => setLoading(false), 7000);
-    return () => clearTimeout(t);
+    
+    // Reveal background slightly before loader finishes to ensure smooth transition
+    // The loader takes about 4 seconds total. We reveal at 3.5s.
+    const t2 = setTimeout(() => setShowBackground(true), 3500);
+    
+    return () => {
+      clearTimeout(t);
+      clearTimeout(t2);
+    };
   }, [])
 
   const onLoaderComplete = useCallback(() => {
+    setShowBackground(true);
     // allow a tiny overlap for a smooth crossfade
     setTimeout(() => {
       setLoading(false)
@@ -131,13 +141,16 @@ function App() {
 
   return (
     <BrowserRouter>
-    {!loading && <Snowfall style={{ position: 'fixed', inset: 0, zIndex:9999999, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />}
+    {showBackground && <Snowfall style={{ position: 'fixed', inset: 0, zIndex:9999999, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />}
       {!loading && <CursorGlass />}
       <Routes>
         <Route path="/playground" element={<PlayGround />} />
         <Route path="/visions" element={<VisionsFrame />} />
         <Route path="/" element={
-          <>
+          <div style={{ 
+            opacity: showBackground ? 1 : 0, 
+            transition: 'opacity 0.5s ease-in-out'
+          }}>
             <Landing />
             
             <About />
@@ -149,8 +162,7 @@ function App() {
             
             <Showcase />
             <Contact />
-            
-          </>
+          </div>
         } />
       </Routes>
       {loading && <Loader onComplete={onLoaderComplete} />}
