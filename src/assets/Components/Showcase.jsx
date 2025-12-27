@@ -98,12 +98,22 @@ export default function Showcase() {
 
         const t = gsap.to(colEl, {
           y: to,
+          skewY: (i === 1 || i === 3) ? 2 : -2, // subtle skew during scroll
           ease: 'none',
           scrollTrigger: {
             trigger: outer,
             start: pinStart,
             end: () => `+=${totalScrollable}`,
-            scrub: true
+            scrub: true,
+            onUpdate: (self) => {
+              // dynamically adjust skew based on velocity
+              const velocity = self.getVelocity() / 1000;
+              gsap.to(colEl, {
+                skewY: (i === 1 || i === 3) ? velocity : -velocity,
+                duration: 0.5,
+                ease: "power2.out"
+              });
+            }
           }
         })
         triggers.push(t.scrollTrigger)
@@ -199,7 +209,14 @@ export default function Showcase() {
   }
 
   return (
-    <section className='showcase-outer hidden md:block' ref={outerRef} style={outerStyle} aria-hidden={false}>
+    <section 
+      className='showcase-outer hidden md:block' 
+      ref={outerRef} 
+      style={outerStyle} 
+      aria-hidden={false}
+      onMouseEnter={() => window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: 'VIEW' }))}
+      onMouseLeave={() => window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: '' }))}
+    >
       <div className='' ref={stickyRef} style={stickyStyle}>
         <div  style={colsWrap}>
           <div style={colOuter} className='mr-8 ml-8' ref={el => (wrapRefs.current[0] = el)}>

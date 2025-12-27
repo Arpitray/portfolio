@@ -141,7 +141,7 @@ function App() {
 
   return (
     <BrowserRouter>
-    {showBackground && <Snowfall style={{ position: 'fixed', inset: 0, zIndex:9999999, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />}
+    {showBackground && <Snowfall style={{ position: 'fixed', inset: 0, zIndex: 999998, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />}
       {!loading && <CursorGlass />}
       <Routes>
         <Route path="/playground" element={<PlayGround />} />
@@ -166,6 +166,7 @@ function App() {
         } />
       </Routes>
       {loading && <Loader onComplete={onLoaderComplete} />}
+      <div className="grain-overlay"></div>
     </BrowserRouter>
   )
 }

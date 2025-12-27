@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Polaroid from './sc1.png'
 import DragSvg from './drag.svg'
 import Arpit3 from './Arpit3.png'
+import Magnetic from './Magnetic'
 
 export default function Contact() {
   const elRef = useRef(null)
@@ -323,40 +324,44 @@ export default function Contact() {
                     alignItems: 'center',
                     flexDirection: isMobile ? 'column' : 'row'
                   }}>
-                    <a className='font-["dk"] tracking-wider'
-                      href="mailto:rayarpit72@gmail.com" 
-                      style={{ 
-                        color: '#313437', 
-                        fontWeight: 600, 
-                        textDecoration: 'none',
-                        fontSize: isMobile ? 20 : 28,
-                        padding: '10px 20px',
-                        
-                        transition: 'all 0.3s ease',
-                        backgroundColor: 'transparent'
-                      }}
-                  
-                    >
-                      Email
-                    </a>
-                    <a 
-                      href="https://www.linkedin.com/in/arpit-arjun-ray-2ba326335/" 
-                      target="_blank" 
-                      rel="noreferrer" 
-                      style={{ 
-                        color: '#313437', 
-                        fontWeight: 600, 
-                        textDecoration: 'none',
-                        fontSize: isMobile ? 20 : 28,
-                        padding: '10px 20px',
-                        fontFamily: 'dk',
-                        transition: 'all 0.3s ease',
-                        backgroundColor: 'transparent'
-                      }}
-                     
-                    >
-                      LinkedIn
-                    </a>
+                    <Magnetic strength={0.3}>
+                      <a className='font-["dk"] tracking-wider'
+                        href="mailto:rayarpit72@gmail.com" 
+                        style={{ 
+                          color: '#313437', 
+                          fontWeight: 600, 
+                          textDecoration: 'none',
+                          fontSize: isMobile ? 20 : 28,
+                          padding: '10px 20px',
+                          
+                          transition: 'all 0.3s ease',
+                          backgroundColor: 'transparent'
+                        }}
+                    
+                      >
+                        Email
+                      </a>
+                    </Magnetic>
+                    <Magnetic strength={0.3}>
+                      <a 
+                        href="https://www.linkedin.com/in/arpit-arjun-ray-2ba326335/" 
+                        target="_blank" 
+                        rel="noreferrer" 
+                        style={{ 
+                          color: '#313437', 
+                          fontWeight: 600, 
+                          textDecoration: 'none',
+                          fontSize: isMobile ? 20 : 28,
+                          padding: '10px 20px',
+                          fontFamily: 'dk',
+                          transition: 'all 0.3s ease',
+                          backgroundColor: 'transparent'
+                        }}
+                       
+                      >
+                        LinkedIn
+                      </a>
+                    </Magnetic>
                   </div>
                 </div>
               </div>

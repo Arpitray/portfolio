@@ -8,6 +8,7 @@ import SpinGif from './spin.gif'
 import SandImage from './SandImage'
 import DecayCard from './DecayCard'
 import PG2 from './pg1.png'
+import Magnetic from './Magnetic'
 
 export default function Visions({
   image = '/PlayGround/virtual-project/index.html',
@@ -72,7 +73,11 @@ export default function Visions({
       <div className="content-wrap w-full" style={{ position: 'relative', zIndex: 100 }}>
         <div className="w-full flex flex-col md:flex-row justify-center items-start md:items-center mt-12 md:mt-32 gap-8 md:gap-12 px-6">
 
-        <div className="flex w-full md:w-1/2 justify-center lg:justify-center saturate-120">
+        <div 
+          className="flex w-full md:w-1/2 justify-center lg:justify-center saturate-120"
+          onMouseEnter={() => window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: 'VIEW' }))}
+          onMouseLeave={() => window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: '' }))}
+        >
           <DecayCard width={isMobile ? 300 : 1000} height={isMobile ? 220 : 680} image={PG2} bare={true}>
             {/* optional caption could go here */}
           </DecayCard>
@@ -83,7 +88,9 @@ export default function Visions({
           <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 leading-6 md:leading-10 tracking-wide font-normal  font-['dk']">{description}</p>
           <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 leading-6 md:leading-8 tracking-wide font-normal  font-['dk']">{description2}</p>
           <div className="mt-4 md:mt-6 flex justify-center md:justify-start">
-            <button onClick={() => nav('/visions')} className="inline-flex items-center rounded-2xl bg-orange-500 hover:bg-orange-600 text-white px-9 py-4 font-bold">Visit</button>
+            <Magnetic>
+              <button onClick={() => nav('/visions')} className="inline-flex items-center rounded-2xl bg-orange-500 hover:bg-orange-600 text-white px-9 py-4 font-bold">Visit</button>
+            </Magnetic>
           </div>
         </div>
         </div>

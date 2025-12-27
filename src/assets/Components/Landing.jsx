@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useLayoutEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { gsap } from 'gsap'
 import { useNavigate, useLocation } from 'react-router-dom'
+import Magnetic from './Magnetic'
 import Image1 from './image1.png'
 import Image2  from './maincam.jpg'
 import Image3 from './image3.png'
@@ -321,114 +322,124 @@ function Landing() {
     {/* Navbar rendered into a portal to guarantee it sits above other stacking contexts */}
   {navVisible && typeof document !== 'undefined' && createPortal(
         <nav id="portal-nav"
-      className="fixed top-[3%] left-0 w-full overflow-x-hidden"
-  style={{ position: 'fixed', left: 0, right: 0, opacity: 0, willChange: 'opacity, transform', zIndex: 2147483647, maxWidth: '100vw', overflow: 'hidden' }}
+      className="fixed top-[3%] left-0 w-full"
+  style={{ position: 'fixed', left: 0, right: 0, opacity: 0, willChange: 'opacity, transform', zIndex: 2147483640, maxWidth: '100vw' }}
           onPointerEnter={() => window.dispatchEvent(new Event('cursorGlass:hide'))}
           onPointerLeave={() => window.dispatchEvent(new Event('cursorGlass:show'))}
         >
-          <div className="mx-auto px-2 sm:px-6 lg:px-8 max-w-screen-2xl w-full overflow-x-hidden">
-            <div className="mt-3 mx-1 sm:mx-2 rounded-xl border overflow-x-hidden border-white/10 bg-white/40 backdrop-blur-[4px] backdrop-saturate-150 ring-1 ring-black/5 py-4 shadow-md relative max-w-full">
-              <div className="h-12 px-2 sm:px-4 flex items-center justify-between min-w-0 overflow-x-hidden">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    try {
-                      if (location && (location.pathname === '/' || location.pathname === '')) {
-                        // Hard refresh to restart the entire site experience
-                        window.location.href = window.location.href
-                        return
-                      }
-                    } catch (err) {}
-                    navigate('/')
-                  }}
-                  className="text-xl sm:text-2xl font-extrabold tracking-tight text-black bg-transparent border-0 p-0 cursor-pointer flex-shrink-0"
-                >
-                  Arpit.
-                </button>
+          <div className="mx-auto px-2 sm:px-6 lg:px-8 max-w-screen-2xl w-full">
+            <div className="mt-3 mx-1 sm:mx-2 rounded-xl border border-white/10 bg-white/40 backdrop-blur-[4px] backdrop-saturate-150 ring-1 ring-black/5 py-4 shadow-md relative max-w-full">
+              <div className="h-12 px-2 sm:px-4 flex items-center justify-between min-w-0">
+                <Magnetic strength={0.3}>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      try {
+                        if (location && (location.pathname === '/' || location.pathname === '')) {
+                          // Hard refresh to restart the entire site experience
+                          window.location.href = window.location.href
+                          return
+                        }
+                      } catch (err) {}
+                      navigate('/')
+                    }}
+                    className="text-xl sm:text-2xl font-extrabold tracking-tight text-black bg-transparent border-0 p-0 cursor-pointer flex-shrink-0"
+                  >
+                    Arpit.
+                  </button>
+                </Magnetic>
                 {/* Mobile hamburger - visible on small screens only */}
-                <button
-                  type="button"
-                  className="md:hidden inline-flex items-center justify-center p-1 sm:p-2 rounded-md text-black hover:opacity-80 flex-shrink-0"
-                  aria-expanded={mobileMenuOpen}
-                  aria-label="Toggle menu"
-                  onClick={() => setMobileMenuOpen((v) => !v)}
-                >
-                  {/* simple 3-bar icon */}
-                  <span className="sr-only">Open menu</span>
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 relative">
-                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 rotate-45' : 'translate-y-0'}`}></span>
-                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-all duration-200 ${mobileMenuOpen ? 'opacity-0' : 'translate-y-2'}`}></span>
-                    <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 -rotate-45' : 'translate-y-4'}`}></span>
-                  </div>
-                </button>
+                <Magnetic strength={0.3}>
+                  <button
+                    type="button"
+                    className="md:hidden inline-flex items-center justify-center p-1 sm:p-2 rounded-md text-black hover:opacity-80 flex-shrink-0"
+                    aria-expanded={mobileMenuOpen}
+                    aria-label="Toggle menu"
+                    onClick={() => setMobileMenuOpen((v) => !v)}
+                  >
+                    {/* simple 3-bar icon */}
+                    <span className="sr-only">Open menu</span>
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 relative">
+                      <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 rotate-45' : 'translate-y-0'}`}></span>
+                      <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-all duration-200 ${mobileMenuOpen ? 'opacity-0' : 'translate-y-2'}`}></span>
+                      <span className={`block absolute left-0 right-0 h-[3px] bg-black transition-transform duration-200 ${mobileMenuOpen ? 'translate-y-2 -rotate-45' : 'translate-y-4'}`}></span>
+                    </div>
+                  </button>
+                </Magnetic>
 
-                <div className="hidden md:flex items-center gap-6 text-[14px] font-medium text-black overflow-x-hidden">
+                <div className="hidden md:flex items-center gap-6 text-[14px] font-medium text-black">
                   {navItems.map(({ label, href }) => {
                     // PLAYGROUND behavior (existing)
                     if (label === 'PLAYGROUND') {
                       return (
-                        <a
-                          key={label}
-                          href={href}
-                          onClick={(e) => {
-                            if (location && (location.pathname === '/' || location.pathname === '')) {
-                              e.preventDefault()
-                              try {
-                                const el = document.getElementById('playground-preview')
-                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                                else navigate('/playground')
-                              } catch (err) {
+                        <Magnetic key={label} strength={0.2}>
+                          <a
+                            href={href}
+                            onClick={(e) => {
+                              if (location && (location.pathname === '/' || location.pathname === '')) {
+                                e.preventDefault()
+                                try {
+                                  const el = document.getElementById('playground-preview')
+                                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                  else navigate('/playground')
+                                } catch (err) {
+                                  navigate('/playground')
+                                }
+                              } else {
+                                e.preventDefault()
                                 navigate('/playground')
                               }
-                            } else {
-                              e.preventDefault()
-                              navigate('/playground')
-                            }
-                          }}
-                          className="hover:opacity-70 transition-opacity"
-                        >
-                          {label}
-                        </a>
+                            }}
+                            className="hover:opacity-70 transition-opacity"
+                          >
+                            {label}
+                          </a>
+                        </Magnetic>
                       )
                     }
 
                     // HOME, ABOUT, WORK, and CONTACT: smooth scroll when on landing, otherwise navigate to anchor
                     if (label === 'HOME' || label === 'ABOUT' || label === 'WORK' || label === 'CONTACT') {
                       return (
-                        <a
-                          key={label}
-                          href={href}
-                          onClick={(e) => {
-                            if (location && (location.pathname === '/' || location.pathname === '')) {
-                              e.preventDefault()
-                              try {
-                                if (label === 'CONTACT') {
-                                  // Contact has fixed positioning, so scroll to bottom of page
-                                  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                                } else {
-                                  const el = document.getElementById(href.replace('#', ''))
-                                  if (el) {
-                                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        <Magnetic key={label} strength={0.2}>
+                          <a
+                            href={href}
+                            onClick={(e) => {
+                              if (location && (location.pathname === '/' || location.pathname === '')) {
+                                e.preventDefault()
+                                try {
+                                  if (label === 'CONTACT') {
+                                    // Contact has fixed positioning, so scroll to bottom of page
+                                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
                                   } else {
-                                    window.location.hash = href;
+                                    const el = document.getElementById(href.replace('#', ''))
+                                    if (el) {
+                                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                    } else {
+                                      window.location.hash = href;
+                                    }
                                   }
+                                } catch (err) {
+                                  window.location.hash = href
                                 }
-                              } catch (err) {
-                                window.location.hash = href
+                              } else {
+                                e.preventDefault()
+                                navigate('/' + href)
                               }
-                            } else {
-                              e.preventDefault()
-                              navigate('/' + href)
-                            }
-                          }}
-                          className="hover:opacity-70 transition-opacity "
-                        >
-                          {label}
-                        </a>
+                            }}
+                            className="hover:opacity-70 transition-opacity "
+                          >
+                            {label}
+                          </a>
+                        </Magnetic>
                       )
                     }
 
-                    return <a key={label} href={href} className="hover:opacity-70 transition-opacity">{label}</a>
+                    return (
+                      <Magnetic key={label} strength={0.2}>
+                        <a href={href} className="hover:opacity-70 transition-opacity">{label}</a>
+                      </Magnetic>
+                    )
                   })}
                   
                 </div>

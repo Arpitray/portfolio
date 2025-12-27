@@ -100,6 +100,71 @@ body {
   height: calc(var(--vh, 1vh) * 100);
 }
 
+/* Grain Overlay */
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2147483646; /* Just below the cursor */
+  opacity: 0.12; /* Further increased for visibility */
+  background-image: url("https://res.cloudinary.com/dsjjdnife/image/upload/v1735395000/noise_qig1hl.png");
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
+}
+
+.grain-overlay::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background-image: url("https://res.cloudinary.com/dsjjdnife/image/upload/v1735395000/noise_qig1hl.png");
+  background-repeat: repeat;
+  animation: grain 1s steps(6) infinite;
+  will-change: transform;
+}
+
+/* Custom Selection */
+::selection {
+  background: #000;
+  color: #fff;
+}
+
+/* Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 /* Tailwind utility for the subtle grid background */
 @layer utilities {
 	.bg-grid {
