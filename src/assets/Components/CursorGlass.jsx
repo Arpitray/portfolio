@@ -1,429 +1,207 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import gsap from 'gsap'
 
-export default function CursorGlass({ size = 80, blur = 12, color = 'rgba(0,0,0,0.12)' }) {
-  const elRef = useRef(null)
-  // only enable on large viewports (desktop). Mobile/tablet will have this disabled.
+export default function CursorGlass({ size = 56, blur = 8 }) {
+  const dotRef = useRef(null)
+  const ringRef = useRef(null)
+  const textRef = useRef(null)
+  
   const [enabled, setEnabled] = useState(() => {
     try {
       return typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(min-width: 1024px)').matches
     } catch (e) { return false }
   })
-  // keep a listener so changing orientation/resize updates enablement
+
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return
     const mql = window.matchMedia('(min-width: 1024px)')
     const onChange = (e) => setEnabled(e.matches)
-    if (mql.addEventListener) mql.addEventListener('change', onChange)
-    else if (mql.addListener) mql.addListener(onChange)
-    return () => {
-      try { if (mql.removeEventListener) mql.removeEventListener('change', onChange) } catch (e) {}
-      try { if (mql.removeListener) mql.removeListener(onChange) } catch (e) {}
-    }
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
   }, [])
-  const posRef = useRef({ x: -9999, y: -9999 })
-  const targetRef = useRef({ x: -9999, y: -9999 })
-  const rafRef = useRef(null)
-  const hiddenRef = useRef(false)
-  const lastPointerRef = useRef({ x: -9999, y: -9999 })
-  const clickableHideRef = useRef(false)
+
   const [customText, setCustomText] = useState(null)
+  const [isHovering, setIsHovering] = useState(false)
+  const [isMouseDown, setIsMouseDown] = useState(false)
   const location = useLocation()
 
-  // Hide the glass cursor completely on certain full-page embeds/routes
   useEffect(() => {
-    const el = elRef.current
-    if (!el) return
-    try {
-      const shouldHide = location && (location.pathname && (location.pathname.startsWith('/playground') || location.pathname.startsWith('/visions')))
-      if (shouldHide) {
-        // Hide glass and restore native cursor
-        el.style.opacity = '0'
-        el.style.transition = 'opacity 0ms'
-        document.documentElement.style.cursor = ''
-        hiddenRef.current = true
-      } else {
-        // Allow the glass to show again; restore hidden state to false so main effect can manage visibility
-        hiddenRef.current = false
-  // re-enable hiding transition for normal behavior (no transform easing)
-  el.style.transition = 'opacity 120ms ease'
-        // hide native cursor again so glass can manage appearance
-        try { document.documentElement.style.cursor = 'none' } catch (e) {}
-      }
-    } catch (e) {}
-  }, [location && location.pathname])
-
-  // Don't exit early here; keep hooks order stable across renders.
-
-  useEffect(() => {
-    const el = elRef.current
-    if (!el) return
-
-    // If disabled (mobile/tablet), skip attaching listeners
     if (!enabled) {
-      try { document.documentElement.style.cursor = '' } catch (e) {}
+      document.documentElement.style.cursor = ''
       return
     }
 
-    // Hide native cursor
     document.documentElement.style.cursor = 'none'
+    
+    const dot = dotRef.current
+    const ring = ringRef.current
+    const text = textRef.current
 
-    // Handlers for external show/hide requests (e.g., hovering navbar)
+    // GSAP QuickTo for high-performance trailing
+    const xToDot = gsap.quickTo(dot, "x", { duration: 0.1, ease: "power3" })
+    const yToDot = gsap.quickTo(dot, "y", { duration: 0.1, ease: "power3" })
+    
+    const xToRing = gsap.quickTo(ring, "x", { duration: 0.4, ease: "power3" })
+    const yToRing = gsap.quickTo(ring, "y", { duration: 0.4, ease: "power3" })
+
+    let lastX = 0
+    let lastY = 0
+
+    const onMove = (e) => {
+      const { clientX: x, clientY: y } = e
+      
+      xToDot(x)
+      yToDot(y)
+      xToRing(x)
+      yToRing(y)
+
+      // Dynamic rotation speed based on velocity
+      const dx = x - lastX
+      const dy = y - lastY
+      const velocity = Math.sqrt(dx * dx + dy * dy)
+      const rotationSpeed = Math.max(10, 20 - velocity * 0.5)
+      if (text) text.style.animationDuration = `${rotationSpeed}s`
+      
+      lastX = x
+      lastY = y
+
+      // Check for hoverable elements
+      const target = e.target
+      const isClickable = (el) => {
+        if (!el) return false
+        const style = window.getComputedStyle(el)
+        if (style.cursor === 'pointer') return true
+        const tag = el.tagName.toLowerCase()
+        return ['a', 'button', 'input', 'label'].includes(tag) || el.closest('a, button, .clickable')
+      }
+
+      const hovering = isClickable(target)
+      if (hovering !== isHovering) setIsHovering(hovering)
+    }
+
+    const onMouseDown = () => setIsMouseDown(true)
+    const onMouseUp = () => setIsMouseDown(false)
+
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mouseup', onMouseUp)
+
+    const onCustomText = (e) => setCustomText(e.detail)
+    window.addEventListener('cursorGlass:customText', onCustomText)
+
     const onHide = () => {
-      try {
-        hiddenRef.current = true
-        el.style.opacity = '0'
-        document.documentElement.style.cursor = ''
-      } catch (e) {}
+      gsap.to([dot, ring], { opacity: 0, duration: 0.3 })
     }
-
     const onShow = () => {
-      try {
-        hiddenRef.current = false
-        // Immediately snap the glass to the last known pointer position so it
-        // appears exactly under the cursor when it reappears.
-        const last = lastPointerRef.current || { x: -9999, y: -9999 }
-        // keep hidden until fade completes to avoid chasing
-        hiddenRef.current = true
-        // place slightly below the cursor so it visually rises into place
-        const startY = last.y + Math.max(8, Math.round(size * 0.12))
-        targetRef.current.x = last.x
-        targetRef.current.y = last.y
-        posRef.current.x = last.x
-        posRef.current.y = last.y
-        document.documentElement.style.cursor = 'none'
-        // start with opacity 0 and positioned below pointer
-  // animate opacity only; movement will snap immediately via RAF loop
-  el.style.transition = 'opacity 160ms ease'
-        // set posRef to the start position so RAF loop doesn't pull from the old position
-        posRef.current.x = last.x
-        posRef.current.y = startY
-        el.style.transform = `translate3d(${last.x - size/2}px, ${startY - size/2}px, 0) scale(1)`
-        el.style.opacity = '0'
-
-        // force a reflow so the transition will run
-        // eslint-disable-next-line no-unused-expressions
-        el.offsetHeight
-
-        // animate into centered position and fade in
-        requestAnimationFrame(() => {
-          // targetRef already set to last pointer; RAF loop will smoothly interpolate
-          el.style.transform = `translate3d(${last.x - size/2}px, ${last.y - size/2}px, 0) scale(1)`
-          el.style.opacity = '1'
-        })
-
-        // after transition ends, allow pointermove to control glass again
-        setTimeout(() => {
-          hiddenRef.current = false
-        }, 180)
-      } catch (e) {}
-    }
-
-    // Handler for custom text updates
-    const onCustomText = (event) => {
-      setCustomText(event.detail)
+      gsap.to([dot, ring], { opacity: 1, duration: 0.3 })
     }
 
     window.addEventListener('cursorGlass:hide', onHide)
     window.addEventListener('cursorGlass:show', onShow)
-    window.addEventListener('cursorGlass:customText', onCustomText)
-    const onMove = (e) => {
-      const x = e.clientX
-      const y = e.clientY
-      // always record last pointer position even when hidden
-      lastPointerRef.current.x = x
-      lastPointerRef.current.y = y
-      
-      // Check if hovering over contact image
-      const elementUnderCursor = document.elementFromPoint(x, y)
-      const isOverContactImage = elementUnderCursor && (
-        elementUnderCursor.classList.contains('contact-image') ||
-        elementUnderCursor.closest('.polaroid-container')
-      )
-      
-      if (isOverContactImage && customText !== 'DRAG') {
-        setCustomText('DRAG')
-      } else if (!isOverContactImage && customText === 'DRAG') {
-        setCustomText(null)
-      }
-      
-      // determine if cursor is over a clickable element; if so, show native pointer and hide glass
-      const isClickableNode = (node) => {
-        try {
-          if (!node) return false
-          
-          // Check if the element has cursor: pointer style (handles inheritance too)
-          const style = window.getComputedStyle(node)
-          if (style.cursor === 'pointer') return true
-
-          let el = node
-          while (el) {
-            if (!el.tagName) return false
-            const tag = el.tagName.toLowerCase()
-            if (['a', 'button', 'input', 'textarea', 'select', 'label'].includes(tag)) return true
-            const role = el.getAttribute && el.getAttribute('role')
-            if (role === 'button') return true
-            if (el.getAttribute && el.getAttribute('onclick')) return true
-            if (el.tabIndex >= 0) return true
-            if (el.contentEditable === 'true') return true
-            
-            // Stop if we reach body to prevent unnecessary traversal
-            if (el === document.body) break
-            el = el.parentElement
-          }
-        } catch (e) {}
-        return false
-      }
-
-      const clickable = isClickableNode(elementUnderCursor)
-      if (clickable && !clickableHideRef.current) {
-        clickableHideRef.current = true
-        try { document.documentElement.style.cursor = '' } catch (e) {}
-        try { el.style.opacity = '0' } catch (e) {}
-        // don't update target while native pointer is shown
-        return
-      }
-
-      if (!clickable && clickableHideRef.current) {
-        clickableHideRef.current = false
-        if (!hiddenRef.current) {
-          try { document.documentElement.style.cursor = 'none' } catch (e) {}
-          try { el.style.opacity = '1' } catch (e) {}
-        }
-      }
-
-      // if an external hide is active, or we're intentionally hidden over a clickable, don't update the visible target
-      if (hiddenRef.current || clickableHideRef.current) return
-      targetRef.current.x = x
-      targetRef.current.y = y
-      // make sure the glass is visible when pointer moves
-      el.style.opacity = '1'
-    }
-    const onLeave = () => {
-      // hide it when pointer leaves the window
-      el.style.opacity = '0'
-      targetRef.current.x = -9999
-      targetRef.current.y = -9999
-    }
-
-    window.addEventListener('pointermove', onMove)
-    window.addEventListener('pointerleave', onLeave)
-
-    // Also listen for pointer events inside same-origin iframes (e.g. the Playground embed).
-    // For same-origin iframes we can access contentWindow and map client coords to parent viewport.
-    const iframeListeners = []
-    try {
-      const iframes = Array.from(document.querySelectorAll('iframe'))
-      iframes.forEach((iframe) => {
-        try {
-          const cw = iframe.contentWindow
-          if (!cw) return
-
-          const onIframeMove = (e) => {
-            // e.clientX/Y are relative to the iframe viewport; convert to parent viewport
-            const rect = iframe.getBoundingClientRect()
-            const x = rect.left + e.clientX
-            const y = rect.top + e.clientY
-            lastPointerRef.current.x = x
-            lastPointerRef.current.y = y
-            // if an external hide is active or we are intentionally hidden, don't update visible target
-            if (hiddenRef.current) return
-            targetRef.current.x = x
-            targetRef.current.y = y
-            el.style.opacity = '1'
-          }
-
-          const onIframeLeave = () => {
-            el.style.opacity = '0'
-            targetRef.current.x = -9999
-            targetRef.current.y = -9999
-          }
-
-          // helper to check if element or its ancestors are interactive/clickable
-          const isClickable = (node) => {
-            try {
-              let el = node
-              while (el && el !== iframe.contentDocument) {
-                if (!el || !el.tagName) return false
-                const tag = el.tagName.toLowerCase()
-                if (['a', 'button', 'input', 'textarea', 'select', 'label'].includes(tag)) return true
-                const role = el.getAttribute && el.getAttribute('role')
-                if (role === 'button') return true
-                if (el.getAttribute && el.getAttribute('onclick')) return true
-                if (el.tabIndex >= 0) return true
-                if (el.contentEditable === 'true') return true
-                el = el.parentElement
-              }
-            } catch (e) {}
-            return false
-          }
-
-          const onIframePointerOver = (e) => {
-            try {
-              const clickable = isClickable(e.target)
-              if (clickable) {
-                // hide glass and show native pointer when over interactive elements
-                clickableHideRef.current = true
-                onHide()
-              } else {
-                // show glass when over non-interactive areas
-                clickableHideRef.current = false
-                onShow()
-                // ensure position updates immediately
-                const rect = iframe.getBoundingClientRect()
-                const x = rect.left + (e.clientX || 0)
-                const y = rect.top + (e.clientY || 0)
-                lastPointerRef.current.x = x
-                lastPointerRef.current.y = y
-                targetRef.current.x = x
-                targetRef.current.y = y
-              }
-            } catch (e) {}
-          }
-
-          const onIframePointerOut = (e) => {
-            // when pointer leaves an element, check if now over something clickable via relatedTarget
-            try {
-              const related = e.relatedTarget
-              const nowClickable = related && isClickable(related)
-              if (nowClickable) {
-                clickableHideRef.current = true
-                onHide()
-              } else {
-                clickableHideRef.current = false
-                onShow()
-              }
-            } catch (e) {}
-          }
-
-          // add listeners on the iframe's window so internal pointer moves are caught
-          cw.addEventListener('pointermove', onIframeMove)
-          cw.addEventListener('pointerleave', onIframeLeave)
-          cw.addEventListener('pointerover', onIframePointerOver)
-          cw.addEventListener('pointerout', onIframePointerOut)
-          cw.addEventListener('pointerdown', (e) => {
-            // ensure native pointer when clicking interactive elements inside iframe
-            try { if (isClickable(e.target)) { clickableHideRef.current = true; onHide() } } catch (e) {}
-          })
-
-          // also handle when pointer leaves the iframe element itself
-          iframe.addEventListener('pointerleave', onIframeLeave)
-
-          iframeListeners.push({ iframe, cw, onIframeMove, onIframeLeave, onIframePointerOver, onIframePointerOut })
-        } catch (e) {
-          // cross-origin iframes will throw; ignore them
-        }
-      })
-    } catch (e) {}
-
-    // Follow loop with immediate snapping (no easing) so the glass follows the pointer exactly.
-    const loop = () => {
-      const p = posRef.current
-      const t = targetRef.current
-
-      // If target is sentinel off-screen, jump instantly
-      if (t.x === -9999 && t.y === -9999) {
-        p.x = t.x
-        p.y = t.y
-      } else {
-        // Immediate follow — no interpolation
-        p.x = t.x
-        p.y = t.y
-      }
-
-      // position the element offset so it centers on the pointer
-      el.style.transform = `translate3d(${p.x - size/2}px, ${p.y - size/2}px, 0) scale(1)`
-      rafRef.current = requestAnimationFrame(loop)
-    }
-    rafRef.current = requestAnimationFrame(loop)
 
     return () => {
       window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerleave', onLeave)
+      window.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('cursorGlass:customText', onCustomText)
       window.removeEventListener('cursorGlass:hide', onHide)
       window.removeEventListener('cursorGlass:show', onShow)
-      window.removeEventListener('cursorGlass:customText', onCustomText)
-      cancelAnimationFrame(rafRef.current)
-      // cleanup iframe listeners
-      try {
-        iframeListeners.forEach(({ iframe, cw, onIframeMove, onIframeLeave }) => {
-          try { if (cw && cw.removeEventListener) cw.removeEventListener('pointermove', onIframeMove) } catch (e) {}
-          try { if (cw && cw.removeEventListener) cw.removeEventListener('pointerleave', onIframeLeave) } catch (e) {}
-          try { iframe.removeEventListener('pointerleave', onIframeLeave) } catch (e) {}
-        })
-      } catch (e) {}
       document.documentElement.style.cursor = ''
     }
-  }, [size, enabled])
+  }, [enabled, isHovering])
 
-  // The element uses pointer-events:none so it doesn't block interaction.
-  // For "used to navigate" we keep native click behavior (so links still work)
-  const svgSize = size
-  const pathId = 'cursor-glass-path'
-  const ringPadding = 12
-  const radius = (svgSize - ringPadding * 2) / 2
+  // Animations for state changes
+  useEffect(() => {
+    if (!enabled) return
 
-  // Now it's safe to short-circuit render after all hooks are declared
+    if (isMouseDown) {
+      gsap.to(ringRef.current, { scale: 0.8, duration: 0.3, ease: "power3.out" })
+      gsap.to(dotRef.current, { scale: 2.5, duration: 0.3, ease: "power3.out" })
+    } else {
+      // Keep consistent scale and appearance regardless of hover
+      gsap.to(ringRef.current, { scale: 1, backgroundColor: 'rgba(0,0,0,0.05)', duration: 0.4, ease: "power3.out" })
+      gsap.to(dotRef.current, { scale: 1, duration: 0.4, ease: "power3.out" })
+    }
+  }, [isMouseDown, enabled])
+
   if (!enabled) return null
 
+  // Clamp and scale size so the cursor remains compact; default reduced for a tighter look
+  const clampSize = Math.min(Math.max(typeof size === 'number' ? size : 56, 36), 90)
+  const svgSize = clampSize
+  // Circle text radius scaled to the cursor size (reduced multiplier for smaller ring)
+  const radius = Math.max(5, Math.round(clampSize * 0.045))
+  const pathId = 'cursor-text-path'
+
   return (
-    <div
-  ref={elRef}
-      aria-hidden="true"
-      style={{
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        pointerEvents: 'none',
-        transform: 'translate3d(-9999px,-9999px,0)',
-  transition: 'opacity 120ms ease',
-        opacity: 0,
-  zIndex: 2147483647,
-  backdropFilter: `blur(${blur}px)`,
-  WebkitBackdropFilter: `blur(${blur}px)`,
-  background: color,
-  border: '1px solid rgba(0,0,0,0.22)',
-  boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
-  mixBlendMode: 'multiply',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}
-    >
-      <style>{`@keyframes cg-rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}`}</style>
-      <svg
-        width={svgSize}
-        height={svgSize}
-        viewBox={`0 0 ${svgSize} ${svgSize}`}
+    <div style={{ position: 'fixed', top: 0, left: 0, pointerEvents: 'none', zIndex: 2147483647 }}>
+      {/* The trailing glass ring */}
+      <div
+        ref={ringRef}
         style={{
-          overflow: 'visible',
-          pointerEvents: 'none',
-          transformOrigin: '50% 50%',
-          animation: 'cg-rotate 8s linear infinite'
+          position: 'absolute',
+          width: clampSize,
+          height: clampSize,
+          left: -clampSize / 2,
+          top: -clampSize / 2,
+          borderRadius: '50%',
+          border: '1px solid rgba(0,0,0,0.06)',
+          backdropFilter: `blur(${Math.max(4, blur)}px)`,
+          WebkitBackdropFilter: `blur(${Math.max(4, blur)}px)`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          willChange: 'transform',
         }}
       >
-        <defs>
-          <path
-            id={pathId}
-            d={`M ${svgSize / 2} ${ringPadding} A ${radius} ${radius} 0 1 1 ${svgSize / 2 - 0.01} ${ringPadding}`}
-          />
-        </defs>
-        <g fill="none" stroke="none">
-          <text
-            fill="#000000"
-            fontSize={15}
-            color='black'
-            fontFamily="demo, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial"
-          >
-            <textPath href={`#${pathId}`} startOffset="0%">
-              {customText ? Array(8).fill(` ${customText} • `).join(' ') : Array(6).fill(' Scroll down • ').join(' ')}
-            </textPath>
+        {/* Rotating Text - Always visible for consistency */}
+        <svg
+          width={svgSize}
+          height={svgSize}
+          viewBox={`0 0 ${svgSize} ${svgSize}`}
+          style={{
+            position: 'absolute',
+            animation: 'rotate 10s linear infinite',
+            opacity: 1,
+            transition: 'opacity 0.3s ease',
+          }}
+        >
+          <defs>
+            <path
+              id={pathId}
+              d={`M ${svgSize}, ${svgSize} m -${radius}, 0 a ${radius},${radius} 0 1,1 ${radius * 2},0 a ${radius},${radius} 0 1,1 -${radius * 2},0`}
+            />
+          </defs>
+          <text fill="#000" fontSize="10" fontWeight="600" letterSpacing="2" style={{ textTransform: 'uppercase' }}>
+           
           </text>
-        </g>
-      </svg>
+        </svg>
+      </div>
+
+      {/* The precise center dot */}
+      <div
+        ref={dotRef}
+        style={{
+          position: 'absolute',
+          width: 8,
+          height: 8,
+          left: -4,
+          top: -4,
+          backgroundColor: '#000',
+          borderRadius: '50%',
+          mixBlendMode: 'difference',
+          zIndex: 1,
+          willChange: 'transform',
+        }}
+      />
+
+      <style>{`
+        @keyframes rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   )
 }

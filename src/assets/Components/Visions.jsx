@@ -39,6 +39,12 @@ export default function Visions({
     const mask = maskRef.current
     if (!section || !mask) return
 
+    // Skip heavy mask animation on mobile to prevent rendering lag
+    if (isMobile) {
+      gsap.set(mask, { display: 'none' });
+      return;
+    }
+
     const endDistance = () => Math.max(1, section.offsetHeight - window.innerHeight)
 
     const tween = gsap.to(mask, {
@@ -74,7 +80,7 @@ export default function Visions({
         <div className="w-full flex flex-col md:flex-row justify-center items-start md:items-center mt-12 md:mt-32 gap-8 md:gap-12 px-6">
 
         <div 
-          className="flex w-full md:w-1/2 justify-center lg:justify-center saturate-120"
+          className="flex w-full md:w-1/2 justify-center lg:justify-center"
           onMouseEnter={() => window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: 'VIEW' }))}
           onMouseLeave={() => window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: '' }))}
         >
@@ -97,7 +103,7 @@ export default function Visions({
       </div>
 
       {/* Full-height solid overlay mask that will slide up to reveal the Showcase under this section */}
-  <div aria-hidden="true" ref={maskRef} className="visions-full-mask" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '100vh', pointerEvents: 'none', zIndex: 10, background: 'rgba(225,225,225,1)', willChange: 'transform', transform: 'translateZ(0)' }} />
+  <div aria-hidden="true" ref={maskRef} className="visions-full-mask" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '100vh', pointerEvents: 'none', zIndex: 10, background: 'rgba(225,225,225,1)', transform: 'translateZ(0)' }} />
     </section>
   )
 }

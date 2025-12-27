@@ -21,9 +21,9 @@ body {
     overflow-y: auto;
   }
   
-  /* GPU acceleration for specific scrollable sections, NOT animated elements */
-  section:not([class*="loader"]) {
-    will-change: transform;
+  /* Disable heavy effects on mobile for performance */
+  .grain-overlay {
+    display: none !important;
   }
 }
 

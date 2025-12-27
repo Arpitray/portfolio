@@ -36,6 +36,12 @@ export default function PlaygroundPreview({
     const mask = maskRef.current
     if (!section || !mask) return
 
+    // Skip heavy mask animation on mobile to prevent rendering lag
+    if (isMobile) {
+      gsap.set(mask, { display: 'none' });
+      return;
+    }
+
     const endDistance = () => Math.max(1, section.offsetHeight - window.innerHeight)
 
     // Animate by percent (yPercent) and use transforms to leverage GPU; avoids layout repaint of background
@@ -68,7 +74,7 @@ export default function PlaygroundPreview({
   <section id="playground-preview" ref={sectionRef} className="w-full flex font-['trial'] sm:px-8 pb-32  md:min-h-screen" style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1', overflow: 'visible' }}>
       <div className="content-wrap w-full" style={{ position: 'relative', zIndex: 100 }}>
         <div className=" w-full flex flex-col md:flex-row justify-center items-start md:items-center mt-12 md:mt-32 gap-8 md:gap-12 px-6">
-        <div className="flex w-full md:w-1/2 justify-center lg:justify-center saturate-120">
+        <div className="flex w-full md:w-1/2 justify-center lg:justify-center">
           <DecayCard width={isMobile ? 320 : 1050} height={isMobile ? 240 : 680} image={SpinGif} bare={true}>
             {/* optional caption could go here */}
           </DecayCard>
@@ -85,7 +91,7 @@ export default function PlaygroundPreview({
       </div>
 
   {/* Full-height solid overlay mask that will slide up to reveal the Showcase under this section */}
-  <div aria-hidden="true" ref={maskRef} className="playground-full-mask" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '100vh', pointerEvents: 'none', zIndex: 50, background: 'rgba(225,225,225,1)', willChange: 'transform', transform: 'translateZ(0)' }} />
+  <div aria-hidden="true" ref={maskRef} className="playground-full-mask" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: '100vh', pointerEvents: 'none', zIndex: 50, background: 'rgba(225,225,225,1)', transform: 'translateZ(0)' }} />
     </section>
   )
 }

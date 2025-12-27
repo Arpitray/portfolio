@@ -73,6 +73,9 @@ function Landing() {
     const section = sectionRef.current
     if (!section) return
 
+    const isMobile = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile) return;
+
     // Ensure starting position is normalized and repeat is enabled using GSAP (no CSS keyframes)
     gsap.set(section, {
       backgroundPosition: '0px 0px, 0px 0px',
@@ -515,11 +518,11 @@ function Landing() {
   <div className="relative z-40 flex h-full items-center font-['belly']">
         <div className="mx-auto px-4 sm:px-6 lg:px-10 lg:py-12">
           <div ref={heroBlockRef} className="relative inline-block">
-            {/* Snow effect canvas (covers only the text block) */}
-            <SnowCanvas />
+            {/* Snow effect canvas (covers only the text block) - Disabled on mobile for performance */}
+            {(typeof window !== 'undefined' && window.innerWidth > 768) && <SnowCanvas />}
             <h1 ref={headingRef} className="relative z-10 text-black font-[100] leading-none text-5xl sm:text-7xl md:text-8xl lg:text-[170px] tracking-tight">
               <div className="flex flex-wrap items-center gap-4">
-                <div className="image1 border-2 h-30 w-52 rounded-[55px] overflow-hidden mt-4 shrink-0ctracking-widest vertical-slider" style={{ width: 208, height: 120, willChange: 'transform, opacity' }}>
+                <div className="image1 border-2 h-30 w-52 rounded-[55px] overflow-hidden mt-4 shrink-0ctracking-widest vertical-slider" style={{ width: 208, height: 120 }}>
                   <div className="slider-viewport h-full w-full overflow-hidden">
                     <div className="slider-track flex flex-col">
                       <img className='block h-full w-full object-cover' src={Image3} alt="" />
@@ -533,7 +536,7 @@ function Landing() {
               </div>
               <div className="flex flex-wrap items-center gap-4">
                 <span className="block">Quality Meets </span>
-                <div className="image1 border-2 h-30 w-68 rounded-[55px] overflow-hidden mt-4 shrink-0" style={{ width: 272, height: 120, willChange: 'transform, opacity' }}>
+                <div className="image1 border-2 h-30 w-68 rounded-[55px] overflow-hidden mt-4 shrink-0" style={{ width: 272, height: 120 }}>
                   <img className='h-full w-full object-cover ' src={Image4} alt="" />
                 </div>
               </div>

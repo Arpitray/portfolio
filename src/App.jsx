@@ -85,19 +85,10 @@ function App() {
         requestAnimationFrame(raf)
       }
       rafId = requestAnimationFrame(raf)
-    } else {
-      // Mobile: Use native scroll, sync ScrollTrigger with native scroll
-      scrollHandler = () => {
-        ScrollTrigger.update();
-      };
-      
-      // Passive listener for better mobile performance
-      window.addEventListener('scroll', scrollHandler, { passive: true });
     }
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
-      if (scrollHandler) window.removeEventListener('scroll', scrollHandler);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleOrientationChange);
       clearTimeout(window.vhTimeout);
@@ -141,7 +132,11 @@ function App() {
 
   return (
     <BrowserRouter>
-    {showBackground && <Snowfall style={{ position: 'fixed', inset: 0, zIndex: 999998, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />}
+    {showBackground && (
+      <div className="hidden md:block">
+        <Snowfall style={{ position: 'fixed', inset: 0, zIndex: 999998, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />
+      </div>
+    )}
       {!loading && <CursorGlass />}
       <Routes>
         <Route path="/playground" element={<PlayGround />} />
@@ -149,7 +144,8 @@ function App() {
         <Route path="/" element={
           <div style={{ 
             opacity: showBackground ? 1 : 0, 
-            transition: 'opacity 0.5s ease-in-out'
+            visibility: showBackground ? 'visible' : 'hidden',
+            transition: 'opacity 0.6s ease-in-out, visibility 0.6s'
           }}>
             <Landing />
             

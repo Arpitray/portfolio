@@ -384,7 +384,6 @@ function Projects() {
                 isEven ? 'md:flex-row' : 'md:flex-row-reverse'
               } flex flex-col md:flex-row gap-8 md:gap-6 px-6 md:px-16 lg:px-4 items-center`}
               style={{ 
-                willChange: 'transform, opacity',
                 backfaceVisibility: 'hidden',
                 perspective: '1000px'
               }}
@@ -497,6 +496,8 @@ function Projects() {
                           muted
                           playsInline
                           autoPlay
+                          loop
+                          preload="metadata"
                           onEnded={() => handleVideoEnd(index)}
                         />
                       </div>

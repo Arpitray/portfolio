@@ -143,7 +143,7 @@ function About() {
     <section id="about" className="relative min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen w-full font-normal bg-[#E1E1E1] z-[99]  flex font-['dk2'] sm:px-8">
       <div className="w-full flex flex-col md:flex-row justify-center mt-12 md:mt-32 items-start gap-8 md:gap-12 px-6">
         <div 
-          className="flex w-full justify-center md:justify-center saturate-120 mb-6 md:mb-0" 
+          className="flex w-full justify-center md:justify-center mb-6 md:mb-0" 
           ref={imageRef}
           onMouseEnter={() => window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: 'ME' }))}
           onMouseLeave={() => window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: '' }))}
