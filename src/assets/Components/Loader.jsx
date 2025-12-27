@@ -22,8 +22,24 @@ const Loader = memo(({ onComplete } = {}) => {
 
     // set initial positions and stacking
     gsap.set(containerRef.current, { yPercent: 0, force3D: true })
-    gsap.set(imgRefs.current, { yPercent: 160, autoAlpha: 0, scale: 0.94, rotation: 0, force3D: true, transformOrigin: 'center center' })
-    gsap.set(whiteRef.current, { yPercent: 160, scale: 1, transformOrigin: 'center center', autoAlpha: 0, rotation: 0, force3D: true })
+    gsap.set(imgRefs.current, { 
+      yPercent: 0, 
+      autoAlpha: 0, 
+      scale: 0.8, 
+      rotation: 0, 
+      force3D: true, 
+      transformOrigin: 'center center',
+      filter: 'blur(20px)'
+    })
+    gsap.set(whiteRef.current, { 
+      yPercent: 0, 
+      scale: 0.8, 
+      transformOrigin: 'center center', 
+      autoAlpha: 0, 
+      rotation: 0, 
+      force3D: true,
+      filter: 'blur(20px)'
+    })
 
     let tl = null;
     let preloadAborted = false;
@@ -72,7 +88,12 @@ const Loader = memo(({ onComplete } = {}) => {
         
         // Only start timeline if not aborted
         if (!preloadAborted) {
-          startTimeline();
+          // Use requestAnimationFrame to ensure browser is ready for animation
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              if (!preloadAborted) startTimeline();
+            }, 50);
+          });
         }
       } catch (error) {
         console.warn('Image preload error:', error);
@@ -87,40 +108,41 @@ const Loader = memo(({ onComplete } = {}) => {
       if (tl) return
       tl = gsap.timeline({ force3D: true })
 
-      // images rise slowly and overlap (stacked) with a wider stagger
+      // Creative "Fan-Out" reveal: cards pop from center with focus effect
       tl.to(imgRefs.current, {
-        yPercent: 0,
         autoAlpha: 1,
         scale: 1,
-        rotation: (i) => gsap.utils.random(-30, 30),
-        duration: 1.2, // Reduced duration for smoother animation
-        stagger: 0.5, // Adjusted stagger for better flow
-        ease: 'power3.out'
-      }, 0.3) // Start slightly earlier
+        filter: 'blur(0px)',
+        rotation: (i) => gsap.utils.random(-25, 25),
+        duration: 1,
+        stagger: 0.4,
+        ease: 'back.out(1.7)' // Adds a nice organic "pop"
+      }, 0.2)
 
-      // overlay rises into center at full image size
+      // overlay pops into center
       tl.to(whiteRef.current, {
-        yPercent: 0,
         autoAlpha: 1,
-        rotation: () => gsap.utils.random(-30, 30),
-        duration: 0.9,
-        ease: 'power3.out'
-      }, 2.2) // Adjusted timing for smoother transition
-
-      // small tilt + little grow before full surround (subtle increase)
-      tl.to(whiteRef.current, {
-        scale: 1.05,
-        rotation: () => gsap.utils.random(-60, 60),
-        duration: 0.6,
-        ease: 'power2.out'
-      }, 3.7)
-
-      // finally expand overlay to cover the whole screen (surround)
-      tl.to(whiteRef.current, {
-        scale: 50, // Increased slightly for better coverage while maintaining performance
+        scale: 1,
+        filter: 'blur(0px)',
+        rotation: () => gsap.utils.random(-20, 20),
         duration: 0.8,
+        ease: 'back.out(1.7)'
+      }, 1.8)
+
+      // small tilt + little grow before full surround
+      tl.to(whiteRef.current, {
+        scale: 1.1,
+        rotation: () => gsap.utils.random(-45, 45),
+        duration: 0.5,
+        ease: 'power2.out'
+      }, 2.8)
+
+      // finally expand overlay to cover the whole screen
+      tl.to(whiteRef.current, {
+        scale: 60,
+        duration: 0.9,
         ease: 'power4.inOut'
-      }, 3.9)
+      }, 3.1)
 
       // slide loader up off screen after surround completes
       const isPlayground = (typeof window !== 'undefined' && window.location && window.location.pathname === '/playground')
@@ -130,7 +152,7 @@ const Loader = memo(({ onComplete } = {}) => {
           window.dispatchEvent(new Event('startLanding'))
           if (typeof onComplete === 'function') onComplete()
           else window.dispatchEvent(new Event('loaderComplete'))
-        }, null, 4.8)
+        }, null, 4.0)
       } else {
         tl.to(containerRef.current, {
           yPercent: -120,
@@ -144,7 +166,7 @@ const Loader = memo(({ onComplete } = {}) => {
             if (typeof onComplete === 'function') onComplete()
             else window.dispatchEvent(new Event('loaderComplete'))
           }
-        }, 4.8)
+        }, 4.0)
       }
     }
 
@@ -217,7 +239,9 @@ const Loader = memo(({ onComplete } = {}) => {
   // in the hidden/translated state before JS executes, preventing a flash.
   const cardInitial = {
   // let GSAP control translate (yPercent); only set opacity to avoid permanent hidden state
-  opacity: 0
+  opacity: 0,
+  filter: 'blur(20px)',
+  transform: 'scale(0.8)'
   }
 
   const overlayTextStyle = {
@@ -251,7 +275,9 @@ const Loader = memo(({ onComplete } = {}) => {
   // ensure overlay also doesn't flash before GSAP's timeline runs
   const whiteInitial = {
   // GSAP will set yPercent and autoAlpha; keep initial opacity 0 so element is hidden until animation
-  opacity: 0
+  opacity: 0,
+  filter: 'blur(20px)',
+  transform: 'scale(0.8)'
   }
 
   return (
