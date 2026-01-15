@@ -128,18 +128,18 @@ function Projects() {
       background: "bg-indigo-200"
     },
 
-    // {
-    //   id: 6,
-    //   title: "BUILDER",
-    //   description: "Professional Portfolio Builder is a web application aimed at helping users create polished portfolios by customizing pre-designed templates. Built with a modern frontend stack, it is designed to offer real-time previews, dynamic template selection, and smooth modification controls to adapt portfolios to individual needs.",
-    //   description2:"This project is currently in progress and under active development, inspired by leading portfolio builder platforms. The goal is to deliver a production-ready, user-centric tool that balances performance, flexibility, and creative freedom, while also demonstrating my ability to engineer scalable web solutions.",
-    //   tags: ["#PortfolioBuilder", "#WebApp", "#InProgress"," #ScalableWebSolutions"],
-    //   video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597904/5_jr4bhy",
-    //   link: "#",
-    //   githubLink: "https://github.com/Arpitray/builder",
-    //   liveDemoLink: "https://builder-pp9v.vercel.app/",
-    //   background: "bg-purple-200"
-    // }
+    {
+      id: 6,
+      title: "BUILDER",
+      description: "Professional Portfolio Builder is a web application aimed at helping users create polished portfolios by customizing pre-designed templates. Built with a modern frontend stack, it is designed to offer real-time previews, dynamic template selection, and smooth modification controls to adapt portfolios to individual needs.",
+      description2:"This project is currently in progress and under active development, inspired by leading portfolio builder platforms. The goal is to deliver a production-ready, user-centric tool that balances performance, flexibility, and creative freedom, while also demonstrating my ability to engineer scalable web solutions.",
+      tags: ["#PortfolioBuilder", "#WebApp", "#InProgress"," #ScalableWebSolutions"],
+      video: "https://res.cloudinary.com/dsjjdnife/video/upload/v1755597904/5_jr4bhy",
+      link: "#",
+      githubLink: "https://github.com/Arpitray/builder",
+      liveDemoLink: "https://builder-pp9v.vercel.app/",
+      background: "bg-purple-200"
+    }
   ]
 
   useEffect(() => {
