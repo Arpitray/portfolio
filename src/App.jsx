@@ -134,7 +134,7 @@ function App() {
     <BrowserRouter>
     {showBackground && (
       <div className="hidden md:block">
-        <Snowfall style={{ position: 'fixed', inset: 0, zIndex: 999998, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />
+        <Snowfall style={{ position: 'fixed', inset: 0, zIndex: 999998, pointerEvents: 'none' }} snowflakeCount={0} color="#ffffff" />
       </div>
     )}
       {!loading && <CursorGlass />}
