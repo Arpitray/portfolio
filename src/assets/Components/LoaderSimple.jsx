@@ -27,7 +27,7 @@ const LoaderSimple = memo(({ onComplete } = {}) => {
         {/* Single animated element - ultra simple */}
         <div className="loader-simple-card">
           <div className="loader-simple-content">
-            <div className="loader-simple-text">Welcome</div>
+            <div className="loader-simple-text"><span className="paper-text-trend">Welcome</span></div>
           </div>
         </div>
         

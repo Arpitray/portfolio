@@ -225,3 +225,17 @@ html, body, #root { max-width: 100%; overflow-x: clip; }
     @apply border-border outline-ring/50; }
   body {
     @apply bg-background text-foreground; } }
+/* Paper text typography trend */
+@keyframes paperTextTrend {
+  0%   { font-family: 'primary', sans-serif; font-weight: 700; font-style: normal; letter-spacing: normal; transform: scale(1); }
+  20%  { font-family: 'Times New Roman', serif; font-weight: 400; font-style: italic; letter-spacing: 1px; transform: scale(1.05); }
+  40%  { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: 2px; transform: scale(0.95); }
+  60%  { font-family: 'secondary', sans-serif; font-weight: 900; font-style: normal; letter-spacing: -1px; transform: scale(1.02); }
+  80%  { font-family: 'Georgia', serif; font-weight: 700; font-style: italic; letter-spacing: 4px; transform: scale(0.98); }
+  100% { font-family: 'primary', sans-serif; font-weight: 700; font-style: normal; letter-spacing: normal; transform: scale(1); }
+}
+
+.paper-text-trend {
+  display: inline-block;
+  animation: paperTextTrend 2s steps(1) infinite;
+}

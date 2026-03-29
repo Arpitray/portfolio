@@ -490,7 +490,9 @@ const Loader = memo(({ onComplete } = {}) => {
             fontSize: isMobileDevice ? '2rem' : '2.25rem',
             fontWeight: 700
           }}
-        >Welcome</div>
+        >
+          <span className="paper-text-trend">Welcome</span>
+        </div>
       </div>
     </div>
   )
