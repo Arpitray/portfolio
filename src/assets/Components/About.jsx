@@ -117,7 +117,6 @@ function About() {
       hAnim && hAnim.kill()
       p1Anim && p1Anim.kill()
       p2Anim && p2Anim.kill()
-      ScrollTrigger.getAll().forEach((t) => t.kill())
     }
   }, [])
 

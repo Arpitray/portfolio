@@ -67,7 +67,6 @@ export default function Visions({
       window.removeEventListener('resize', onResize)
       try {
         tween && tween.kill && tween.kill()
-        ScrollTrigger.getAll().forEach(t => t.kill && t.kill())
       } catch (e) {}
     }
   }, [])

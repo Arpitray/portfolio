@@ -313,11 +313,6 @@ function Projects() {
           anim.kill();
         }
       });
-      ScrollTrigger.getAll().forEach((trigger) => {
-        if (trigger && typeof trigger.kill === 'function') {
-          trigger.kill();
-        }
-      });
     };
   }, [])
 

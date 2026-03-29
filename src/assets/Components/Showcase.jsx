@@ -126,22 +126,25 @@ export default function Showcase() {
 
   // no mask logic
 
+    let lastWidth = window.innerWidth;
     const handleResize = () => {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile && window.innerWidth === lastWidth) return; // ignore vertical scroll resizes
+      lastWidth = window.innerWidth;
+      
       triggers.forEach(t => t.kill && t.kill())
       triggers = []
-      ScrollTrigger.getAll().forEach(t => t.kill())
       setup()
       setupScrub()
     }
 
     window.addEventListener('resize', handleResize)
 
-  // no mask logic
+    // no mask logic
 
     return () => {
       window.removeEventListener('resize', handleResize)
       triggers.forEach(t => t.kill && t.kill())
-      ScrollTrigger.getAll().forEach(t => t.kill())
     }
   }, [])
 

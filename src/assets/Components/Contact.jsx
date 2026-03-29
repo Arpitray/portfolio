@@ -81,7 +81,6 @@ export default function Contact() {
     return () => {
       window.removeEventListener('resize', onResize)
       if (tl) tl.kill()
-      ScrollTrigger.getAll().forEach(t => t.kill && t.kill())
     }
   }, [])
 
@@ -207,12 +206,12 @@ export default function Contact() {
                   dragElastic={0.1}
                   dragMomentum={false}
                   dragPropagation={false}
-                  dragConstraints={{ 
-                    left: isMobile ? -screenDimensions.width * 0.7 : -screenDimensions.width * 0.8, 
+                  dragConstraints={{
+                    left: isMobile ? -screenDimensions.width * 0.7 : -screenDimensions.width * 0.8,
                     right: isMobile ? screenDimensions.width * 0.7 : screenDimensions.width * 0.8, 
-                    // increase vertical freedom on mobile to 60% of screen height
-                    top: isMobile ? -screenDimensions.height * 0.6 : -screenDimensions.height * 0.4, 
-                    bottom: isMobile ? screenDimensions.height * 0.6 : screenDimensions.height * 0.4 
+                    // Allow dragging high up into previous sections
+                    top: isMobile ? -screenDimensions.height * 2.5 : -screenDimensions.height * 1.5,
+                    bottom: isMobile ? screenDimensions.height * 0.6 : screenDimensions.height * 0.4
                   }}
                   onDragStart={handleDragStart}
                   onDrag={handleDrag}
