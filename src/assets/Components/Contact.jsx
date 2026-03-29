@@ -165,7 +165,7 @@ export default function Contact() {
           -o-user-drag: none;
         }
       `}</style>
-  <section id="contact" className='md:fixed md:left-0 md:right-0 md:bottom-0 md:h-screen md:z-[5000] relative w-full' ref={elRef} aria-label="Contact section">
+  <section id="contact" className='md:fixed md:left-0 md:right-0 md:bottom-0 md:h-screen md:z-[5000] z-[10000] relative w-full' ref={elRef} aria-label="Contact section">
         {/* New centered heading */}
         <div className="absolute md:top-20 top-8 left-0 w-full flex font-['primary'] justify-center items-center py-4 bg-[#E1E1E1] z-10">
           <h1 className='font-semibold md:text-[5rem] text-4xl'>Contact Me</h1>
@@ -207,11 +207,11 @@ export default function Contact() {
                   dragMomentum={false}
                   dragPropagation={false}
                   dragConstraints={{
-                    left: isMobile ? -screenDimensions.width * 0.7 : -screenDimensions.width * 0.8,
-                    right: isMobile ? screenDimensions.width * 0.7 : screenDimensions.width * 0.8, 
+                    left: isMobile ? -screenDimensions.width * 2 : -screenDimensions.width * 0.8,
+                    right: isMobile ? screenDimensions.width * 2 : screenDimensions.width * 0.8, 
                     // Allow dragging high up into previous sections
-                    top: isMobile ? -screenDimensions.height * 2.5 : -screenDimensions.height * 1.5,
-                    bottom: isMobile ? screenDimensions.height * 0.6 : screenDimensions.height * 0.4
+                    top: isMobile ? -screenDimensions.height * 4 : -screenDimensions.height * 1.5,
+                    bottom: isMobile ? screenDimensions.height * 2 : screenDimensions.height * 0.4
                   }}
                   onDragStart={handleDragStart}
                   onDrag={handleDrag}
