@@ -1,80 +1,148 @@
 import React, { useEffect, useRef, memo } from 'react'
 import gsap from 'gsap'
 
-// Optimize GSAP globally for this component
 gsap.config({ 
   force3D: true,
   nullTargetWarn: false
 });
 
-// Detect device capabilities for adaptive performance
-const getDevicePerformance = () => {
-  if (typeof window === 'undefined') return 'high';
-  
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  const hasReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  
-  // Check hardware concurrency (CPU cores)
-  const cores = navigator.hardwareConcurrency || 2;
-  
-  // Memory check (if available)
-  const memory = navigator.deviceMemory || 4;
-  
-  // Determine performance tier
-  if (hasReducedMotion) return 'minimal';
-  if (isMobile && (cores <= 4 || memory <= 2)) return 'low';
-  if (isMobile && cores <= 6) return 'medium';
-  return 'high';
-};
-
 const Loader = memo(({ onComplete } = {}) => {
   const containerRef = useRef(null)
-  const imgRefs = useRef([])
-  const whiteRef = useRef(null)
+  const cardRef = useRef(null)
   const isMobileDevice = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
-  const performanceTier = useRef(getDevicePerformance());
 
   useEffect(() => {
     const isMobile = isMobileDevice;
-    const perf = performanceTier.current;
-    
-    // Adaptive settings based on device performance
-    const perfSettings = {
-      minimal: {
-        useBlur: false,
-        duration: 0.5,
-        stagger: 0.2,
+    let tl = null;
+
+    const startTimeline = () => {
+      if (tl) return
+      tl = gsap.timeline({ force3D: true })
+
+      tl.to(cardRef.current, {
+        autoAlpha: 1,
         scale: 1,
-        rotation: 0,
-        ease: 'power2.out',
-        finalScale: 20
-      },
-      low: {
+        duration: 0.8,
+        ease: 'power2.out'
+      }, 0.2)
+
+      tl.to(cardRef.current, {
+        scale: isMobile ? 30 : 50,
+        duration: 1.0,
+        ease: 'power2.inOut'
+      }, 1.5)
+
+      const isPlayground = (typeof window !== 'undefined' && window.location && window.location.pathname === '/playground')
+
+      if (isPlayground) {
+        tl.call(() => {
+          window.dispatchEvent(new Event('startLanding'))
+          if (typeof onComplete === 'function') onComplete()
+          else window.dispatchEvent(new Event('loaderComplete'))
+        }, null, 2.5)
+      } else {
+        tl.to(containerRef.current, {
+          yPercent: -120,
+          duration: 0.7,
+          ease: 'power2.inOut',
+          onStart: () => {
+            window.dispatchEvent(new Event('startLanding'));
+          },
+          onComplete: () => {
+            if (typeof onComplete === 'function') onComplete()
+            else window.dispatchEvent(new Event('loaderComplete'))
+          }
+        }, 2.3)
+      }
+    }
+
+    requestAnimationFrame(() => {
+      setTimeout(() => startTimeline(), 100);
+    });
+
+    return () => {
+      if (tl) tl.kill();
+    }
+  }, [onComplete, isMobileDevice])
+
+  const containerStyle = {
+    position: 'fixed',
+    inset: 0,
+    width: '100%',
+    height: '100%',
+    background: '#212427',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 9999,
+    overflow: 'hidden',
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden'
+  }
+
+  const cardStyle = {
+    width: isMobileDevice ? '75vw' : '300px',
+    maxWidth: '300px',
+    height: isMobileDevice ? '45vh' : '300px',
+    maxHeight: '300px',
+    backgroundColor: '#E1E1E1',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 0,
+    transform: 'scale(0.9)',
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
+    borderRadius: 0,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+  }
+
+  const textStyle = {
+    fontSize: isMobileDevice ? '2rem' : '2.5rem',
+    fontWeight: 700,
+    color: '#000',
+    fontFamily: 'primary, sans-serif'
+  }
+
+  return (
+    <div ref={containerRef} style={containerStyle}>
+      <div ref={cardRef} style={cardStyle}>
+        <div style={textStyle}>Welcome</div>
+      </div>
+    </div>
+  )
+})
+
+export default Loader
+
         useBlur: false,
-        duration: 0.6,
-        stagger: 0.25,
-        scale: isMobile ? 0.95 : 0.9,
-        rotation: 10,
-        ease: 'power2.out',
-        finalScale: isMobile ? 30 : 40
+        duration: 1.2,  // MUCH slower for smoothness
+        stagger: 0.5,   // More time between cards
+        scale: 1,       // No initial scale - simpler
+        rotation: 0,    // NO rotation on low-end - causes lag
+        ease: 'power1.out', // Simpler easing
+        finalScale: isMobile ? 35 : 40,
+        skipMiddleStep: true
       },
       medium: {
         useBlur: false,
-        duration: 0.8,
-        stagger: 0.3,
-        scale: isMobile ? 0.9 : 0.85,
-        rotation: 15,
-        ease: 'back.out(1.4)',
-        finalScale: isMobile ? 35 : 50
+        duration: 1.0,
+        stagger: 0.4,
+        scale: 0.95,    // Minimal scale
+        rotation: 8,    // Very slight rotation
+        ease: 'power2.out',
+        finalScale: isMobile ? 40 : 50,
+        skipMiddleStep: false
       },
       high: {
-        useBlur: true,
-        duration: 1,
-        stagger: 0.4,
-        scale: 0.8,
-        rotation: 25,
-        ease: 'back.out(1.7)',
-        finalScale: isMobile ? 40 : 60
+        useBlur: !isMobile, // NO blur on mobile even in high tier
+        duration: isMobile ? 1.0 : 1.2,
+        stagger: isMobile ? 0.4 : 0.5,
+        scale: isMobile ? 0.95 : 0.85,
+        rotation: isMobile ? 0 : 20,  // NO rotation on mobile
+        ease: isMobile ? 'power2.out' : 'back.out(1.5)',
+        finalScale: isMobile ? 40 : 60,
+        skipMiddleStep: isMobile
       }
     };
     
@@ -90,30 +158,24 @@ const Loader = memo(({ onComplete } = {}) => {
     // set initial positions with optimized properties
     gsap.set(containerRef.current, { 
       yPercent: 0, 
-      force3D: true,
-      willChange: 'transform'
+      force3D: true
     })
     
+    // Simpler initial state - no transforms to avoid repaint
     gsap.set(imgRefs.current, { 
-      yPercent: 0, 
-      autoAlpha: 0, 
-      scale: settings.scale, 
-      rotation: 0, 
-      force3D: true, 
-      transformOrigin: '50% 50%',
-      filter: settings.useBlur ? 'blur(20px)' : 'none',
-      willChange: 'transform, opacity'
+      autoAlpha: 0,
+      scale: settings.scale,
+      rotation: 0,
+      force3D: true,
+      transformOrigin: '50% 50%'
     })
     
     gsap.set(whiteRef.current, { 
-      yPercent: 0, 
-      scale: settings.scale, 
-      transformOrigin: '50% 50%', 
-      autoAlpha: 0, 
-      rotation: 0, 
+      autoAlpha: 0,
+      scale: settings.scale,
+      rotation: 0,
       force3D: true,
-      filter: settings.useBlur ? 'blur(20px)' : 'none',
-      willChange: 'transform, opacity'
+      transformOrigin: '50% 50%'
     })
 
     let tl = null;
@@ -183,106 +245,87 @@ const Loader = memo(({ onComplete } = {}) => {
     const startTimeline = () => {
       if (tl) return
       
-      // Use optimized timeline settings
+      // Ultra-optimized timeline for mobile
       tl = gsap.timeline({ 
         force3D: true,
-        onStart: () => {
-          // Remove will-change after animation starts to free resources
-          gsap.delayedCall(0.5, () => {
-            if (containerRef.current) {
-              containerRef.current.style.willChange = 'auto';
-            }
-          });
-        }
+        paused: false
       })
 
-      // Simplified, optimized animation sequence
-      // Images pop in with adaptive complexity
+      // Simple fade + scale animation (NO rotation on mobile to prevent lag)
       tl.to(imgRefs.current, {
         autoAlpha: 1,
         scale: 1,
-        filter: settings.useBlur ? 'blur(0px)' : 'none',
-        rotation: (i) => {
-          // Reduce rotation on low-end devices
-          if (settings.rotation === 0) return 0;
-          return gsap.utils.random(-settings.rotation, settings.rotation);
-        },
+        rotation: settings.rotation === 0 ? 0 : (i) => gsap.utils.random(-settings.rotation, settings.rotation),
         duration: settings.duration,
         stagger: settings.stagger,
         ease: settings.ease,
-        overwrite: 'auto'
-      }, 0.2)
+        overwrite: 'auto',
+        force3D: true
+      }, 0.3) // Start slightly later for smoother feel
 
-      // Overlay pops into center
+      // Calculate timing based on actual animation time
+      const overlayStart = 0.3 + (settings.duration * 0.7) + (settings.stagger * 2);
+
+      // Overlay appears (simplified)
       tl.to(whiteRef.current, {
         autoAlpha: 1,
         scale: 1,
-        filter: settings.useBlur ? 'blur(0px)' : 'none',
-        rotation: () => {
-          if (settings.rotation === 0) return 0;
-          return gsap.utils.random(-settings.rotation * 0.8, settings.rotation * 0.8);
-        },
-        duration: settings.duration * 0.75,
+        rotation: 0, // NO rotation for overlay on mobile
+        duration: settings.duration * 0.8,
         ease: settings.ease,
-        overwrite: 'auto'
-      }, settings.duration + settings.stagger * 2 + 0.2)
+        overwrite: 'auto',
+        force3D: true
+      }, overlayStart)
 
-      // Small scale-up (skip on minimal performance)
-      if (perf !== 'minimal') {
+      // Skip middle step on mobile for smoother performance
+      let expandStart = overlayStart + (settings.duration * 0.8);
+      
+      if (!settings.skipMiddleStep && !isMobile) {
+        // Only do middle step on desktop
         tl.to(whiteRef.current, {
           scale: 1.05,
-          rotation: () => {
-            if (settings.rotation === 0) return 0;
-            return gsap.utils.random(-settings.rotation * 1.5, settings.rotation * 1.5);
-          },
           duration: 0.4,
-          ease: 'power2.out',
-          overwrite: 'auto'
-        }, settings.duration * 2 + settings.stagger * 2 + 0.2)
+          ease: 'power1.out',
+          overwrite: 'auto',
+          force3D: true
+        }, expandStart)
+        expandStart += 0.4;
+      } else {
+        // Add pause on mobile for better pacing
+        expandStart += 0.5;
       }
 
-      // Final expansion with optimized timing
-      const expandStart = perf === 'minimal' 
-        ? settings.duration * 1.5 + settings.stagger * 2 + 0.3
-        : settings.duration * 2.5 + settings.stagger * 2 + 0.2;
-      
+      // Final expansion - use CSS transform for maximum performance
       tl.to(whiteRef.current, {
         scale: settings.finalScale,
-        duration: perf === 'minimal' ? 0.6 : 0.8,
-        ease: 'power3.inOut',
-        overwrite: 'auto'
+        duration: isMobile ? 1.0 : 0.9, // Slower expansion on mobile
+        ease: 'power2.inOut', // Simpler easing
+        overwrite: 'auto',
+        force3D: true
       }, expandStart)
 
-      // Slide loader up off screen
+      // Exit animation
       const isPlayground = (typeof window !== 'undefined' && window.location && window.location.pathname === '/playground')
 
       if (isPlayground) {
-        const callbackTime = expandStart + (perf === 'minimal' ? 0.6 : 0.8);
+        const callbackTime = expandStart + (isMobile ? 1.0 : 0.9) - 0.2;
         tl.call(() => {
           window.dispatchEvent(new Event('startLanding'))
           if (typeof onComplete === 'function') onComplete()
           else window.dispatchEvent(new Event('loaderComplete'))
         }, null, callbackTime)
       } else {
-        const exitStart = expandStart + (perf === 'minimal' ? 0.5 : 0.7);
+        const exitStart = expandStart + (isMobile ? 0.8 : 0.7);
         tl.to(containerRef.current, {
           yPercent: -120,
-          duration: perf === 'minimal' ? 0.5 : 0.7,
-          ease: 'power3.inOut',
+          duration: 0.8,
+          ease: 'power2.inOut',
           overwrite: 'auto',
+          force3D: true,
           onStart: () => {
-            // Clear will-change before exit animation
-            if (whiteRef.current) whiteRef.current.style.willChange = 'auto';
-            imgRefs.current.forEach(ref => {
-              if (ref) ref.style.willChange = 'auto';
-            });
-            
             // Start landing animation
-            if (isMobile) {
-              setTimeout(() => window.dispatchEvent(new Event('startLanding')), 50);
-            } else {
-              window.dispatchEvent(new Event('startLanding'));
-            }
+            const delay = isMobile ? 100 : 0;
+            setTimeout(() => window.dispatchEvent(new Event('startLanding')), delay);
           },
           onComplete: () => {
             if (typeof onComplete === 'function') onComplete()
@@ -340,22 +383,15 @@ const Loader = memo(({ onComplete } = {}) => {
     height: 'calc(100% - 52px)',
     borderRadius: 0,
     boxShadow: useSimpleShadow 
-      ? '0 4px 8px rgba(0,0,0,0.15)' 
-      : (isMobileDevice ? '0 6px 15px rgba(0,0,0,0.2)' : '0 12px 30px rgba(0,0,0,0.25)'),
+      ? '0 2px 4px rgba(0,0,0,0.1)' // Minimal shadow for low-end
+      : (isMobileDevice ? '0 4px 8px rgba(0,0,0,0.15)' : '0 8px 16px rgba(0,0,0,0.2)'),
     position: 'relative',
     objectFit: 'cover',
-    border: isMobileDevice ? '8px solid white' : '12px solid white',
+    border: isMobileDevice ? '6px solid white' : '10px solid white', // Thinner border = less repaints
     boxSizing: 'border-box',
     background: '#f0f0f0',
-    imageRendering: 'auto',
-    willChange: 'transform, opacity',
     backfaceVisibility: 'hidden',
-    WebkitBackfaceVisibility: 'hidden',
-    transformStyle: 'preserve-3d',
-    WebkitTransformStyle: 'preserve-3d',
-    // Optimize image rendering
-    WebkitFontSmoothing: 'antialiased',
-    MozOsxFontSmoothing: 'grayscale'
+    WebkitBackfaceVisibility: 'hidden'
   }
 
   const cardStyle = {
@@ -367,24 +403,13 @@ const Loader = memo(({ onComplete } = {}) => {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    willChange: 'transform, opacity',
     backfaceVisibility: 'hidden',
-    WebkitBackfaceVisibility: 'hidden',
-    contain: 'layout style paint'
+    WebkitBackfaceVisibility: 'hidden'
   }
 
-  // Initial state optimized for performance
-  const settings = {
-    minimal: { scale: 1, blur: 'none' },
-    low: { scale: isMobileDevice ? 0.95 : 0.9, blur: 'none' },
-    medium: { scale: isMobileDevice ? 0.9 : 0.85, blur: 'none' },
-    high: { scale: 0.8, blur: 'blur(20px)' }
-  }[perf] || { scale: 0.95, blur: 'none' };
-  
+  // Initial state optimized for performance - NO FILTERS
   const cardInitial = {
     opacity: 0,
-    filter: settings.blur,
-    transform: `scale(${settings.scale})`,
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden'
   }
@@ -415,18 +440,12 @@ const Loader = memo(({ onComplete } = {}) => {
     borderRadius: 0,
     backgroundColor: '#E1E1E1',
     zIndex: 40,
-    willChange: 'transform, opacity',
     backfaceVisibility: 'hidden',
-    WebkitBackfaceVisibility: 'hidden',
-    transformStyle: 'preserve-3d',
-    WebkitTransformStyle: 'preserve-3d',
-    contain: 'layout style paint'
+    WebkitBackfaceVisibility: 'hidden'
   }
 
   const whiteInitial = {
     opacity: 0,
-    filter: settings.blur,
-    transform: `scale(${settings.scale})`,
     backfaceVisibility: 'hidden',
     WebkitBackfaceVisibility: 'hidden'
   }

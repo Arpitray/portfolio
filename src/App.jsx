@@ -16,7 +16,6 @@ import Contact from "./assets/Components/Contact"
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Stack from "./assets/Components/Stack"
-import Snowfall from "react-snowfall"
 
 
 gsap.registerPlugin(ScrollTrigger)
@@ -101,11 +100,11 @@ function App() {
 
   useEffect(() => {
     // fall back in case loader doesn't call onComplete
-    const t = setTimeout(() => setLoading(false), 7000);
+    const t = setTimeout(() => setLoading(false), 6000); // Reduced from 7000
     
-    // Reveal background slightly before loader finishes to ensure smooth transition
-    // The loader takes about 4 seconds total. We reveal at 3.5s.
-    const t2 = setTimeout(() => setShowBackground(true), 3500);
+    // Reveal background slightly before loader finishes
+    // The loader takes about 3 seconds now. We reveal at 2.5s.
+    const t2 = setTimeout(() => setShowBackground(true), 2500); // Reduced from 3500
     
     return () => {
       clearTimeout(t);
@@ -132,11 +131,6 @@ function App() {
 
   return (
     <BrowserRouter>
-    {showBackground && (
-      <div className="hidden md:block">
-        <Snowfall style={{ position: 'fixed', inset: 0, zIndex: 999998, pointerEvents: 'none' }} snowflakeCount={100} color="#ffffff" />
-      </div>
-    )}
       {!loading && <CursorGlass />}
       <Routes>
         <Route path="/playground" element={<PlayGround />} />

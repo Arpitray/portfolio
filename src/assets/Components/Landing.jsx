@@ -7,7 +7,6 @@ import Image1 from './image1.png'
 import Image2  from './maincam.jpg'
 import Image3 from './image3.png'
 import Image4 from './image4.jpg'
-import SnowCanvas from './SnowCanvas'
 import LL1 from './ll1.png'
 import LL2 from './ll2.png'
 import { gsap as gsapCore } from 'gsap'
@@ -515,14 +514,12 @@ function Landing() {
   )}
 
   <section id="home" ref={sectionRef} className="relative h-screen w-full bg-grid z-10">
-  <div className="relative z-40 flex h-full items-center font-['primary']">
-        <div className="mx-auto px-4 sm:px-6 lg:px-10 lg:py-12">
-          <div ref={heroBlockRef} className="relative inline-block">
-            {/* Snow effect canvas (covers only the text block) - Disabled on mobile for performance */}
-            {(typeof window !== 'undefined' && window.innerWidth > 768) && <SnowCanvas />}
-            <h1 ref={headingRef} className="relative z-10 text-black font-[100] leading-none text-5xl sm:text-7xl md:text-8xl lg:text-[170px] tracking-tight">
-              <div className="flex flex-wrap items-center gap-4">
-                <div className="image1 border-2 h-30 w-52 rounded-[55px] overflow-hidden mt-4 shrink-0ctracking-widest vertical-slider" style={{ width: 208, height: 120 }}>
+  <div className="relative z-40 flex h-full items-center justify-center font-['primary']">
+        <div className="mx-auto px-4 sm:px-6 lg:px-10 lg:py-12 w-full">
+          <div ref={heroBlockRef} className="relative inline-block w-full text-center">
+            <h1 ref={headingRef} className="relative z-10 text-black font-[100] leading-none text-6xl sm:text-7xl md:text-8xl lg:text-[170px] tracking-tight">
+              <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
+                <div className="image1 border-2 h-24 sm:h-30 w-44 sm:w-52 rounded-[55px] overflow-hidden mt-2 md:mt-4 shrink-0 tracking-widest vertical-slider" style={{ width: '11rem', height: '6rem' }}>
                   <div className="slider-viewport h-full w-full overflow-hidden">
                     <div className="slider-track flex flex-col">
                       <img className='block h-full w-full object-cover' src={Image3} alt="" />
@@ -534,9 +531,9 @@ function Landing() {
                 </div>
                 <span>Where  Code </span>
               </div>
-              <div className="flex flex-wrap items-center gap-4 ">
+              <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 ">
                 <span className="block font-bold tracking-widest">Quality Meets </span>
-                <div className="image1 border-2 h-30 w-68 rounded-[55px] overflow-hidden mt-4 shrink-0" style={{ width: 272, height: 120 }}>
+                <div className="image1 border-2 h-24 sm:h-30 w-56 sm:w-68 rounded-[55px] overflow-hidden mt-2 md:mt-4 shrink-0" style={{ width: '14rem', height: '6rem' }}>
                   <img className='h-full w-full object-cover ' src={Image4} alt="" />
                 </div>
               </div>

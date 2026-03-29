@@ -6,7 +6,7 @@ const LoaderSimple = memo(({ onComplete } = {}) => {
   const containerRef = useRef(null)
 
   useEffect(() => {
-    // Total animation time: 4 seconds
+    // Total animation time: 3 seconds (reduced from 4)
     const timer = setTimeout(() => {
       // Trigger landing page animation
       window.dispatchEvent(new Event('startLanding'))
@@ -16,7 +16,7 @@ const LoaderSimple = memo(({ onComplete } = {}) => {
       } else {
         window.dispatchEvent(new Event('loaderComplete'))
       }
-    }, 4000) // Exit after 4 seconds
+    }, 3000) // Reduced from 4000 to 3000
 
     return () => clearTimeout(timer)
   }, [onComplete])
