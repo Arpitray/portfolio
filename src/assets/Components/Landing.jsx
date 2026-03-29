@@ -502,7 +502,7 @@ function Landing() {
                 }
                 navigate('/' + href)
               }}
-              className="block text-zinc-700 font-bold text-5xl sm:text-5xl tracking-widest hover:opacity-80"
+              className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80"
             >
               {label}
             </a>

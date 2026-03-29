@@ -32,11 +32,27 @@ function App() {
     
     setVH();
     
+    // Cache inner width to distinguish between vertical scroll resizes and actual screen resizes
+    let lastWidth = window.innerWidth;
+
     // Real mobile browsers change viewport height on scroll
     const handleResize = () => {
-      setVH();
+      // On mobile, only update VH if width changed (avoid layout jumps when address bar hides on scroll)
+      const isWidthChange = window.innerWidth !== lastWidth;
+      
+      if (!isMobile || isWidthChange) {
+        setVH();
+        lastWidth = window.innerWidth;
+      }
+      
       // Only refresh ScrollTrigger on actual resize events (not scroll-related viewport changes)
       if (!isMobile) {
+        clearTimeout(window.vhTimeout);
+        window.vhTimeout = setTimeout(() => {
+          ScrollTrigger.refresh();
+        }, 150);
+      } else if (isWidthChange) {
+        // Only refresh on mobile if screen width actually changed (e.g. tablet rotation not caught by orientationchange)
         clearTimeout(window.vhTimeout);
         window.vhTimeout = setTimeout(() => {
           ScrollTrigger.refresh();
