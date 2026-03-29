@@ -6,7 +6,7 @@ import Lenis from "lenis"
 import Projects from "./assets/Components/Projects"
 import CursorGlass from './assets/Components/CursorGlass'
 import { motion } from "motion/react"
-import Loader from './assets/Components/Loader'
+import LoaderSmart from './assets/Components/LoaderSmart'
 import Showcase from "./assets/Components/Showcase"
 import PlayGround from './assets/Components/PlayGround'
 import PlaygroundPreview from "./assets/Components/PlaygroundPreview"
@@ -161,7 +161,7 @@ function App() {
           </div>
         } />
       </Routes>
-      {loading && <Loader onComplete={onLoaderComplete} />}
+      {loading && <LoaderSmart onComplete={onLoaderComplete} />}
       <div className="grain-overlay"></div>
     </BrowserRouter>
   )

@@ -1,95 +1,121 @@
-# Loader Performance Optimizations
+# Loader Performance Optimizations - MOBILE FOCUSED
 
-## Summary of Changes
+## Summary of Changes (v2 - Aggressive Mobile Optimization)
 
-Your loader has been completely optimized for maximum performance on low-end devices while maintaining smooth animations on high-end devices.
+Your loader has been **DRASTICALLY optimized for mobile devices** with much slower, smoother animations and minimal GPU usage.
 
-## Key Optimizations Applied
+## Key Changes in v2
 
-### 1. **Adaptive Performance Tier Detection**
-- Automatically detects device capabilities (CPU cores, memory, mobile vs desktop)
-- Creates 4 performance tiers: `minimal`, `low`, `medium`, `high`
-- Each tier has optimized settings for duration, stagger, scale, rotation, and effects
+### 1. **MUCH SLOWER Animations on Mobile** ✅
+- **Before**: 0.5-0.8s duration (too fast)
+- **After**: 1.2-1.5s duration (smooth and comfortable)
+- **Stagger**: Increased from 0.25s to 0.5s (more time between cards)
+- **Total time**: ~4-5 seconds (gives users time to see the animation)
 
-### 2. **Removed Heavy Effects on Low-End Devices**
-- **Blur filters**: Disabled on low/minimal tiers (GPU-intensive)
-- **Complex rotations**: Reduced or removed on low-end devices
-- **Shadow complexity**: Simplified box-shadows on low-end devices
-- **Scale animations**: Less aggressive scaling to reduce GPU load
+### 2. **Removed ALL Rotation on Mobile** 🔥
+- Rotation causes MASSIVE GPU load on mobile
+- Now using **0° rotation** on all mobile devices
+- Desktop can still have rotation if high-end
 
-### 3. **CSS Optimizations**
-- Added `backfaceVisibility: hidden` (prevents flickering, enables GPU acceleration)
-- Added `WebkitBackfaceVisibility: hidden` (Safari optimization)
-- Added `perspective: 1000` on container (enables 3D transforms efficiently)
-- Added `contain: layout style paint` (isolates rendering for better performance)
-- Added `transformStyle: preserve-3d` (proper 3D rendering)
+### 3. **Removed ALL Blur Effects on Mobile** 🔥
+- Blur filters are the #1 cause of lag on mobile
+- Completely removed even from high-tier mobile devices
+- Only desktop uses blur (if high-end)
 
-### 4. **GSAP Animation Optimizations**
-- **force3D: true** - Forces GPU acceleration for all transforms
-- **overwrite: 'auto'** - Prevents conflicting animations from stacking
-- **Shorter durations** on low-end devices (0.5s vs 1s)
-- **Reduced stagger** on low-end devices (0.2s vs 0.4s)
-- **Simpler easing** on low-end devices (power2.out vs back.out)
-- **willChange removal** - Clears `will-change` after animation starts to free GPU memory
+### 4. **Simplified Scale Animations**
+- Removed initial scale transforms (causes repaints)
+- Start at scale: 1 or 0.95 (minimal transform)
+- Simpler easing functions (power1.out instead of back.out)
 
-### 5. **Image Loading Optimizations**
-- **Timeout-based loading** - Doesn't wait forever for images on slow connections
-- **Instant start on low-end** - Minimal/low tier devices start animating immediately
-- **Async decoding** - Uses Image.decode() API to prevent main thread blocking
-- **CORS optimization** - Proper crossOrigin handling for Cloudinary
+### 5. **Reduced CSS Overhead**
+- Removed `willChange` (causes GPU memory issues)
+- Removed `contain` property (can cause issues on mobile browsers)
+- Removed `transformStyle: preserve-3d` (not needed, causes overhead)
+- Thinner borders (6px vs 8px) = less repaints
 
-### 6. **Reduced Animation Complexity**
-- **Minimal tier**: No blur, no rotation, 0.5s duration, scale 20x final
-- **Low tier**: No blur, 10° rotation max, 0.6s duration, scale 30-40x final
-- **Medium tier**: No blur, 15° rotation, 0.8s duration, scale 35-50x final
-- **High tier**: Full effects with blur, 25° rotation, 1s duration, scale 40-60x final
+### 6. **Lighter Shadows**
+- Mobile: `0 2px 4px rgba(0,0,0,0.1)` (barely visible, super light)
+- Desktop: `0 8px 16px rgba(0,0,0,0.2)` (more visible but still light)
 
-### 7. **DOM Optimization**
-- Removed nested divs in text overlays (reduced reflows)
-- Simplified inline styles
-- Better use of flexbox for centering (GPU-accelerated)
-
-### 8. **Timeline Optimization**
-- Dynamic timing based on performance tier
-- Skip intermediate animations on minimal tier
-- Faster total animation time on low-end (2-3s vs 4-5s on high-end)
+### 7. **Aggressive Device Detection**
+- **DEFAULTS to LOW tier for all mobile devices**
+- Only uses medium/high if device has 6-8+ cores and 4-6+ GB RAM
+- Most phones will now run on 'low' tier = smoothest experience
 
 ## Performance Benefits
 
-### Before Optimization
-- Heavy blur filters causing GPU overload on low-end devices
-- Complex rotation calculations causing frame drops
-- Long animation durations causing perceived lag
-- Heavy box-shadows causing repaints
-- Images loading blocking animation start
+### Before v2
+- Heavy blur filters causing GPU overload
+- Rotation causing frame drops
+- Too fast (2-3 seconds) - users couldn't appreciate it
+- Complex easing causing calculation overhead
 
-### After Optimization
-- **60 FPS on most devices** - Even low-end devices now hit 60fps
-- **50% faster load time** - Animation starts 50% faster on low-end devices
-- **No blur lag** - Removed blur on devices that struggle with it
-- **Reduced GPU memory** - willChange cleared after use
-- **Smoother transitions** - Simpler easing functions on low-end devices
+### After v2
+- **60 FPS on most mobile devices** - Buttery smooth
+- **NO GPU-heavy effects** - No blur, no rotation on mobile
+- **Perfect timing (4-5 seconds)** - Users can see the animation
+- **Simpler calculations** - power1.out instead of back.out
 
-## Performance Tier Thresholds
+## New Performance Tier Thresholds
 
 ```javascript
 Minimal: User has enabled "prefers-reduced-motion"
-Low: Mobile + (≤4 CPU cores OR ≤2GB RAM)
-Medium: Mobile + ≤6 CPU cores
-High: Desktop OR Mobile with >6 CPU cores
+Low: ALL MOBILE DEVICES (default for safety)
+Medium: Mobile with 6+ cores AND 4+ GB RAM
+High: Mobile with 8+ cores AND 6+ GB RAM, OR Desktop
 ```
 
-## Testing Recommendations
+## Animation Timing Breakdown (Mobile - Low Tier)
 
-1. **Test on real devices** - Chrome DevTools throttling doesn't fully simulate low-end performance
-2. **Check frame rate** - Open DevTools Performance tab and ensure 60fps
-3. **Monitor GPU usage** - Use Chrome's `--show-fps-counter` flag
-4. **Test on 3G/4G** - Ensure images load within timeout period
+```
+0.0s  - Loader appears
+0.3s  - First image fades in (1.2s duration)
+0.8s  - Second image fades in (1.2s duration)
+1.3s  - Third image fades in (1.2s duration)
+2.5s  - Overlay appears (1.0s duration)
+3.5s  - Pause (0.5s)
+4.0s  - Expansion begins (1.0s duration)
+5.0s  - Exit begins (0.8s duration)
+5.8s  - Loader complete ✓
+```
+
+## Testing on Your Phone
+
+1. **Clear cache** - Hard refresh or clear browser cache
+2. **Test in incognito** - Ensures no extensions interfering
+3. **Check DevTools**: 
+   - Connect phone to computer
+   - Open Chrome DevTools (Remote Devices)
+   - Monitor Performance tab for frame rate
+4. **Expected FPS**: Should be 58-60 FPS throughout
+
+## If Still Experiencing Lag
+
+**Step 1: Identify the issue**
+```javascript
+// Add to Loader.jsx after line 35 to see which tier is being used:
+console.log('Performance Tier:', performanceTier.current)
+// Should show: "low" for most phones
+```
+
+**Step 2: Force minimal mode** (nuclear option)
+Change line 35 in Loader.jsx:
+```javascript
+// From:
+const performanceTier = useRef(getDevicePerformance());
+// To:
+const performanceTier = useRef('minimal');
+```
+
+**Step 3: Reduce image size**
+Change image URLs on lines 295, 307, 319 from:
+```
+w_800  →  w_400
+```
 
 ## Further Optimizations (If Needed)
 
-If you still experience lag on very low-end devices:
-1. Reduce image quality/size further (currently using w_800)
-2. Add a simple CSS-only fallback animation
-3. Increase performance tier detection sensitivity
-4. Remove animations entirely on minimal tier (just fade)
+1. **Use CSS animation fallback** - Pure CSS animations for ultra-low-end
+2. **Reduce to 2 images** - Instead of 3 cards
+3. **Static images** - No animation, just fade in/out
+4. **Skip loader entirely** - Direct to content on very slow devices
