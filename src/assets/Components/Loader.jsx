@@ -2,17 +2,83 @@ import React, { useEffect, useRef, memo } from 'react'
 import gsap from 'gsap'
 
 // Optimize GSAP globally for this component
-gsap.config({ force3D: true });
+gsap.config({ 
+  force3D: true,
+  nullTargetWarn: false
+});
+
+// Detect device capabilities for adaptive performance
+const getDevicePerformance = () => {
+  if (typeof window === 'undefined') return 'high';
+  
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const hasReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  
+  // Check hardware concurrency (CPU cores)
+  const cores = navigator.hardwareConcurrency || 2;
+  
+  // Memory check (if available)
+  const memory = navigator.deviceMemory || 4;
+  
+  // Determine performance tier
+  if (hasReducedMotion) return 'minimal';
+  if (isMobile && (cores <= 4 || memory <= 2)) return 'low';
+  if (isMobile && cores <= 6) return 'medium';
+  return 'high';
+};
 
 const Loader = memo(({ onComplete } = {}) => {
   const containerRef = useRef(null)
   const imgRefs = useRef([])
   const whiteRef = useRef(null)
   const isMobileDevice = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+  const performanceTier = useRef(getDevicePerformance());
 
   useEffect(() => {
-    // Ensure GSAP works properly even if ScrollTrigger config affects it
     const isMobile = isMobileDevice;
+    const perf = performanceTier.current;
+    
+    // Adaptive settings based on device performance
+    const perfSettings = {
+      minimal: {
+        useBlur: false,
+        duration: 0.5,
+        stagger: 0.2,
+        scale: 1,
+        rotation: 0,
+        ease: 'power2.out',
+        finalScale: 20
+      },
+      low: {
+        useBlur: false,
+        duration: 0.6,
+        stagger: 0.25,
+        scale: isMobile ? 0.95 : 0.9,
+        rotation: 10,
+        ease: 'power2.out',
+        finalScale: isMobile ? 30 : 40
+      },
+      medium: {
+        useBlur: false,
+        duration: 0.8,
+        stagger: 0.3,
+        scale: isMobile ? 0.9 : 0.85,
+        rotation: 15,
+        ease: 'back.out(1.4)',
+        finalScale: isMobile ? 35 : 50
+      },
+      high: {
+        useBlur: true,
+        duration: 1,
+        stagger: 0.4,
+        scale: 0.8,
+        rotation: 25,
+        ease: 'back.out(1.7)',
+        finalScale: isMobile ? 40 : 60
+      }
+    };
+    
+    const settings = perfSettings[perf] || perfSettings.low;
     
     // Image URLs (match what's used in JSX)
     const imageUrls = [
@@ -21,75 +87,86 @@ const Loader = memo(({ onComplete } = {}) => {
       "https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load3_oqxway.jpg"
     ];
 
-    // set initial positions and stacking
-    gsap.set(containerRef.current, { yPercent: 0, force3D: true })
+    // set initial positions with optimized properties
+    gsap.set(containerRef.current, { 
+      yPercent: 0, 
+      force3D: true,
+      willChange: 'transform'
+    })
+    
     gsap.set(imgRefs.current, { 
       yPercent: 0, 
       autoAlpha: 0, 
-      scale: isMobile ? 0.9 : 0.8, 
+      scale: settings.scale, 
       rotation: 0, 
       force3D: true, 
-      transformOrigin: 'center center',
-      filter: isMobile ? 'none' : 'blur(20px)'
+      transformOrigin: '50% 50%',
+      filter: settings.useBlur ? 'blur(20px)' : 'none',
+      willChange: 'transform, opacity'
     })
+    
     gsap.set(whiteRef.current, { 
       yPercent: 0, 
-      scale: isMobile ? 0.9 : 0.8, 
-      transformOrigin: 'center center', 
+      scale: settings.scale, 
+      transformOrigin: '50% 50%', 
       autoAlpha: 0, 
       rotation: 0, 
       force3D: true,
-      filter: isMobile ? 'none' : 'blur(20px)'
+      filter: settings.useBlur ? 'blur(20px)' : 'none',
+      willChange: 'transform, opacity'
     })
 
     let tl = null;
     let preloadAborted = false;
 
-    // Preload and decode images before starting animation
+    // Optimized preload for faster startup
     const preloadImages = async () => {
       try {
-        const imagePromises = imageUrls.map(src => {
-          return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous"; // Handle CORS for Cloudinary
-            
-            img.onload = async () => {
-              try {
-                // Use decode() API for async decoding (prevents main thread blocking)
-                if (img.decode) {
-                  await img.decode();
-                }
-                resolve(img);
-              } catch (decodeError) {
-                // Decode failed but image loaded, still resolve
-                resolve(img);
-              }
-            };
-            
-            img.onerror = () => {
-              // Image failed to load, but don't block animation
-              console.warn(`Failed to load: ${src}`);
-              resolve(null);
-            };
-            
-            img.src = src;
-            
-            // If image is already cached, resolve immediately
-            if (img.complete) {
-              if (img.decode) {
-                img.decode().then(() => resolve(img)).catch(() => resolve(img));
-              } else {
-                resolve(img);
-              }
-            }
+        // On low-end devices, don't wait for all images - start animating immediately
+        if (perf === 'low' || perf === 'minimal') {
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              if (!preloadAborted) startTimeline();
+            }, 100);
           });
+          return;
+        }
+        
+        // For better devices, still preload but with timeout
+        const imagePromises = imageUrls.map(src => {
+          return Promise.race([
+            new Promise((resolve) => {
+              const img = new Image();
+              img.crossOrigin = "anonymous";
+              
+              img.onload = async () => {
+                try {
+                  if (img.decode) await img.decode();
+                  resolve(img);
+                } catch {
+                  resolve(img);
+                }
+              };
+              
+              img.onerror = () => resolve(null);
+              img.src = src;
+              
+              if (img.complete) {
+                if (img.decode) {
+                  img.decode().then(() => resolve(img)).catch(() => resolve(img));
+                } else {
+                  resolve(img);
+                }
+              }
+            }),
+            // Timeout after 500ms on medium/high devices
+            new Promise(resolve => setTimeout(() => resolve(null), 500))
+          ]);
         });
 
         await Promise.all(imagePromises);
         
-        // Only start timeline if not aborted
         if (!preloadAborted) {
-          // Use requestAnimationFrame to ensure browser is ready for animation
           requestAnimationFrame(() => {
             setTimeout(() => {
               if (!preloadAborted) startTimeline();
@@ -97,8 +174,6 @@ const Loader = memo(({ onComplete } = {}) => {
           });
         }
       } catch (error) {
-        console.warn('Image preload error:', error);
-        // Start anyway after brief delay
         if (!preloadAborted) {
           setTimeout(() => startTimeline(), 100);
         }
@@ -107,62 +182,104 @@ const Loader = memo(({ onComplete } = {}) => {
 
     const startTimeline = () => {
       if (tl) return
-      tl = gsap.timeline({ force3D: true })
+      
+      // Use optimized timeline settings
+      tl = gsap.timeline({ 
+        force3D: true,
+        onStart: () => {
+          // Remove will-change after animation starts to free resources
+          gsap.delayedCall(0.5, () => {
+            if (containerRef.current) {
+              containerRef.current.style.willChange = 'auto';
+            }
+          });
+        }
+      })
 
-      // Creative "Fan-Out" reveal: cards pop from center with focus effect
+      // Simplified, optimized animation sequence
+      // Images pop in with adaptive complexity
       tl.to(imgRefs.current, {
         autoAlpha: 1,
         scale: 1,
-        filter: isMobile ? 'none' : 'blur(0px)',
-        rotation: (i) => gsap.utils.random(-25, 25),
-        duration: isMobile ? 0.8 : 1,
-        stagger: isMobile ? 0.3 : 0.4,
-        ease: 'back.out(1.7)' // Adds a nice organic "pop"
+        filter: settings.useBlur ? 'blur(0px)' : 'none',
+        rotation: (i) => {
+          // Reduce rotation on low-end devices
+          if (settings.rotation === 0) return 0;
+          return gsap.utils.random(-settings.rotation, settings.rotation);
+        },
+        duration: settings.duration,
+        stagger: settings.stagger,
+        ease: settings.ease,
+        overwrite: 'auto'
       }, 0.2)
 
-      // overlay pops into center
+      // Overlay pops into center
       tl.to(whiteRef.current, {
         autoAlpha: 1,
         scale: 1,
-        filter: isMobile ? 'none' : 'blur(0px)',
-        rotation: () => gsap.utils.random(-20, 20),
-        duration: isMobile ? 0.6 : 0.8,
-        ease: 'back.out(1.7)'
-      }, 1.8)
+        filter: settings.useBlur ? 'blur(0px)' : 'none',
+        rotation: () => {
+          if (settings.rotation === 0) return 0;
+          return gsap.utils.random(-settings.rotation * 0.8, settings.rotation * 0.8);
+        },
+        duration: settings.duration * 0.75,
+        ease: settings.ease,
+        overwrite: 'auto'
+      }, settings.duration + settings.stagger * 2 + 0.2)
 
-      // small tilt + little grow before full surround
+      // Small scale-up (skip on minimal performance)
+      if (perf !== 'minimal') {
+        tl.to(whiteRef.current, {
+          scale: 1.05,
+          rotation: () => {
+            if (settings.rotation === 0) return 0;
+            return gsap.utils.random(-settings.rotation * 1.5, settings.rotation * 1.5);
+          },
+          duration: 0.4,
+          ease: 'power2.out',
+          overwrite: 'auto'
+        }, settings.duration * 2 + settings.stagger * 2 + 0.2)
+      }
+
+      // Final expansion with optimized timing
+      const expandStart = perf === 'minimal' 
+        ? settings.duration * 1.5 + settings.stagger * 2 + 0.3
+        : settings.duration * 2.5 + settings.stagger * 2 + 0.2;
+      
       tl.to(whiteRef.current, {
-        scale: 1.1,
-        rotation: () => gsap.utils.random(-45, 45),
-        duration: 0.5,
-        ease: 'power2.out'
-      }, 2.8)
+        scale: settings.finalScale,
+        duration: perf === 'minimal' ? 0.6 : 0.8,
+        ease: 'power3.inOut',
+        overwrite: 'auto'
+      }, expandStart)
 
-      // finally expand overlay to cover the whole screen
-      tl.to(whiteRef.current, {
-        scale: isMobile ? 40 : 60, // Smaller scale on mobile
-        duration: 0.9,
-        ease: 'power4.inOut'
-      }, 3.1)
-
-      // slide loader up off screen after surround completes
+      // Slide loader up off screen
       const isPlayground = (typeof window !== 'undefined' && window.location && window.location.pathname === '/playground')
 
       if (isPlayground) {
+        const callbackTime = expandStart + (perf === 'minimal' ? 0.6 : 0.8);
         tl.call(() => {
           window.dispatchEvent(new Event('startLanding'))
           if (typeof onComplete === 'function') onComplete()
           else window.dispatchEvent(new Event('loaderComplete'))
-        }, null, 4.0)
+        }, null, callbackTime)
       } else {
+        const exitStart = expandStart + (perf === 'minimal' ? 0.5 : 0.7);
         tl.to(containerRef.current, {
           yPercent: -120,
-          duration: 0.8,
-          ease: 'power4.inOut',
+          duration: perf === 'minimal' ? 0.5 : 0.7,
+          ease: 'power3.inOut',
+          overwrite: 'auto',
           onStart: () => {
-            // Start landing animation with a tiny delay on mobile to ensure smooth exit
+            // Clear will-change before exit animation
+            if (whiteRef.current) whiteRef.current.style.willChange = 'auto';
+            imgRefs.current.forEach(ref => {
+              if (ref) ref.style.willChange = 'auto';
+            });
+            
+            // Start landing animation
             if (isMobile) {
-              setTimeout(() => window.dispatchEvent(new Event('startLanding')), 100);
+              setTimeout(() => window.dispatchEvent(new Event('startLanding')), 50);
             } else {
               window.dispatchEvent(new Event('startLanding'));
             }
@@ -171,7 +288,7 @@ const Loader = memo(({ onComplete } = {}) => {
             if (typeof onComplete === 'function') onComplete()
             else window.dispatchEvent(new Event('loaderComplete'))
           }
-        }, 4.0)
+        }, exitStart)
       }
     }
 
@@ -187,8 +304,8 @@ const Loader = memo(({ onComplete } = {}) => {
   const containerStyle = {
     position: 'fixed',
     inset: 0,
-    width: 'auto',
-    height: 'auto',
+    width: '100%',
+    height: '100%',
     paddingTop: 'env(safe-area-inset-top, 0px)',
     paddingBottom: 'env(safe-area-inset-bottom, 0px)',
     background: '#212427',
@@ -197,57 +314,79 @@ const Loader = memo(({ onComplete } = {}) => {
     justifyContent: 'center',
     zIndex: 9999,
     overflow: 'hidden',
-    border: 'none', // Remove any dark borders from the container
     willChange: 'transform',
-    backfaceVisibility: 'hidden'
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
+    perspective: 1000,
+    WebkitPerspective: 1000
   }
 
   const stageStyle = {
     position: 'relative',
     width: isMobileDevice ? '90vw' : 360,
-    height: isMobileDevice ? '50vh' : 340, // ensure stage is tall enough for the images to animate into center
+    height: isMobileDevice ? '50vh' : 340,
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden'
   }
+
+  const perf = performanceTier.current;
+  const useSimpleShadow = perf === 'low' || perf === 'minimal';
 
   const imgStyle = {
     width: '100%',
-    height: 'calc(100% - 52px)', // fill the card up to the caption area
+    height: 'calc(100% - 52px)',
     borderRadius: 0,
-    boxShadow: isMobileDevice ? '0 6px 15px rgba(0,0,0,0.2)' : '0 12px 30px rgba(0,0,0,0.25)',
+    boxShadow: useSimpleShadow 
+      ? '0 4px 8px rgba(0,0,0,0.15)' 
+      : (isMobileDevice ? '0 6px 15px rgba(0,0,0,0.2)' : '0 12px 30px rgba(0,0,0,0.25)'),
     position: 'relative',
     objectFit: 'cover',
     border: isMobileDevice ? '8px solid white' : '12px solid white',
     boxSizing: 'border-box',
-    background: '#f0f0f0', // Light placeholder to prevent flash
-    imageRendering: isMobileDevice ? 'auto' : '-webkit-optimize-contrast', // Optimize rendering
+    background: '#f0f0f0',
+    imageRendering: 'auto',
     willChange: 'transform, opacity',
     backfaceVisibility: 'hidden',
-    transformStyle: 'preserve-3d'
+    WebkitBackfaceVisibility: 'hidden',
+    transformStyle: 'preserve-3d',
+    WebkitTransformStyle: 'preserve-3d',
+    // Optimize image rendering
+    WebkitFontSmoothing: 'antialiased',
+    MozOsxFontSmoothing: 'grayscale'
   }
 
   const cardStyle = {
     width: isMobileDevice ? '75vw' : 280,
     height: isMobileDevice ? '45vh' : 340,
     position: 'absolute',
-    inset: 0, // absolute center both axes
+    inset: 0,
     margin: 'auto',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     willChange: 'transform, opacity',
-    backfaceVisibility: 'hidden'
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden',
+    contain: 'layout style paint'
   }
 
-  // initial inline state matches the GSAP set() so the browser paints elements
-  // in the hidden/translated state before JS executes, preventing a flash.
+  // Initial state optimized for performance
+  const settings = {
+    minimal: { scale: 1, blur: 'none' },
+    low: { scale: isMobileDevice ? 0.95 : 0.9, blur: 'none' },
+    medium: { scale: isMobileDevice ? 0.9 : 0.85, blur: 'none' },
+    high: { scale: 0.8, blur: 'blur(20px)' }
+  }[perf] || { scale: 0.95, blur: 'none' };
   
   const cardInitial = {
-  // let GSAP control translate (yPercent); only set opacity to avoid permanent hidden state
-  opacity: 0,
-  filter: isMobileDevice ? 'none' : 'blur(20px)',
-  transform: isMobileDevice ? 'scale(0.9)' : 'scale(0.8)'
+    opacity: 0,
+    filter: settings.blur,
+    transform: `scale(${settings.scale})`,
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden'
   }
 
   const overlayTextStyle = {
@@ -258,11 +397,16 @@ const Loader = memo(({ onComplete } = {}) => {
     fontWeight: 700,
     left: 0,
     right: 0,
-  bottom: 0, // Align text to the bottom of the image
-  height: '52px', // fixed caption height to match image calc
-  padding: '8px 0', // Add padding to center the text within the white area
-  background: '#fff', // Ensure text background matches the white padding
+    bottom: 0,
+    height: '52px',
+    padding: '8px 0',
+    background: '#fff',
     fontFamily: 'secondary',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden'
   }
 
   const whiteOverlayStyle = {
@@ -271,69 +415,82 @@ const Loader = memo(({ onComplete } = {}) => {
     borderRadius: 0,
     backgroundColor: '#E1E1E1',
     zIndex: 40,
-    backgroundPosition: '0 0, 0 0',
-    backgroundRepeat: 'repeat, repeat',
     willChange: 'transform, opacity',
     backfaceVisibility: 'hidden',
-    transformStyle: 'preserve-3d'
+    WebkitBackfaceVisibility: 'hidden',
+    transformStyle: 'preserve-3d',
+    WebkitTransformStyle: 'preserve-3d',
+    contain: 'layout style paint'
   }
 
-  // ensure overlay also doesn't flash before GSAP's timeline runs
   const whiteInitial = {
-  // GSAP will set yPercent and autoAlpha; keep initial opacity 0 so element is hidden until animation
-  opacity: 0,
-  filter: isMobileDevice ? 'none' : 'blur(20px)',
-  transform: isMobileDevice ? 'scale(0.9)' : 'scale(0.8)'
+    opacity: 0,
+    filter: settings.blur,
+    transform: `scale(${settings.scale})`,
+    backfaceVisibility: 'hidden',
+    WebkitBackfaceVisibility: 'hidden'
   }
 
   return (
     <div ref={containerRef} style={containerStyle}>
       <div style={stageStyle}>
-  <div ref={el => imgRefs.current[0] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 10 }}>
-    <img 
-      className="loader-img" 
-      src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/imag1_qig1hl.jpg" 
-      alt="i1" 
-      style={imgStyle}
-      loading="eager"
-      decoding="async"
-      fetchpriority="high"
-    />
-    <div className='text-3xl text-black' style={overlayTextStyle}><div>Designing</div></div>
-  </div>
+        <div ref={el => imgRefs.current[0] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 10 }}>
+          <img 
+            className="loader-img" 
+            src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/imag1_qig1hl.jpg" 
+            alt="Designing" 
+            style={imgStyle}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+          <div className='text-3xl text-black' style={overlayTextStyle}>Designing</div>
+        </div>
 
-  <div ref={el => imgRefs.current[1] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 20 }}>
-    <img 
-      className="loader-img" 
-      src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load2_z4atye.jpg" 
-      alt="i2" 
-      style={imgStyle}
-      loading="eager"
-      decoding="async"
-      fetchpriority="high"
-    />
-    <div className='text-3xl text-black' style={overlayTextStyle}><div>And</div></div>
-  </div>
+        <div ref={el => imgRefs.current[1] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 20 }}>
+          <img 
+            className="loader-img" 
+            src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load2_z4atye.jpg" 
+            alt="And" 
+            style={imgStyle}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+          <div className='text-3xl text-black' style={overlayTextStyle}>And</div>
+        </div>
 
-  <div ref={el => imgRefs.current[2] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 30 }}>
-    <img 
-      className="loader-img" 
-      src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load3_oqxway.jpg" 
-      alt="i3" 
-      style={imgStyle}
-      loading="eager"
-      decoding="async"
-      fetchpriority="high"
-    />
-    <div className='text-3xl text-black' style={overlayTextStyle}><div>developing</div></div>
-  </div>
+        <div ref={el => imgRefs.current[2] = el} style={{ ...cardStyle, ...cardInitial, zIndex: 30 }}>
+          <img 
+            className="loader-img" 
+            src="https://res.cloudinary.com/dsjjdnife/image/upload/q_auto,f_auto,w_800/v1755711983/load3_oqxway.jpg" 
+            alt="Developing" 
+            style={imgStyle}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+          <div className='text-3xl text-black' style={overlayTextStyle}>Developing</div>
+        </div>
 
-  {/* overlay that rises and then expands to cover (starts same size as images) */}
-  <div
-    className='flex font-["primary"] justify-center loader-overlay pt-8 text-4xl'
-    ref={whiteRef}
-    style={{ ...whiteOverlayStyle, ...whiteInitial, position: 'absolute', inset: 0, margin: 'auto', display: 'flex', alignItems: 'start', justifyContent: 'center' }}
-  >Welcome</div>
+        {/* Overlay that expands to cover screen */}
+        <div
+          className='flex font-["primary"] justify-center loader-overlay'
+          ref={whiteRef}
+          style={{ 
+            ...whiteOverlayStyle, 
+            ...whiteInitial, 
+            position: 'absolute', 
+            inset: 0, 
+            margin: 'auto', 
+            display: 'flex', 
+            alignItems: 'start',
+            paddingTop: '2rem',
+            justifyContent: 'center',
+            fontSize: isMobileDevice ? '2rem' : '2.25rem',
+            fontWeight: 700
+          }}
+        >Welcome</div>
       </div>
     </div>
   )
