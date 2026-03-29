@@ -262,7 +262,7 @@ const Loader = memo(({ onComplete } = {}) => {
   height: '52px', // fixed caption height to match image calc
   padding: '8px 0', // Add padding to center the text within the white area
   background: '#fff', // Ensure text background matches the white padding
-    fontFamily: 'trial',
+    fontFamily: 'secondary',
   }
 
   const whiteOverlayStyle = {
@@ -330,7 +330,7 @@ const Loader = memo(({ onComplete } = {}) => {
 
   {/* overlay that rises and then expands to cover (starts same size as images) */}
   <div
-    className='flex font-["demo"] justify-center loader-overlay pt-8 text-4xl'
+    className='flex font-["primary"] justify-center loader-overlay pt-8 text-4xl'
     ref={whiteRef}
     style={{ ...whiteOverlayStyle, ...whiteInitial, position: 'absolute', inset: 0, margin: 'auto', display: 'flex', alignItems: 'start', justifyContent: 'center' }}
   >Welcome</div>

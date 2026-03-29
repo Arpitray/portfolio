@@ -67,7 +67,7 @@ const LogoWithTooltip = ({ children, title }) => {
     <>
       <span
         ref={elementRef}
-        className="inline-flex items-center cursor-pointer font-['dk']"
+        className="inline-flex items-center cursor-pointer font-['primary']"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         style={{ position: 'relative', zIndex: 1 }}
@@ -76,7 +76,7 @@ const LogoWithTooltip = ({ children, title }) => {
       </span>
       {showTooltip && !isMobileRef.current && createPortal(
         <div 
-          className="fixed whitespace-nowrap pointer-events-none font-['dk'] tracking-widest"
+          className="fixed whitespace-nowrap pointer-events-none font-['primary'] tracking-widest"
           style={{
             left: `${tooltipPos.x}px`,
             top: `${tooltipPos.y}px`,
@@ -86,7 +86,7 @@ const LogoWithTooltip = ({ children, title }) => {
           }}
         >
           <div 
-            className="bg-black text-white px-3 py-1.5 rounded-md text-lg font-medium shadow-xl mb-1font-['dk2']"
+            className="bg-black text-white px-3 py-1.5 rounded-md text-lg font-medium shadow-xl mb-1font-['secondary']"
             style={{
               backgroundColor: 'rgba(0, 0, 0, 0.92)',
               backdropFilter: 'blur(4px)'
@@ -199,7 +199,7 @@ export default function App() {
       }}
     >
       <div className='container mx-auto px-4 py-16'>
-        <h2 className='text-center text-4xl md:text-6xl font-bold mb-12 text-black font-["dk2"]'>
+        <h2 className='text-center text-4xl md:text-6xl font-bold mb-12 text-black font-["secondary"]'>
           Tech Stack
         </h2>
         

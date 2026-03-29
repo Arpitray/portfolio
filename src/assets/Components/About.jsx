@@ -140,7 +140,7 @@ function About() {
   }, [])
 
   return (
-    <section id="about" className="relative min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen w-full font-normal bg-[#E1E1E1] z-[99]  flex font-['dk2'] sm:px-8">
+    <section id="about" className="relative min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen w-full font-normal bg-[#E1E1E1] z-[99]  flex font-['secondary'] sm:px-8">
       <div className="w-full flex flex-col md:flex-row justify-center mt-12 md:mt-32 items-start gap-8 md:gap-12 px-6">
         <div 
           className="flex w-full justify-center md:justify-center mb-6 md:mb-0" 
@@ -154,10 +154,10 @@ function About() {
         </div>
         <div className="space-y-6 w-full items-start md:pl-6">
           <h2 ref={(el) => (textRefs.current.heading = el)} className="text-black font-[100] tracking-tight text-center md:text-start text-[50px] sm:text-[40px] md:text-[48px] lg:text-[100px]">About Me</h2>
-          <p ref={(el) => (textRefs.current.p1 = el)} className="text-[18px] md:text-[26px] text-black leading-7 md:mr-44 font-['dk']">
+          <p ref={(el) => (textRefs.current.p1 = el)} className="text-[18px] md:text-[26px] text-black leading-7 md:mr-44 font-['primary']">
   Full-stack developer delivering pixel-perfect React UIs, smooth motion with GSAP/Framer Motion, and reliable Node.js backends powered by Prisma and a PostgreSQL database.
           </p>
-          <p ref={(el) => (textRefs.current.p2 = el)} className="text-[18px] md:text-[26px] text-black leading-6 md:mr-44 font-['dk']">
+          <p ref={(el) => (textRefs.current.p2 = el)} className="text-[18px] md:text-[26px] text-black leading-6 md:mr-44 font-['primary']">
             My work focuses on marrying design and engineering: translating visual language into performant, accessible UIs
           </p>
           <div className="mt-6 flex justify-center md:block md:justify-start">

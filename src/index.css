@@ -181,54 +181,18 @@ body {
 		background-position: center;
 	}
 }
+/* Primary font for headings and display text */
 @font-face {
-    font-family: 'regular';
-    src: url('./assets/Regular.ttf');
-
-}
-@font-face {
-    font-family: 'pepper';
-    src: url('./assets/pepper.otf');
-}
-@font-face {
-    font-family: 'pp1';
-    src: url('./assets/pp1.otf');
-}
-@font-face {
-    font-family: 'brit';
-    src: url('./assets/britanica.ttf');
-}
-@font-face {
-    font-family: 'trailor';
-    src: url('./assets/trailor.ttf');
-}
-@font-face {
-    font-family: 'belly';
-    src: url('./assets/belly.ttf');
-}
-@font-face {
-    font-family: 'trial';
-    src: url('./assets/trial.ttf');
-}
-@font-face {
-    font-family: 'demo';
-    src: url('./assets/demo.otf');
-}
-@font-face {
-    font-family: 'dk';
+    font-family: 'primary';
     src: url('./assets/dk.otf');
+    font-weight: 100 900;
 }
+
+/* Secondary font for body text and UI elements */
 @font-face {
-    font-family: 'dk2';
+    font-family: 'secondary';
     src: url('./assets/dk2.otf');
-}
-@font-face {
-    font-family: 'mb';
-    src: url('./lib/belfastgrotesk/mb.ttf');
-}
-@font-face {
-    font-family: 'mb2';
-    src: url('./lib/belfastgrotesk/mb.ttf');
+    font-weight: 100 900;
 }
 
 html, body {

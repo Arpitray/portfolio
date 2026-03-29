@@ -168,7 +168,7 @@ export default function Contact() {
       `}</style>
   <section id="contact" className='md:fixed md:left-0 md:right-0 md:bottom-0 md:h-screen md:z-[5000] relative w-full' ref={elRef} aria-label="Contact section">
         {/* New centered heading */}
-        <div className="absolute md:top-20 top-8 left-0 w-full flex font-['dk'] justify-center items-center py-4 bg-[#E1E1E1] z-10">
+        <div className="absolute md:top-20 top-8 left-0 w-full flex font-['primary'] justify-center items-center py-4 bg-[#E1E1E1] z-10">
           <h1 className='font-semibold md:text-[5rem] text-4xl'>Contact Me</h1>
         </div>
 
@@ -283,7 +283,7 @@ export default function Contact() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'end',
-                      fontFamily: 'dk',
+                      fontFamily: 'primary',
                       fontSize: isMobile ? '24px' : '36px',
                       fontWeight: '600',
                       color: '#313437',
@@ -315,7 +315,7 @@ export default function Contact() {
                   <div className='rotate-8' style={{ 
                     fontSize: isMobile ? 28 : 44,  
                     marginBottom: 20, 
-                    fontFamily: 'dk' 
+                    fontFamily: 'primary' 
                   }}>LETS WORK TOGETHER!</div>
                   <div style={{ 
                     display: 'flex', 
@@ -325,7 +325,7 @@ export default function Contact() {
                     flexDirection: isMobile ? 'column' : 'row'
                   }}>
                     <Magnetic strength={0.3}>
-                      <a className='font-["dk"] tracking-wider'
+                      <a className='font-["primary"] tracking-wider'
                         href="mailto:rayarpit72@gmail.com" 
                         style={{ 
                           color: '#313437', 
@@ -353,7 +353,7 @@ export default function Contact() {
                           textDecoration: 'none',
                           fontSize: isMobile ? 20 : 28,
                           padding: '10px 20px',
-                          fontFamily: 'dk',
+                          fontFamily: 'primary',
                           transition: 'all 0.3s ease',
                           backgroundColor: 'transparent'
                         }}

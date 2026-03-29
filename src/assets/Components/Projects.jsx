@@ -380,7 +380,7 @@ function Projects() {
   <section id="work" ref={containerRef} style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1' }} className='bg-grid2 flex flex-col min-h-[calc(var(--vh,1vh)*100)] md:min-h-screen lg:px-14  w-full '>
       {/* Mobile: Simple centered heading */}
       <div className='w-full pt-12 pb-8 md:hidden'>
-        <h1 className="text-5xl font-bold uppercase text-center font-['demo']">
+        <h1 className="text-5xl font-bold uppercase text-center font-['primary']">
           Personal Projects
         </h1>
       </div>
@@ -391,7 +391,7 @@ function Projects() {
           texts={["PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS", "PERSONAL PROJECTS", "PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS","PERSONAL PROJECTS"]}
           velocity={80}
           numCopies={8}
-          className="uppercase px-6 md:px-10 lg:text-[130px] text-8xl font-medium tracking-widest lg:tracking-[0.08em] font-['demo']"
+          className="uppercase px-6 md:px-10 lg:text-[130px] text-8xl font-medium tracking-widest lg:tracking-[0.08em] font-['primary']"
           parallaxClassName="w-full"
           scrollerClassName="gap-8"
           velocityMapping={{ input: [-1000, 1000], output: [-1000, 1000] }}
@@ -408,7 +408,7 @@ function Projects() {
               key={project.id}
               id={`project-${project.id}`}
               ref={el => projectsRef.current[index] = el}
-              className={`parallax-element mb-16 md:mb-24 font-['belly'] tracking-widest transition-all duration-300 ${
+              className={`parallax-element mb-16 md:mb-24 font-['primary'] tracking-widest transition-all duration-300 ${
                 isEven ? 'md:flex-row' : 'md:flex-row-reverse'
               } flex flex-col md:flex-row gap-8 md:gap-6 px-6 md:px-16 lg:px-4 items-center`}
               style={{ 
@@ -417,7 +417,7 @@ function Projects() {
               }}
             >
               {/* Project Description */}
-              <div className='w-full md:w-1/2 px-4 md:px-8 font-["belly"] text-center md:text-start'>
+              <div className='w-full md:w-1/2 px-4 md:px-8 font-["primary"] text-center md:text-start'>
                 <h2 className='text-4xl sm:text-3xl md:text-6xl lg:text-5xl xl:text-7xl  text-black mb-3 md:mb-5 tracking-tight leading-tight'>
                   {project.title}
                 </h2>
@@ -427,7 +427,7 @@ function Projects() {
                 <p className='text-sm sm:text-base md:text-lg lg:text-2xl text-gray-700 mb-6 font-semibold md:mb-8 leading-relaxed md:max-w-prose text-center md:text-start'>
                   {project.description2}
                 </p>
-                <div className={`hidden lg:flex flex-wrap gap-2  font-['pp'] font-semibold ${isEven ? 'justify-center lg:justify-start' : 'justify-center lg:justify-start'}`}>
+                <div className={`hidden lg:flex flex-wrap gap-2  font-['secondary'] font-semibold ${isEven ? 'justify-center lg:justify-start' : 'justify-center lg:justify-start'}`}>
                   {project.tags.flatMap(t => t.split(' ')).filter(Boolean).map((tag, tagIndex) => (
                     <span
                       key={tagIndex}

@@ -515,7 +515,7 @@ function Landing() {
   )}
 
   <section id="home" ref={sectionRef} className="relative h-screen w-full bg-grid z-10">
-  <div className="relative z-40 flex h-full items-center font-['belly']">
+  <div className="relative z-40 flex h-full items-center font-['primary']">
         <div className="mx-auto px-4 sm:px-6 lg:px-10 lg:py-12">
           <div ref={heroBlockRef} className="relative inline-block">
             {/* Snow effect canvas (covers only the text block) - Disabled on mobile for performance */}
@@ -534,8 +534,8 @@ function Landing() {
                 </div>
                 <span>Where  Code </span>
               </div>
-              <div className="flex flex-wrap items-center gap-4">
-                <span className="block">Quality Meets </span>
+              <div className="flex flex-wrap items-center gap-4 ">
+                <span className="block font-bold tracking-widest">Quality Meets </span>
                 <div className="image1 border-2 h-30 w-68 rounded-[55px] overflow-hidden mt-4 shrink-0" style={{ width: 272, height: 120 }}>
                   <img className='h-full w-full object-cover ' src={Image4} alt="" />
                 </div>

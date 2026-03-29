@@ -71,7 +71,7 @@ export default function PlaygroundPreview({
   }, [])
 
   return (
-  <section id="playground-preview" ref={sectionRef} className="w-full flex font-['trial'] sm:px-8 pb-32  md:min-h-screen" style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1', overflow: 'visible' }}>
+  <section id="playground-preview" ref={sectionRef} className="w-full flex font-['secondary'] sm:px-8 pb-32  md:min-h-screen" style={{ position: 'relative', zIndex: 9999, backgroundColor: '#E1E1E1', overflow: 'visible' }}>
       <div className="content-wrap w-full" style={{ position: 'relative', zIndex: 100 }}>
         <div className=" w-full flex flex-col md:flex-row justify-center items-start md:items-center mt-12 md:mt-32 gap-8 md:gap-12 px-6">
         <div className="flex w-full md:w-1/2 justify-center lg:justify-center">
@@ -81,8 +81,8 @@ export default function PlaygroundPreview({
         </div>
 
         <div className="space-y-4 w-full md:w-1/2 items-start px-6 lg:px-12">
-          <h3 className="text-black font-[100] tracking-tight text-center md:text-start text-[24px] sm:text-[28px] font-['dk2'] md:text-[88px] lg:text-[84px]">{title}</h3>
-          <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 font-normal leading-6 md:leading-10 tracking-wide  font-['dk']">{description}</p>
+          <h3 className="text-black font-[100] tracking-tight text-center md:text-start text-[24px] sm:text-[28px] font-['secondary'] md:text-[88px] lg:text-[84px]">{title}</h3>
+          <p className="text-[16px] sm:text-[18px] md:text-[30px] text-black/90 font-normal leading-6 md:leading-10 tracking-wide  font-['primary']">{description}</p>
           <div className="mt-4 md:mt-6 flex justify-center md:justify-start">
             <button onClick={() => { window.location.href = '/PlayGround/virtual-project/index.html' }} className="inline-flex items-center rounded-2xl bg-orange-500 hover:bg-orange-600 text-white px-9 py-4 font-bold">Visit</button>
           </div>
