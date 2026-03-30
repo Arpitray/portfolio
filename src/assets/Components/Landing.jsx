@@ -411,12 +411,30 @@ function Landing() {
                                 e.preventDefault()
                                 try {
                                   if (label === 'CONTACT') {
-                                    // Contact has fixed positioning, so scroll to bottom of page
-                                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                                    // Contact section: use Lenis scrollTo for proper sync with ScrollTrigger
+                                    const contactEl = document.getElementById('contact')
+                                    if (window.lenis && contactEl) {
+                                      // On desktop, scroll to showcase-outer end to trigger contact animation
+                                      const showcase = document.querySelector('.showcase-outer')
+                                      if (showcase) {
+                                        const targetScroll = showcase.offsetTop + showcase.offsetHeight - window.innerHeight
+                                        window.lenis.scrollTo(targetScroll, { duration: 1.2 })
+                                      } else {
+                                        window.lenis.scrollTo(contactEl, { duration: 1.2 })
+                                      }
+                                    } else {
+                                      // Fallback for non-Lenis (shouldn't happen on desktop)
+                                      contactEl?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                                    }
                                   } else {
                                     const el = document.getElementById(href.replace('#', ''))
                                     if (el) {
-                                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                      // Use Lenis if available for consistent smooth scrolling
+                                      if (window.lenis) {
+                                        window.lenis.scrollTo(el, { duration: 1.2, offset: 0 })
+                                      } else {
+                                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                      }
                                     } else {
                                       window.location.hash = href;
                                     }
@@ -489,15 +507,22 @@ function Landing() {
                   return
                 }
                 if (label === 'HOME' || label === 'ABOUT' || label === 'WORK' || label === 'CONTACT') {
-                  try {
-                    if (label === 'CONTACT') {
-                      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                    } else {
-                      const el = document.getElementById(href.replace('#', ''))
-                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      else window.location.hash = href;
-                    }
-                  } catch (err) { window.location.hash = href }
+                  // Add small delay to let mobile menu close animation complete
+                  setTimeout(() => {
+                    try {
+                      if (label === 'CONTACT') {
+                        // On mobile, contact is relative positioned, scroll directly to it
+                        const contactEl = document.getElementById('contact')
+                        if (contactEl) {
+                          contactEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                      } else {
+                        const el = document.getElementById(href.replace('#', ''))
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        else window.location.hash = href;
+                      }
+                    } catch (err) { window.location.hash = href }
+                  }, 100)
                   return
                 }
                 navigate('/' + href)
