@@ -19,8 +19,6 @@ function Landing() {
   const location = useLocation()
   const [navVisible, setNavVisible] = React.useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
-  // Ref to store pending navigation target for mobile menu
-  const pendingNavRef = useRef(null)
   // animate portal nav when it becomes visible
   useEffect(() => {
     if (!navVisible) return
@@ -39,48 +37,6 @@ function Landing() {
   useEffect(() => {
     if (!navVisible) setMobileMenuOpen(false)
   }, [navVisible, location.pathname])
-
-  // Execute pending mobile navigation AFTER menu closes
-  // This ensures the portal is fully unmounted before scrolling
-  useEffect(() => {
-    // Only run when menu just closed AND we have a pending nav target
-    if (mobileMenuOpen) return
-    if (!pendingNavRef.current) return
-    
-    const { label, href } = pendingNavRef.current
-    pendingNavRef.current = null // Clear immediately to prevent re-execution
-    
-    // Small delay to ensure portal is fully unmounted and DOM is stable
-    const timeoutId = setTimeout(() => {
-      try {
-        if (label === 'PLAYGROUND') {
-          const el = document.getElementById('playground-preview')
-          if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-          } else {
-            navigate('/playground')
-          }
-          return
-        }
-        
-        const targetId = href.replace('#', '')
-        const el = document.getElementById(targetId)
-        
-        if (el) {
-          // Use scrollIntoView - most reliable across all mobile browsers
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        } else {
-          // Fallback: direct hash navigation (causes instant jump but works)
-          window.location.hash = href
-        }
-      } catch (err) {
-        // Ultimate fallback
-        try { window.location.hash = href } catch (e) {}
-      }
-    }, 50)
-    
-    return () => clearTimeout(timeoutId)
-  }, [mobileMenuOpen, navigate])
 
   // close on ESC
   useEffect(() => {
@@ -546,10 +502,36 @@ function Landing() {
               key={label}
               type="button"
               onClick={() => {
-                // Store nav target FIRST, then close menu
-                // The useEffect watching mobileMenuOpen will handle the scroll
-                pendingNavRef.current = { label, href }
+                // Close menu first
                 setMobileMenuOpen(false)
+                
+                // Navigate based on label
+                if (label === 'PLAYGROUND') {
+                  const el = document.getElementById('playground-preview')
+                  if (el) {
+                    // Delay slightly to allow menu to close
+                    setTimeout(() => {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                    }, 100)
+                  } else {
+                    navigate('/playground')
+                  }
+                  return
+                }
+                
+                // For hash links, scroll to section
+                const targetId = href.replace('#', '')
+                const targetEl = document.getElementById(targetId)
+                
+                if (targetEl) {
+                  // Use setTimeout to ensure menu portal is unmounted first
+                  setTimeout(() => {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }, 100)
+                } else {
+                  // Fallback: use hash directly
+                  window.location.hash = href
+                }
               }}
               className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80 select-none bg-transparent border-none cursor-pointer"
               style={{ WebkitTapHighlightColor: 'transparent' }}
