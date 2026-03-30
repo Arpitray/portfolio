@@ -19,6 +19,8 @@ function Landing() {
   const location = useLocation()
   const [navVisible, setNavVisible] = React.useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  // Ref to store pending navigation target for mobile menu
+  const pendingNavRef = useRef(null)
   // animate portal nav when it becomes visible
   useEffect(() => {
     if (!navVisible) return
@@ -37,6 +39,52 @@ function Landing() {
   useEffect(() => {
     if (!navVisible) setMobileMenuOpen(false)
   }, [navVisible, location.pathname])
+
+  // Execute pending mobile navigation AFTER menu closes
+  // This ensures the portal is fully unmounted before scrolling
+  useEffect(() => {
+    if (mobileMenuOpen || !pendingNavRef.current) return
+    
+    const { label, href } = pendingNavRef.current
+    pendingNavRef.current = null // Clear immediately to prevent re-execution
+    
+    // Use requestAnimationFrame to ensure DOM has updated after portal unmount
+    requestAnimationFrame(() => {
+      // Double RAF ensures paint has completed
+      requestAnimationFrame(() => {
+        try {
+          if (label === 'PLAYGROUND') {
+            const el = document.getElementById('playground-preview')
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+            } else {
+              navigate('/playground')
+            }
+            return
+          }
+          
+          const targetId = href.replace('#', '')
+          const el = document.getElementById(targetId)
+          
+          if (el) {
+            // Calculate absolute scroll position
+            const rect = el.getBoundingClientRect()
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+            const targetY = rect.top + scrollTop
+            
+            // Use native scrollTo - most reliable on mobile
+            window.scrollTo({ top: targetY, behavior: 'smooth' })
+          } else {
+            // Fallback: use hash navigation
+            window.location.hash = href
+          }
+        } catch (err) {
+          // Ultimate fallback
+          window.location.hash = href
+        }
+      })
+    })
+  }, [mobileMenuOpen, navigate])
 
   // close on ESC
   useEffect(() => {
@@ -503,45 +551,11 @@ function Landing() {
               href={href}
               onClick={(e) => {
                 e.preventDefault()
+                e.stopPropagation()
+                // Store navigation target in ref - the useEffect will execute after menu closes
+                pendingNavRef.current = { label, href }
+                // Close menu - this triggers the useEffect that handles navigation
                 setMobileMenuOpen(false)
-                if (label === 'PLAYGROUND') {
-                  try {
-                    const el = document.getElementById('playground-preview')
-                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                    else navigate('/playground')
-                  } catch (err) { navigate('/playground') }
-                  return
-                }
-                if (label === 'HOME' || label === 'ABOUT' || label === 'WORK' || label === 'CONTACT') {
-                  // Delay scroll to allow mobile menu portal to fully unmount
-                  setTimeout(() => {
-                    try {
-                      if (label === 'CONTACT') {
-                        // On mobile, contact is relative positioned, scroll directly to it
-                        const contactEl = document.getElementById('contact')
-                        if (contactEl) {
-                          // Use window.scrollTo for more reliable behavior
-                          const rect = contactEl.getBoundingClientRect()
-                          const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-                          const targetY = rect.top + scrollTop
-                          window.scrollTo({ top: targetY, behavior: 'smooth' })
-                        }
-                      } else {
-                        const el = document.getElementById(href.replace('#', ''))
-                        if (el) {
-                          const rect = el.getBoundingClientRect()
-                          const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-                          const targetY = rect.top + scrollTop
-                          window.scrollTo({ top: targetY, behavior: 'smooth' })
-                        } else {
-                          window.location.hash = href
-                        }
-                      }
-                    } catch (err) { window.location.hash = href }
-                  }, 150)
-                  return
-                }
-                navigate('/' + href)
               }}
               className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80"
             >
