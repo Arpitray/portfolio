@@ -507,31 +507,31 @@ function Landing() {
                 
                 // Navigate based on label
                 if (label === 'PLAYGROUND') {
-                  const el = document.getElementById('playground-preview')
-                  if (el) {
-                    // Delay slightly to allow menu to close
-                    setTimeout(() => {
-                      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                    }, 100)
-                  } else {
-                    navigate('/playground')
-                  }
+                  setTimeout(() => {
+                    const el = document.getElementById('playground-preview')
+                    if (el) {
+                      const y = el.getBoundingClientRect().top + window.scrollY
+                      window.scrollTo({ top: y, behavior: 'smooth' })
+                    } else {
+                      navigate('/playground')
+                    }
+                  }, 150)
                   return
                 }
                 
                 // For hash links, scroll to section
                 const targetId = href.replace('#', '')
-                const targetEl = document.getElementById(targetId)
                 
-                if (targetEl) {
-                  // Use setTimeout to ensure menu portal is unmounted first
-                  setTimeout(() => {
-                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
-                  }, 100)
-                } else {
-                  // Fallback: use hash directly
-                  window.location.hash = href
-                }
+                setTimeout(() => {
+                  const targetEl = document.getElementById(targetId)
+                  if (targetEl) {
+                    const y = targetEl.getBoundingClientRect().top + window.scrollY
+                    window.scrollTo({ top: y, behavior: 'smooth' })
+                  } else {
+                    // Fallback: use hash directly (instant jump)
+                    window.location.hash = href
+                  }
+                }, 150)
               }}
               className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80 select-none bg-transparent border-none cursor-pointer"
               style={{ WebkitTapHighlightColor: 'transparent' }}
