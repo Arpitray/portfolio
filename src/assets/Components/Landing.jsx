@@ -473,8 +473,14 @@ function Landing() {
 
   {mobileMenuOpen && typeof document !== 'undefined' && createPortal(
     <div
-      className="md:hidden fixed left-0 top-0 z-[2147483650] w-[100vw] bg-gradient-to-br from-white/5 via-white/3 to-white/2 backdrop-blur-lg backdrop-saturate-150 border border-white/10 shadow-2xl"
-      style={{ height: 'calc(var(--vh, 1vh) * 100)', paddingTop: 'env(safe-area-inset-top, 0px)', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      className="md:hidden fixed inset-0 z-[2147483650] w-full bg-gradient-to-br from-white/5 via-white/3 to-white/2 backdrop-blur-lg backdrop-saturate-150 border border-white/10 shadow-2xl"
+      style={{ 
+        height: '100dvh',
+        minHeight: '100vh',
+        minHeight: '-webkit-fill-available',
+        paddingTop: 'env(safe-area-inset-top, 0px)', 
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)' 
+      }}
       onClick={() => setMobileMenuOpen(false)}
     >
       <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>
@@ -507,22 +513,32 @@ function Landing() {
                   return
                 }
                 if (label === 'HOME' || label === 'ABOUT' || label === 'WORK' || label === 'CONTACT') {
-                  // Add small delay to let mobile menu close animation complete
+                  // Delay scroll to allow mobile menu portal to fully unmount
                   setTimeout(() => {
                     try {
                       if (label === 'CONTACT') {
                         // On mobile, contact is relative positioned, scroll directly to it
                         const contactEl = document.getElementById('contact')
                         if (contactEl) {
-                          contactEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          // Use window.scrollTo for more reliable behavior
+                          const rect = contactEl.getBoundingClientRect()
+                          const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+                          const targetY = rect.top + scrollTop
+                          window.scrollTo({ top: targetY, behavior: 'smooth' })
                         }
                       } else {
                         const el = document.getElementById(href.replace('#', ''))
-                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        else window.location.hash = href;
+                        if (el) {
+                          const rect = el.getBoundingClientRect()
+                          const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+                          const targetY = rect.top + scrollTop
+                          window.scrollTo({ top: targetY, behavior: 'smooth' })
+                        } else {
+                          window.location.hash = href
+                        }
                       }
                     } catch (err) { window.location.hash = href }
-                  }, 100)
+                  }, 150)
                   return
                 }
                 navigate('/' + href)
