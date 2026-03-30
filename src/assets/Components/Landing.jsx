@@ -19,6 +19,63 @@ function Landing() {
   const location = useLocation()
   const [navVisible, setNavVisible] = React.useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
+  
+  // Store the scroll target - will be executed after menu closes
+  const scrollTargetRef = useRef(null)
+  
+  // Handle scroll AFTER mobile menu closes
+  useEffect(() => {
+    // Only proceed if menu just closed AND we have a scroll target
+    if (mobileMenuOpen || !scrollTargetRef.current) return
+    
+    const targetId = scrollTargetRef.current
+    scrollTargetRef.current = null // Clear it
+    
+    // Use requestAnimationFrame to ensure DOM is updated, then setTimeout for safety
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        const el = document.getElementById(targetId)
+        if (!el) {
+          // Element not found - try hash navigation as ultimate fallback
+          window.location.hash = '#' + targetId
+          return
+        }
+        
+        // Get the absolute scroll position
+        const rect = el.getBoundingClientRect()
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+        const targetY = rect.top + scrollTop
+        
+        // Scroll to the target
+        window.scrollTo({
+          top: targetY,
+          left: 0,
+          behavior: 'smooth'
+        })
+      }, 50)
+    })
+  }, [mobileMenuOpen])
+  
+  // Function to handle mobile nav click
+  const handleMobileNavClick = (label, href) => {
+    if (label === 'PLAYGROUND') {
+      const preview = document.getElementById('playground-preview')
+      if (preview) {
+        scrollTargetRef.current = 'playground-preview'
+        setMobileMenuOpen(false)
+      } else {
+        setMobileMenuOpen(false)
+        navigate('/playground')
+      }
+      return
+    }
+    
+    // For hash links
+    const targetId = href.replace('#', '')
+    scrollTargetRef.current = targetId
+    setMobileMenuOpen(false)
+  }
+  
   // animate portal nav when it becomes visible
   useEffect(() => {
     if (!navVisible) return
@@ -481,13 +538,13 @@ function Landing() {
         paddingTop: 'env(safe-area-inset-top, 0px)', 
         paddingBottom: 'env(safe-area-inset-bottom, 0px)' 
       }}
-      onClick={() => setMobileMenuOpen(false)}
     >
-      <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>
+      <div className="relative w-full h-full">
+        {/* Close button */}
         <button
           type="button"
           aria-label="Close menu"
-          className="absolute top-6 right-6 z-50 p-3 rounded-md text-white hover:opacity-80"
+          className="absolute top-6 right-6 z-50 p-3 rounded-md hover:opacity-80"
           onClick={() => setMobileMenuOpen(false)}
         >
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -496,50 +553,22 @@ function Landing() {
           </svg>
         </button>
 
-        <div className="h-full flex flex-col items-center justify-center gap-8 px-8 text-center">
+        {/* Nav links */}
+        <nav className="h-full flex flex-col items-center justify-center gap-8 px-8 text-center">
           {navItems.map(({ label, href }) => (
-            <button
+            <a
               key={label}
-              type="button"
-              onClick={() => {
-                // Close menu first
-                setMobileMenuOpen(false)
-                
-                // Navigate based on label
-                if (label === 'PLAYGROUND') {
-                  setTimeout(() => {
-                    const el = document.getElementById('playground-preview')
-                    if (el) {
-                      const y = el.getBoundingClientRect().top + window.scrollY
-                      window.scrollTo({ top: y, behavior: 'smooth' })
-                    } else {
-                      navigate('/playground')
-                    }
-                  }, 150)
-                  return
-                }
-                
-                // For hash links, scroll to section
-                const targetId = href.replace('#', '')
-                
-                setTimeout(() => {
-                  const targetEl = document.getElementById(targetId)
-                  if (targetEl) {
-                    const y = targetEl.getBoundingClientRect().top + window.scrollY
-                    window.scrollTo({ top: y, behavior: 'smooth' })
-                  } else {
-                    // Fallback: use hash directly (instant jump)
-                    window.location.hash = href
-                  }
-                }, 150)
+              href={href}
+              onClick={(e) => {
+                e.preventDefault()
+                handleMobileNavClick(label, href)
               }}
-              className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80 select-none bg-transparent border-none cursor-pointer"
-              style={{ WebkitTapHighlightColor: 'transparent' }}
+              className="block text-zinc-700 font-[100] font-['primary'] text-5xl tracking-normal hover:opacity-80"
             >
               {label}
-            </button>
+            </a>
           ))}
-        </div>
+        </nav>
       </div>
     </div>,
     document.body
