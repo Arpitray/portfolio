@@ -21,8 +21,6 @@ function Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   // Ref to store pending navigation target for mobile menu
   const pendingNavRef = useRef(null)
-  // Ref to prevent double-firing from both touch and click events
-  const touchHandledRef = useRef(false)
   // animate portal nav when it becomes visible
   useEffect(() => {
     if (!navVisible) return
@@ -45,47 +43,43 @@ function Landing() {
   // Execute pending mobile navigation AFTER menu closes
   // This ensures the portal is fully unmounted before scrolling
   useEffect(() => {
-    if (mobileMenuOpen || !pendingNavRef.current) return
+    // Only run when menu just closed AND we have a pending nav target
+    if (mobileMenuOpen) return
+    if (!pendingNavRef.current) return
     
     const { label, href } = pendingNavRef.current
     pendingNavRef.current = null // Clear immediately to prevent re-execution
     
-    // Use requestAnimationFrame to ensure DOM has updated after portal unmount
-    requestAnimationFrame(() => {
-      // Double RAF ensures paint has completed
-      requestAnimationFrame(() => {
-        try {
-          if (label === 'PLAYGROUND') {
-            const el = document.getElementById('playground-preview')
-            if (el) {
-              el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-            } else {
-              navigate('/playground')
-            }
-            return
-          }
-          
-          const targetId = href.replace('#', '')
-          const el = document.getElementById(targetId)
-          
+    // Small delay to ensure portal is fully unmounted and DOM is stable
+    const timeoutId = setTimeout(() => {
+      try {
+        if (label === 'PLAYGROUND') {
+          const el = document.getElementById('playground-preview')
           if (el) {
-            // Calculate absolute scroll position
-            const rect = el.getBoundingClientRect()
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-            const targetY = rect.top + scrollTop
-            
-            // Use native scrollTo - most reliable on mobile
-            window.scrollTo({ top: targetY, behavior: 'smooth' })
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
           } else {
-            // Fallback: use hash navigation
-            window.location.hash = href
+            navigate('/playground')
           }
-        } catch (err) {
-          // Ultimate fallback
+          return
+        }
+        
+        const targetId = href.replace('#', '')
+        const el = document.getElementById(targetId)
+        
+        if (el) {
+          // Use scrollIntoView - most reliable across all mobile browsers
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        } else {
+          // Fallback: direct hash navigation (causes instant jump but works)
           window.location.hash = href
         }
-      })
-    })
+      } catch (err) {
+        // Ultimate fallback
+        try { window.location.hash = href } catch (e) {}
+      }
+    }, 50)
+    
+    return () => clearTimeout(timeoutId)
   }, [mobileMenuOpen, navigate])
 
   // close on ESC
@@ -548,36 +542,20 @@ function Landing() {
 
         <div className="h-full flex flex-col items-center justify-center gap-8 px-8 text-center">
           {navItems.map(({ label, href }) => (
-            <a
+            <button
               key={label}
-              href={href}
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                // Skip if touch already handled this interaction
-                if (touchHandledRef.current) {
-                  touchHandledRef.current = false
-                  return
-                }
-                // Store navigation target in ref - the useEffect will execute after menu closes
-                pendingNavRef.current = { label, href }
-                // Close menu - this triggers the useEffect that handles navigation
-                setMobileMenuOpen(false)
-              }}
-              onTouchEnd={(e) => {
-                // Handle touch explicitly for iOS - prevents 300ms delay issues
-                e.preventDefault()
-                e.stopPropagation()
-                // Mark that touch handled this to prevent duplicate click
-                touchHandledRef.current = true
+              type="button"
+              onClick={() => {
+                // Store nav target FIRST, then close menu
+                // The useEffect watching mobileMenuOpen will handle the scroll
                 pendingNavRef.current = { label, href }
                 setMobileMenuOpen(false)
               }}
-              className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80 select-none"
-              style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+              className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80 select-none bg-transparent border-none cursor-pointer"
+              style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               {label}
-            </a>
+            </button>
           ))}
         </div>
       </div>
