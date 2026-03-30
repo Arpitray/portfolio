@@ -21,6 +21,8 @@ function Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   // Ref to store pending navigation target for mobile menu
   const pendingNavRef = useRef(null)
+  // Ref to prevent double-firing from both touch and click events
+  const touchHandledRef = useRef(false)
   // animate portal nav when it becomes visible
   useEffect(() => {
     if (!navVisible) return
@@ -552,12 +554,27 @@ function Landing() {
               onClick={(e) => {
                 e.preventDefault()
                 e.stopPropagation()
+                // Skip if touch already handled this interaction
+                if (touchHandledRef.current) {
+                  touchHandledRef.current = false
+                  return
+                }
                 // Store navigation target in ref - the useEffect will execute after menu closes
                 pendingNavRef.current = { label, href }
                 // Close menu - this triggers the useEffect that handles navigation
                 setMobileMenuOpen(false)
               }}
-              className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80"
+              onTouchEnd={(e) => {
+                // Handle touch explicitly for iOS - prevents 300ms delay issues
+                e.preventDefault()
+                e.stopPropagation()
+                // Mark that touch handled this to prevent duplicate click
+                touchHandledRef.current = true
+                pendingNavRef.current = { label, href }
+                setMobileMenuOpen(false)
+              }}
+              className="block text-zinc-700 font-[100] font-['primary'] text-5xl sm:text-5xl tracking-normal hover:opacity-80 select-none"
+              style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
             >
               {label}
             </a>
