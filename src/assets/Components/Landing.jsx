@@ -20,62 +20,6 @@ function Landing() {
   const [navVisible, setNavVisible] = React.useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   
-  // Store the scroll target - will be executed after menu closes
-  const scrollTargetRef = useRef(null)
-  
-  // Handle scroll AFTER mobile menu closes
-  useEffect(() => {
-    // Only proceed if menu just closed AND we have a scroll target
-    if (mobileMenuOpen || !scrollTargetRef.current) return
-    
-    const targetId = scrollTargetRef.current
-    scrollTargetRef.current = null // Clear it
-    
-    // Use requestAnimationFrame to ensure DOM is updated, then setTimeout for safety
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        const el = document.getElementById(targetId)
-        if (!el) {
-          // Element not found - try hash navigation as ultimate fallback
-          window.location.hash = '#' + targetId
-          return
-        }
-        
-        // Get the absolute scroll position
-        const rect = el.getBoundingClientRect()
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
-        const targetY = rect.top + scrollTop
-        
-        // Scroll to the target
-        window.scrollTo({
-          top: targetY,
-          left: 0,
-          behavior: 'smooth'
-        })
-      }, 50)
-    })
-  }, [mobileMenuOpen])
-  
-  // Function to handle mobile nav click
-  const handleMobileNavClick = (label, href) => {
-    if (label === 'PLAYGROUND') {
-      const preview = document.getElementById('playground-preview')
-      if (preview) {
-        scrollTargetRef.current = 'playground-preview'
-        setMobileMenuOpen(false)
-      } else {
-        setMobileMenuOpen(false)
-        navigate('/playground')
-      }
-      return
-    }
-    
-    // For hash links
-    const targetId = href.replace('#', '')
-    scrollTargetRef.current = targetId
-    setMobileMenuOpen(false)
-  }
-  
   // animate portal nav when it becomes visible
   useEffect(() => {
     if (!navVisible) return
@@ -555,19 +499,54 @@ function Landing() {
 
         {/* Nav links */}
         <nav className="h-full flex flex-col items-center justify-center gap-8 px-8 text-center">
-          {navItems.map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              onClick={(e) => {
-                e.preventDefault()
-                handleMobileNavClick(label, href)
-              }}
-              className="block text-zinc-700 font-[100] font-['primary'] text-5xl tracking-normal hover:opacity-80"
-            >
-              {label}
-            </a>
-          ))}
+          {navItems.map(({ label, href }) => {
+            // PLAYGROUND needs special handling - it's a route, not a hash
+            if (label === 'PLAYGROUND') {
+              return (
+                <a
+                  key={label}
+                  href={href}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setMobileMenuOpen(false)
+                    // Check if on landing page with preview section
+                    const preview = document.getElementById('playground-preview')
+                    if (preview) {
+                      // Scroll to preview section
+                      setTimeout(() => {
+                        window.location.hash = 'playground-preview'
+                      }, 100)
+                    } else {
+                      navigate('/playground')
+                    }
+                  }}
+                  className="block text-zinc-700 font-[100] font-['primary'] text-5xl tracking-normal hover:opacity-80"
+                >
+                  {label}
+                </a>
+              )
+            }
+            
+            // Hash links - close menu first, then navigate via hash
+            return (
+              <a
+                key={label}
+                href={href}
+                onClick={(e) => {
+                  e.preventDefault()
+                  // Close menu first
+                  setMobileMenuOpen(false)
+                  // Then navigate via hash after menu closes
+                  setTimeout(() => {
+                    window.location.hash = href
+                  }, 100)
+                }}
+                className="block text-zinc-700 font-[100] font-['primary'] text-5xl tracking-normal hover:opacity-80"
+              >
+                {label}
+              </a>
+            )
+          })}
         </nav>
       </div>
     </div>,
