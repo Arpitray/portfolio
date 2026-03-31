@@ -325,14 +325,14 @@ function Landing() {
     {/* Navbar rendered into a portal to guarantee it sits above other stacking contexts */}
   {navVisible && typeof document !== 'undefined' && createPortal(
         <nav id="portal-nav"
-      className="fixed top-[2%] left-0 w-full"
+      className="fixed top-2 left-0 w-full"
   style={{ position: 'fixed', left: 0, right: 0, opacity: 0, willChange: 'opacity, transform', zIndex: 2147483640, maxWidth: '100vw' }}
           onPointerEnter={() => window.dispatchEvent(new Event('cursorGlass:hide'))}
           onPointerLeave={() => window.dispatchEvent(new Event('cursorGlass:show'))}
         >
-          <div className="mx-auto px-3 sm:px-6 lg:px-8 max-w-screen-2xl w-full">
-            <div className="mt-3 mx-2 sm:mx-3 rounded-2xl border border-white/20 bg-white/60 backdrop-blur-xl backdrop-saturate-150 ring-1 ring-black/5 py-5 shadow-[0_8px_32px_rgba(0,0,0,0.08)] relative max-w-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
-              <div className="h-12 px-3 sm:px-5 flex items-center justify-between min-w-0">
+          <div className="mx-auto px-4 sm:px-6 lg:px-12 w-full mt-4 flex justify-center">
+            <div className="rounded-[2rem] border border-white/40 bg-white/70 backdrop-blur-2xl backdrop-saturate-200 ring-1 ring-black/5 py-2 px-3 shadow-[0_8px_32px_rgba(0,0,0,0.1)] relative w-full max-w-5xl transition-all duration-500 hover:shadow-[0_16px_48px_rgba(0,0,0,0.15)] hover:bg-white/80">
+              <div className="h-14 px-3 sm:px-6 flex items-center justify-between min-w-0">
                 <Magnetic strength={0.3}>
                   <button
                     type="button"
@@ -346,10 +346,10 @@ function Landing() {
                       } catch (err) {}
                       navigate('/')
                     }}
-                    className="text-2xl sm:text-3xl font-black tracking-tight text-black bg-transparent border-0 p-0 cursor-pointer flex-shrink-0 relative group"
+                    className="text-2xl sm:text-3xl font-black tracking-tighter text-black bg-transparent border-0 p-0 transform-gpu transition-all duration-300 hover:scale-[1.05] cursor-pointer flex-shrink-0 relative group origin-left"
                   >
-                    <span className="relative z-10">Arpit.</span>
-                    <span className="absolute inset-0 bg-gradient-to-r from-black/5 to-black/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-0 scale-110 blur-sm"></span>
+                    <span className="relative z-10 transition-colors group-hover:text-black/80">Arpit.</span>
+                    <span className="absolute inset-x-0 -bottom-1 h-0.5 bg-black rounded-full origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
                   </button>
                 </Magnetic>
                 {/* Mobile hamburger - visible on small screens only */}
@@ -371,7 +371,7 @@ function Landing() {
                   </button>
                 </Magnetic>
 
-                <div className="hidden md:flex items-center gap-2 text-[15px] font-semibold text-black">
+                <div className="hidden md:flex items-center gap-1.5 justify-end">
                   {navItems.map(({ label, href }) => {
                     // PLAYGROUND behavior (existing)
                     if (label === 'PLAYGROUND') {
@@ -394,10 +394,10 @@ function Landing() {
                                 navigate('/playground')
                               }
                             }}
-                            className="relative px-4 py-2.5 rounded-xl hover:bg-black/5 transition-all duration-300 group overflow-hidden"
+                            className="relative px-5 py-2.5 rounded-full text-black/70 hover:text-black font-bold text-[13px] tracking-[0.15em] transition-colors duration-300 group overflow-hidden"
                           >
-                            <span className="relative z-10 tracking-wide">{label}</span>
-                            <span className="absolute inset-0 bg-gradient-to-r from-black/0 via-black/5 to-black/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                            <span className="relative z-10 transition-transform duration-300 inline-block group-hover:-translate-y-px">{label}</span>
+                            <span className="absolute inset-0 bg-black/5 rounded-full scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 ease-out"></span>
                           </a>
                         </Magnetic>
                       )
@@ -450,10 +450,10 @@ function Landing() {
                                 navigate('/' + href)
                               }
                             }}
-                            className="relative px-4 py-2.5 rounded-xl hover:bg-black/5 transition-all duration-300 group overflow-hidden"
+                            className="relative px-5 py-2.5 rounded-full text-black/70 hover:text-black font-bold text-[13px] tracking-[0.15em] transition-colors duration-300 group overflow-hidden"
                           >
-                            <span className="relative z-10 tracking-wide">{label}</span>
-                            <span className="absolute inset-0 bg-gradient-to-r from-black/0 via-black/5 to-black/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                            <span className="relative z-10 transition-transform duration-300 inline-block group-hover:-translate-y-px">{label}</span>
+                            <span className="absolute inset-0 bg-black/5 rounded-full scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 ease-out"></span>
                           </a>
                         </Magnetic>
                       )
@@ -463,10 +463,10 @@ function Landing() {
                       <Magnetic key={label} strength={0.2}>
                         <a 
                           href={href} 
-                          className="relative px-4 py-2.5 rounded-xl hover:bg-black/5 transition-all duration-300 group overflow-hidden"
+                          className="relative px-5 py-2.5 rounded-full text-black/70 hover:text-black font-bold text-[13px] tracking-[0.15em] transition-colors duration-300 group overflow-hidden"
                         >
-                          <span className="relative z-10 tracking-wide">{label}</span>
-                          <span className="absolute inset-0 bg-gradient-to-r from-black/0 via-black/5 to-black/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                          <span className="relative z-10 transition-transform duration-300 inline-block group-hover:-translate-y-px">{label}</span>
+                          <span className="absolute inset-0 bg-black/5 rounded-full scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 ease-out"></span>
                         </a>
                       </Magnetic>
                     )
