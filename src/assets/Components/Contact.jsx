@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { motion } from 'framer-motion'
-import Polaroid from './sc1.png'
-import DragSvg from './drag.svg'
 import Arpit3 from './Arpit3.png'
 import Magnetic from './Magnetic'
 
@@ -11,7 +9,6 @@ export default function Contact() {
   const elRef = useRef(null)
   const polaroidRef = useRef(null)
   const revealRef = useRef(null)
-  const [dropped, setDropped] = useState(false)
   const [cursorText, setCursorText] = useState('')
   const [isMobile, setIsMobile] = useState(false)
   const [screenDimensions, setScreenDimensions] = useState({ width: 0, height: 0 })
@@ -43,7 +40,7 @@ export default function Contact() {
     if (isMobileCheck) {
       // For mobile, no GSAP animation - just show normally
       gsap.set(el, { yPercent: 0 })
-      el.style.pointerEvents = 'auto'
+      el.style.pointerEvents = 'auto' // Make active
       el.style.position = 'relative'
       el.style.height = 'auto'
       return
@@ -64,8 +61,11 @@ export default function Contact() {
           end: () => `+=${Math.max(1, showcase.offsetHeight - window.innerHeight)}`,
           scrub: 0.3,
           onUpdate: self => {
-            if (self.progress >= 0.65) el.style.pointerEvents = 'auto'
-            else el.style.pointerEvents = 'none'
+            if (self.progress >= 0.65) {
+              el.style.pointerEvents = 'auto'
+            } else {
+              el.style.pointerEvents = 'none'
+            }
           }
         }
       })
@@ -84,32 +84,17 @@ export default function Contact() {
     }
   }, [])
 
-  // use Framer Motion drag: detect when image is moved to reveal text
+  // use Framer Motion drag:
   const handleDragStart = () => {
     const polaroid = polaroidRef.current
     if (!polaroid) return
     polaroid.classList.add('dragging')
     try {
-      // Don't change positioning during drag to prevent teleportation
       polaroid.style.touchAction = 'none'
       polaroid.style.pointerEvents = 'auto'
       polaroid.style.cursor = 'grabbing'
       polaroid.style.zIndex = '9999'
     } catch (e) {}
-  }
-
-  const handleDrag = () => {
-    // Reveal text as soon as the image starts moving
-    if (!dropped) {
-      setDropped(true)
-      const reveal = revealRef.current
-      if (reveal) {
-        gsap.fromTo(reveal, 
-          { y: 20, autoAlpha: 0 }, 
-          { y: 0, autoAlpha: 1, duration: 0.6, ease: 'power3.out' }
-        )
-      }
-    }
   }
 
   const handleDragEnd = () => {
@@ -122,13 +107,11 @@ export default function Contact() {
 
   const handleMouseEnter = () => {
     setCursorText('drag')
-    // Dispatch custom event to update cursor glass text
     window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: 'DRAG' }))
   }
 
   const handleMouseLeave = () => {
     setCursorText('')
-    // Reset cursor glass to default text
     window.dispatchEvent(new CustomEvent('cursorGlass:customText', { detail: null }))
   }
 
@@ -165,204 +148,148 @@ export default function Contact() {
           -o-user-drag: none;
         }
       `}</style>
-  <section id="contact" className='md:fixed md:left-0 md:right-0 md:bottom-0 md:h-screen md:z-[5000] z-[10000] relative w-full' ref={elRef} aria-label="Contact section">
-        {/* New centered heading */}
-        <div className="absolute md:top-20 top-8 left-0 w-full flex font-['primary'] justify-center items-center py-4 bg-[#E1E1E1] z-10">
-          <h1 className='font-semibold md:text-[5rem] text-4xl'>Contact Me</h1>
+  <section 
+    id="contact" 
+    className="md:fixed md:left-0 md:right-0 md:bottom-0 md:h-screen md:z-[5000] z-[10000] relative w-full overflow-hidden bg-[#E1E1E1]" 
+    ref={elRef} 
+    aria-label="Contact section"
+  >
+        {/* Subtle noisy background texture overlay */}
+        <div className="absolute inset-0 opacity-[0.2] pointer-events-none mix-blend-overlay" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/stardust.png")' }}></div>
+
+        {/* Huge dynamic background typography */}
+        <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center justify-center pointer-events-none opacity-10">
+          <h1 className="font-black text-transparent tracking-[-0.05em] uppercase whitespace-nowrap" style={{ WebkitTextStroke: '2px #1a1a1a', fontSize: 'clamp(8rem, 25vw, 35rem)', lineHeight: 0.8 }}>
+            CONNECT
+          </h1>
         </div>
 
-        <div style={{ position: 'absolute', left: 0, right: 0, height: 160, pointerEvents: 'none' }}>
-          <svg viewBox="0 0 1440 160" preserveAspectRatio="none" style={{ width: '100%', height: '100%', display: 'block' }}>
-            <path d="M0,48 C240,0 360,80 720,48 C1080,16 1200,48 1440,32 L1440,160 L0,160 Z" fill="#E1E1E1" />
-          </svg>
-        </div>
- 
-        <div className="min-h-[60vh] md:h-screen flex items-center justify-center bg-[#E1E1E1] px-6 md:py-12 pt-24 pb-12">
+        <div className="relative w-full h-full min-h-[80vh] flex flex-col md:flex-row items-center justify-center pointer-events-auto z-10 px-4 md:px-12 gap-10 md:gap-16">
         
-          {/* Flexbox container for left SVG and right content */}
-          <div className="max-w-7xl w-full flex md:flex-row flex-col items-center justify-between md:gap-12 gap-1">
-          
-            {/* Left side - Drag SVG */}
-            <div className="flex-1 flex items-center justify-center md:mb-0 mb-6">
-              <img 
-                src={DragSvg} 
-                alt="Drag instruction" 
-                className="w-full md:max-w-md max-w-56 h-auto"
-                style={{ 
-                  opacity: 0.8,
-                  filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))'
-                }}
-              />
-            </div>
-
-            {/* Right side - Image and contact text */}
-            <div className="flex-1 flex flex-col items-center md:mt-48 mt-12 justify-center relative">
-              {/* Main draggable image positioned in center */}
-              <div className="relative flex items-center justify-center md:mb-8 mb-">
-                <motion.div
-                  ref={polaroidRef}
-                  className="polaroid-container"
-                  drag
-                  dragElastic={0.1}
-                  dragMomentum={false}
-                  dragPropagation={false}
-                  dragConstraints={{
-                    left: isMobile ? -screenDimensions.width * 2 : -screenDimensions.width * 0.8,
-                    right: isMobile ? screenDimensions.width * 2 : screenDimensions.width * 0.8, 
-                    // Allow dragging high up into previous sections
-                    top: isMobile ? -screenDimensions.height * 4 : -screenDimensions.height * 1.5,
-                    bottom: isMobile ? screenDimensions.height * 2 : screenDimensions.height * 0.4
-                  }}
-                  onDragStart={handleDragStart}
-                  onDrag={handleDrag}
-                  onDragEnd={handleDragEnd}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  style={{ 
-                    cursor: 'grab', 
-                    touchAction: 'none',
-                    userSelect: 'none',
-                    WebkitUserSelect: 'none',
-                    MozUserSelect: 'none',
-                    msUserSelect: 'none',
-                    position: 'relative'
-                  }}
-                  whileDrag={{ 
-                    cursor: 'grabbing', 
-                    scale: 1.05,
-                    zIndex: 9999
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ 
-                    type: "spring", 
-                    stiffness: 400, 
-                    damping: 40,
-                    mass: 1
-                  }}
-                  dragTransition={{ 
-                    bounceStiffness: 600, 
-                    bounceDamping: 30,
-                    power: 0.3,
-                    timeConstant: 300
-                  }}
-                >
-                  <div className='rotate-8' style={{ 
-                    width: isMobile ? 220 : 440, 
-                    height: isMobile ? 280 : 540, 
-                    backgroundColor: '#fff',
-                    boxShadow: '0 12px 30px rgba(0,0,0,0.25)',
-                    border:"12px solid #fff",
-                    userSelect: 'none',
-                    WebkitUserSelect: 'none',
-                    MozUserSelect: 'none',
-                    msUserSelect: 'none',
-                    pointerEvents: 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    position: 'relative'
-                  }}>
-                    <img className='contact-image'
-                      src={Arpit3} 
-                      alt="polaroid" 
-                      draggable={false}
-                      style={{ 
-                        width: '100%', 
-                        height: 'calc(100% - 60px)', 
-                        objectFit: 'cover', 
-                        userSelect: 'none',
-                        WebkitUserSelect: 'none',
-                        MozUserSelect: 'none',
-                        msUserSelect: 'none',
-                        pointerEvents: 'none'
-                      }} 
-                    />
-                    <div style={{
-                      height: '60px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'end',
-                      fontFamily: 'primary',
-                      fontSize: isMobile ? '24px' : '36px',
-                      fontWeight: '600',
-                      color: '#313437',
-                      backgroundColor: '#fff',
-                      marginRight: '12px'
-                    }}>
-                      @Arpit
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-
-              {/* Contact text positioned beneath the image */}
+          {/* --- LEFT: DRAGGABLE CARD (Hidden on Mobile) --- */}
+          <div className="hidden md:flex relative z-30 items-center justify-center w-full md:w-1/2 mt-16 md:mt-0">
+            <motion.div
+              ref={polaroidRef}
+              className="polaroid-container"
+              drag
+              dragElastic={0.15}
+              dragMomentum={true}
+              dragConstraints={{
+                left: isMobile ? -screenDimensions.width : -screenDimensions.width * 0.5,
+                right: isMobile ? screenDimensions.width : screenDimensions.width * 0.5, 
+                top: isMobile ? -screenDimensions.height : -screenDimensions.height * 0.5,
+                bottom: isMobile ? screenDimensions.height : screenDimensions.height * 0.5
+              }}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              style={{ cursor: 'grab' }}
+              whileDrag={{ scale: 1.05, cursor: 'grabbing', rotate: 0 }}
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            >
+              {/* Card Container */}
               <div 
-                ref={revealRef} 
+                className="relative group transition-all duration-300" 
                 style={{ 
-                  position: 'absolute',
-                  top: '50%', // Centered vertically relative to the image
-                  left: '50%', // Centered horizontally relative to the image
-                  transform: 'translate(-50%, -50%)', // Adjust for centering
-                  textAlign: 'center',
-                  opacity: dropped ? 1 : 0, // Initially hidden, becomes visible after dragging
-                  zIndex: dropped ? 0 : -1, // Ensure it is beneath the image initially
-                  width: isMobile ? '90vw' : 'auto', // Give more width on mobile
-                  maxWidth: isMobile ? '400px' : 'none' // Limit max width on mobile
+                  width: 380, 
+                  height: 530, 
+                  backgroundColor: '#FFFFFF',
+                  boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.02)',
+                  padding: '22px 22px 80px 22px',
+                  transform: 'rotate(-4deg)'
                 }}
               >
-                <div style={{ color: '#313437', fontWeight: 700 }}>
-                  <div className='rotate-8' style={{ 
-                    fontSize: isMobile ? 28 : 44,  
-                    marginBottom: 20, 
-                    fontFamily: 'primary' 
-                  }}>LETS WORK TOGETHER!</div>
-                  <div style={{ 
-                    display: 'flex', 
-                    gap: isMobile ? 16 : 24, 
-                    justifyContent: 'center', 
-                    alignItems: 'center',
-                    flexDirection: isMobile ? 'column' : 'row'
-                  }}>
-                    <Magnetic strength={0.3}>
-                      <a className='font-["primary"] tracking-wider'
-                        href="mailto:rayarpit72@gmail.com" 
-                        style={{ 
-                          color: '#313437', 
-                          fontWeight: 600, 
-                          textDecoration: 'none',
-                          fontSize: isMobile ? 20 : 28,
-                          padding: '10px 20px',
-                          
-                          transition: 'all 0.3s ease',
-                          backgroundColor: 'transparent'
-                        }}
-                    
-                      >
-                        Email
-                      </a>
-                    </Magnetic>
-                    <Magnetic strength={0.3}>
-                      <a 
-                        href="https://www.linkedin.com/in/arpit-arjun-ray-2ba326335/" 
-                        target="_blank" 
-                        rel="noreferrer" 
-                        style={{ 
-                          color: '#313437', 
-                          fontWeight: 600, 
-                          textDecoration: 'none',
-                          fontSize: isMobile ? 20 : 28,
-                          padding: '10px 20px',
-                          fontFamily: 'primary',
-                          transition: 'all 0.3s ease',
-                          backgroundColor: 'transparent'
-                        }}
-                       
-                      >
-                        LinkedIn
-                      </a>
-                    </Magnetic>
-                  </div>
+                {/* Polaroid Paper Texture */}
+                <div className="absolute inset-0 opacity-[0.1] pointer-events-none mix-blend-multiply" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cubes.png")'}}></div>
+                
+                {/* Main Image */}
+                <img 
+                  className='contact-image'
+                  src={Arpit3} 
+                  alt="Arpit" 
+                  draggable={false}
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover', 
+                    filter: 'contrast(1.05) saturate(1.1) sepia(0.05)',
+                  }} 
+                />
+                
+                {/* Lower text area */}
+                <div className="absolute bottom-0 left-0 w-full" style={{
+                  height: isMobile ? '60px' : '80px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontFamily: 'primary',
+                  fontSize: isMobile ? '18px' : '22px',
+                  fontWeight: '600',
+                  letterSpacing: '0.1em',
+                  color: '#1a1a1a',
+                }}>
+                  @Arpit
                 </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* --- RIGHT: REVEALED CONTENT --- */}
+          <div 
+            ref={revealRef} 
+            className="w-full md:w-1/2 flex flex-col items-center md:items-start justify-center z-40 relative px-4"
+          >
+            <div className="flex flex-col items-center md:items-start gap-8 md:gap-10 mt-10 md:mt-0">
+              <h2 className="text-center md:text-left font-black tracking-[-0.05em] leading-[0.85] text-[#1a1a1a]"
+                  style={{ fontSize: 'clamp(3.8rem, 10vw, 7rem)' }}>
+                LET'S BUILD<br/><span className="italic font-light opacity-80">SOMETHING.</span>
+              </h2>
+              
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full max-w-[500px]">
+                <Magnetic strength={0.2} className="w-full relative z-50">
+                  <a 
+                    href="mailto:rayarpit72@gmail.com" 
+                    className="relative overflow-hidden group flex items-center justify-center w-full py-4 sm:py-5 rounded-full border border-[#1a1a1a]/20 bg-white/50 backdrop-blur-md text-[#1a1a1a] font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs md:text-sm transition-all duration-500 hover:text-white hover:border-[#1a1a1a]"
+                  >
+                     <span className="relative z-10 pointer-events-none">Email</span>
+                     <div className="absolute inset-0 bg-[#1a1a1a] translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] pointer-events-none"></div>
+                  </a>
+                </Magnetic>
+                <Magnetic strength={0.2} className="w-full relative z-50">
+                  <a 
+                    href="https://www.linkedin.com/in/arpit-arjun-ray-2ba326335/" 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="relative overflow-hidden group flex items-center justify-center w-full py-4 sm:py-5 rounded-full border border-[#1a1a1a]/20 bg-white/50 backdrop-blur-md text-[#1a1a1a] font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs md:text-sm transition-all duration-500 hover:text-white hover:border-[#1a1a1a]"
+                  >
+                     <span className="relative z-10 pointer-events-none">LinkedIn</span>
+                     <div className="absolute inset-0 bg-[#1a1a1a] translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] pointer-events-none"></div>
+                  </a>
+                </Magnetic>
+                <Magnetic strength={0.2} className="w-full relative z-50">
+                  <a 
+                    href="https://github.com/ArpitRay" 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="relative overflow-hidden group flex items-center justify-center w-full py-4 sm:py-5 rounded-full border border-[#1a1a1a]/20 bg-white/50 backdrop-blur-md text-[#1a1a1a] font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs md:text-sm transition-all duration-500 hover:text-white hover:border-[#1a1a1a]"
+                  >
+                     <span className="relative z-10 pointer-events-none">GitHub</span>
+                     <div className="absolute inset-0 bg-[#1a1a1a] translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] pointer-events-none"></div>
+                  </a>
+                </Magnetic>
+                <Magnetic strength={0.2} className="w-full relative z-50">
+                  <a 
+                    href="https://x.com/ArpitRay12" 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className="relative overflow-hidden group flex items-center justify-center w-full py-4 sm:py-5 rounded-full border border-[#1a1a1a]/20 bg-white/50 backdrop-blur-md text-[#1a1a1a] font-bold tracking-[0.2em] uppercase text-[10px] sm:text-xs md:text-sm transition-all duration-500 hover:text-white hover:border-[#1a1a1a]"
+                  >
+                     <span className="relative z-10 pointer-events-none">Twitter</span>
+                     <div className="absolute inset-0 bg-[#1a1a1a] translate-y-[100%] group-hover:translate-y-[0%] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] pointer-events-none"></div>
+                  </a>
+                </Magnetic>
               </div>
             </div>
           </div>
