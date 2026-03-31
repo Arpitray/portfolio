@@ -325,14 +325,14 @@ function Landing() {
     {/* Navbar rendered into a portal to guarantee it sits above other stacking contexts */}
   {navVisible && typeof document !== 'undefined' && createPortal(
         <nav id="portal-nav"
-      className="fixed top-[3%] left-0 w-full"
+      className="fixed top-[2%] left-0 w-full"
   style={{ position: 'fixed', left: 0, right: 0, opacity: 0, willChange: 'opacity, transform', zIndex: 2147483640, maxWidth: '100vw' }}
           onPointerEnter={() => window.dispatchEvent(new Event('cursorGlass:hide'))}
           onPointerLeave={() => window.dispatchEvent(new Event('cursorGlass:show'))}
         >
-          <div className="mx-auto px-2 sm:px-6 lg:px-8 max-w-screen-2xl w-full">
-            <div className="mt-3 mx-1 sm:mx-2 rounded-xl border border-white/10 bg-white/40 backdrop-blur-[4px] backdrop-saturate-150 ring-1 ring-black/5 py-4 shadow-md relative max-w-full">
-              <div className="h-12 px-2 sm:px-4 flex items-center justify-between min-w-0">
+          <div className="mx-auto px-3 sm:px-6 lg:px-8 max-w-screen-2xl w-full">
+            <div className="mt-3 mx-2 sm:mx-3 rounded-2xl border border-white/20 bg-white/60 backdrop-blur-xl backdrop-saturate-150 ring-1 ring-black/5 py-5 shadow-[0_8px_32px_rgba(0,0,0,0.08)] relative max-w-full transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+              <div className="h-12 px-3 sm:px-5 flex items-center justify-between min-w-0">
                 <Magnetic strength={0.3}>
                   <button
                     type="button"
@@ -346,9 +346,10 @@ function Landing() {
                       } catch (err) {}
                       navigate('/')
                     }}
-                    className="text-xl sm:text-2xl font-extrabold tracking-tight text-black bg-transparent border-0 p-0 cursor-pointer flex-shrink-0"
+                    className="text-2xl sm:text-3xl font-black tracking-tight text-black bg-transparent border-0 p-0 cursor-pointer flex-shrink-0 relative group"
                   >
-                    Arpit.
+                    <span className="relative z-10">Arpit.</span>
+                    <span className="absolute inset-0 bg-gradient-to-r from-black/5 to-black/10 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-0 scale-110 blur-sm"></span>
                   </button>
                 </Magnetic>
                 {/* Mobile hamburger - visible on small screens only */}
@@ -370,7 +371,7 @@ function Landing() {
                   </button>
                 </Magnetic>
 
-                <div className="hidden md:flex items-center gap-6 text-[14px] font-medium text-black">
+                <div className="hidden md:flex items-center gap-2 text-[15px] font-semibold text-black">
                   {navItems.map(({ label, href }) => {
                     // PLAYGROUND behavior (existing)
                     if (label === 'PLAYGROUND') {
@@ -393,9 +394,10 @@ function Landing() {
                                 navigate('/playground')
                               }
                             }}
-                            className="hover:opacity-70 transition-opacity"
+                            className="relative px-4 py-2.5 rounded-xl hover:bg-black/5 transition-all duration-300 group overflow-hidden"
                           >
-                            {label}
+                            <span className="relative z-10 tracking-wide">{label}</span>
+                            <span className="absolute inset-0 bg-gradient-to-r from-black/0 via-black/5 to-black/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
                           </a>
                         </Magnetic>
                       )
@@ -448,9 +450,10 @@ function Landing() {
                                 navigate('/' + href)
                               }
                             }}
-                            className="hover:opacity-70 transition-opacity "
+                            className="relative px-4 py-2.5 rounded-xl hover:bg-black/5 transition-all duration-300 group overflow-hidden"
                           >
-                            {label}
+                            <span className="relative z-10 tracking-wide">{label}</span>
+                            <span className="absolute inset-0 bg-gradient-to-r from-black/0 via-black/5 to-black/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
                           </a>
                         </Magnetic>
                       )
@@ -458,7 +461,13 @@ function Landing() {
 
                     return (
                       <Magnetic key={label} strength={0.2}>
-                        <a href={href} className="hover:opacity-70 transition-opacity">{label}</a>
+                        <a 
+                          href={href} 
+                          className="relative px-4 py-2.5 rounded-xl hover:bg-black/5 transition-all duration-300 group overflow-hidden"
+                        >
+                          <span className="relative z-10 tracking-wide">{label}</span>
+                          <span className="absolute inset-0 bg-gradient-to-r from-black/0 via-black/5 to-black/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                        </a>
                       </Magnetic>
                     )
                   })}
